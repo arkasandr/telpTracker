@@ -1,0 +1,28 @@
+server:
+  port: 8885
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  datasource:
+    hikari:
+      connectionTimeout: 20000
+      maximumPoolSize: 5
+    platform: postgres
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:telptracker}
+#    url: jdbc:postgresql://${DB_HOST:10.167.128.109}:${DB_PORT:15432}/${DB_NAME:db3}
+    username: ${DB_LOGIN:postgres}
+    password: ${DB_PASSWORD:gardavan091}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    generate-ddl: false
+    show-sql: true
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
