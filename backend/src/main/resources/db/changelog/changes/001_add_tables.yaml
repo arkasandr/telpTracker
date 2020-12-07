@@ -1,0 +1,128 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 1
+      author: Alex Arkashev
+      changes:
+        - createTable:
+            tableName: employees
+            columns:
+              - column:
+                  name: employee_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: surname
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: first_name
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: middle_name
+                  type: varchar(255)
+              - column:
+                  name: department
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: group_number
+                  type: int
+                  constraints:
+                    nullable: true
+              - column:
+                  name: position
+                  type: varchar(255)
+                  constraints:
+                    nullable: true
+              - column:
+                  name: username
+                  type: varchar(255)
+              - column:
+                  name: password
+                  type: varchar(255)
+              - column:
+                  name: email
+                  type: varchar(255)
+        - createTable:
+            tableName: employee_role
+            columns:
+              - column:
+                  name: employeerole_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    nullable: true
+                    primaryKey: true
+              - column:
+                  name: rolename
+                  type: varchar(255)
+              - column:
+                  name: employee_role_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    references: employees(employee_id)
+                    foreignKeyName: fk_employees_to_employee_role
+              - column:
+                  name: employee_task_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    references: employees(employee_id)
+                    foreignKeyName: fk_employees_to_employee_task
+        - createTable:
+            tableName: tasks
+            columns:
+              - column:
+                  name: task_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: blob
+                  constraints:
+                    nullable: false
+              - column:
+                  name: start_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: finish_date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: task_employee_id
+                  type: bigint
+                  constraints:
+                    references: tasks(task_id)
+                    foreignKeyName: fk_tasks_to_employee_task
+        - createTable:
+            tableName: employee_task
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+
+
