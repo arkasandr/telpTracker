@@ -2,6 +2,7 @@ package ru.arkaleks.telptracker.security;
 
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -26,7 +27,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
  * @version $Id$
  * @since 0.1
  */
-
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
@@ -64,10 +65,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(customLoginFilter(), RememberMeAuthenticationFilter.class)
                 .authorizeRequests()
-                .antMatchers("/index.html", "/login*", "/error.html",
+//                .antMatchers("/index.html", "/login*", "/error.html",
+//                        "/registrationstart.html", "/registrationstart/**")
+                .antMatchers("/", "/api/test/**", "/api/auth/**", "/login*", "/home",
                         "/registrationstart.html", "/registrationstart/**")
                 .permitAll()
-                .antMatchers("/registrationend.html", "/account.html", "/editor.html")
+                .antMatchers("/register", "/api/employee/**")
                 .hasRole("USER")
                 .antMatchers("/resources/**")
                 .permitAll()
@@ -75,7 +78,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated()
                 .and()
                 .logout()
-                .logoutUrl("/clogout.html")
+                .logoutUrl("/applogout")
                 .logoutSuccessUrl("/index.html")
                 .deleteCookies("remember-me-saga")
                 .and()
@@ -117,7 +120,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public CustomLoginFilter customLoginFilter() throws Exception {
-        CustomLoginFilter filter = new CustomLoginFilter("/login");
+        CustomLoginFilter filter = new CustomLoginFilter("/api/auth/signin");
         filter.setAuthenticationManager(authenticationManager());
         filter.setAllowSessionCreation(false);
         filter.setAuthenticationSuccessHandler(new MyAuthenticationSuccessHandler(rememberMeServices()));

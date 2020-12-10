@@ -40,7 +40,7 @@ public class TrackerAuthenticationProvider implements AuthenticationProvider {
         }
         List<GrantedAuthority> roles = new ArrayList<>(user.getAuthorities());
         for (GrantedAuthority role : roles) {
-            log.warn(role.getAuthority() + "real role");
+            log.warn(role.getAuthority() + " is real role");
         }
         return new UsernamePasswordAuthenticationToken(username, password, roles);
     }

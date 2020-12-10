@@ -18,10 +18,12 @@ public class EmployeeTask {
     private long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("employee_id")
-    private Employee employee;
+    @JoinColumn(name = "employee_id")
+//    @MapsId("employee_id")
+    private Employee employeeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("task_id")
-    private Task task;
+    @JoinColumn(name = "task_id")
+//    @MapsId("task_id")
+    private Task taskId;
 }

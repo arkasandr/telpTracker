@@ -39,6 +39,6 @@ public class Task {
 //    @ManyToMany(mappedBy = "tasks")
 //    private Set<Employee> membersList;
 
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "taskId", cascade = CascadeType.ALL)
     private Set<EmployeeTask> membersList = new HashSet<>();
 }

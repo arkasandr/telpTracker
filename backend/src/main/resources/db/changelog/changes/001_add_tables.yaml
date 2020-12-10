@@ -67,19 +67,12 @@ databaseChangeLog:
                   name: rolename
                   type: varchar(255)
               - column:
-                  name: employee_role_id
+                  name: employee_id
                   type: bigint
                   constraints:
                     nullable: true
                     references: employees(employee_id)
                     foreignKeyName: fk_employees_to_employee_role
-              - column:
-                  name: employee_task_id
-                  type: bigint
-                  constraints:
-                    nullable: true
-                    references: employees(employee_id)
-                    foreignKeyName: fk_employees_to_employee_task
         - createTable:
             tableName: tasks
             columns:
@@ -109,12 +102,12 @@ databaseChangeLog:
                   type: datetime
                   constraints:
                     nullable: false
-              - column:
-                  name: task_employee_id
-                  type: bigint
-                  constraints:
-                    references: tasks(task_id)
-                    foreignKeyName: fk_tasks_to_employee_task
+#              - column:
+#                  name: employee_task_id
+#                  type: bigint
+#                  constraints:
+#                    references: employee_task(id)
+#                    foreignKeyName: fk_tasks_to_employee_task
         - createTable:
             tableName: employee_task
             columns:
@@ -124,5 +117,19 @@ databaseChangeLog:
                   autoIncrement: true
                   constraints:
                     primaryKey: true
+              - column:
+                  name: employee_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    references: employees(employee_id)
+                    foreignKeyName: fk_employee_task_to_employees
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    references: tasks(task_id)
+                    foreignKeyName: fk_employee_task_to_tasks
 
 

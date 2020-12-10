@@ -1,9 +1,7 @@
 package ru.arkaleks.telptracker.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -15,7 +13,8 @@ import java.util.Set;
  * @version $Id$
  * @since 0.1
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -34,6 +33,10 @@ public class Employee {
         this.username = username;
         this.password = password;
         this.email = email;
+    }
+
+    public Employee(String username) {
+        this.username = username;
     }
 
     public Employee(@NonNull String username, @NonNull String password, @NonNull String email, List<EmployeeRole> employeeRole) {
@@ -72,10 +75,26 @@ public class Employee {
 //            joinColumns = { @JoinColumn(name = "employee_id") },
 //            inverseJoinColumns = { @JoinColumn(name = "task_id") }
 //    )
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+
+
+    @OneToMany(mappedBy = "employeeId", cascade = CascadeType.ALL)
     private Set<EmployeeTask> tasks = new HashSet<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<EmployeeRole> employeeRole;
 
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "employeeId=" + employeeId +
+                ", surname='" + surname + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", department='" + department + '\'' +
+                ", groupNumber=" + groupNumber +
+                ", position='" + position + '\'' +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                '}';
+    }
 }
