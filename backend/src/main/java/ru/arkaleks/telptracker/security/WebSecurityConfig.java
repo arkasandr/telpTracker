@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.rememberme.*;
+import ru.arkaleks.telptracker.controllers.impl.CurrentUserService;
 import ru.arkaleks.telptracker.service.UserService;
 
 import javax.sql.DataSource;
@@ -71,7 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/registrationstart.html", "/registrationstart/**")
                 .permitAll()
                 .antMatchers("/register", "/api/employee/**")
-                .hasRole("USER")
+                .hasAnyRole("USER", "ADMIN")
                 .antMatchers("/resources/**")
                 .permitAll()
                 .anyRequest()

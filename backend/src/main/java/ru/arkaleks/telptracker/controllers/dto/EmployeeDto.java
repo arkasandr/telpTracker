@@ -30,6 +30,19 @@ public class EmployeeDto {
         this.email = email;
     }
 
+    public EmployeeDto(String surname, String firstName, String middleName, String department, int groupNumber, String position, String username, String password, String email, List<EmployeeRole> employeeRole) {
+        this.surname = surname;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.department = department;
+        this.groupNumber = groupNumber;
+        this.position = position;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.employeeRole = employeeRole;
+    }
+
     public EmployeeDto(String email) {
         this.email = email;
     }
@@ -57,7 +70,6 @@ public class EmployeeDto {
     @JsonIgnore
     private  Set<EmployeeTask> tasks;
 
-    @JsonIgnore
     private List<EmployeeRole> employeeRole;
 
 }

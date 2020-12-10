@@ -20,8 +20,15 @@
 
         </b-navbar-nav>
 
-        <b-navbar-nav v-if="currentUser" class="ml-auto">
+        <b-navbar-nav v-if="currentUser && !showAdminBoard" class="ml-auto">
           <b-nav-item  @click="$router.push('/tasks')">Мои задачи</b-nav-item>
+          <b-nav-item  @click="$router.push('/profile')">{{ currentUser.username }}</b-nav-item>
+          <b-nav-item  @click.prevent="logOut">Выйти</b-nav-item>
+        </b-navbar-nav>
+
+        <b-navbar-nav v-if="showAdminBoard" class="ml-auto">
+          <b-nav-item  @click="$router.push('/tasks')">Задачи</b-nav-item>
+          <b-nav-item  @click="$router.push('/tasks')">Планшет</b-nav-item>
           <b-nav-item  @click="$router.push('/profile')">{{ currentUser.username }}</b-nav-item>
           <b-nav-item  @click.prevent="logOut">Выйти</b-nav-item>
         </b-navbar-nav>
@@ -105,8 +112,9 @@
                 return this.$store.state.auth.user;
             },
             showAdminBoard() {
-                if (this.currentUser && this.currentUser.roles) {
-                    return this.currentUser.roles.includes('ROLE_ADMIN');
+                // console.log("Current user is: " + this.currentUser.employeeRole[0].rolename)
+                if (this.currentUser && this.currentUser.employeeRole[0].rolename === 'ROLE_ADMIN') {
+                    return true;
                 }
 
                 return false;

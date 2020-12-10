@@ -2,8 +2,10 @@ package ru.arkaleks.telptracker.model;
 
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +23,12 @@ import java.util.Set;
 @Table(name = "EMPLOYEES")
 public class Employee {
 
+    public Employee(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+    }
+
     public Employee(String surname, String firstName, String middleName, String department, String position) {
         this.surname = surname;
         this.firstName = firstName;
@@ -29,14 +37,14 @@ public class Employee {
         this.position = position;
     }
 
-    public Employee(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
-        this.email = email;
-    }
-
     public Employee(String username) {
         this.username = username;
+    }
+
+
+    public Employee(String username, List<EmployeeRole> employeeRole) {
+        this.username = username;
+        this.employeeRole = employeeRole;
     }
 
     public Employee(@NonNull String username, @NonNull String password, @NonNull String email, List<EmployeeRole> employeeRole) {

@@ -3,7 +3,9 @@ package ru.arkaleks.telptracker.controllers.mapper;
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Service;
 import ru.arkaleks.telptracker.controllers.dto.EmployeeDto;
+import ru.arkaleks.telptracker.controllers.dto.EmployeeRoleDto;
 import ru.arkaleks.telptracker.model.Employee;
+import ru.arkaleks.telptracker.model.EmployeeRole;
 
 import java.util.List;
 
@@ -17,5 +19,9 @@ import java.util.List;
 public interface EmployeeMapper {
 
     EmployeeDto mapToEmployeeDto(Employee employeeEntity);
+
+    EmployeeRoleDto mapToEmployeeRoleDto (EmployeeRole employeeRole);
+
+    List<EmployeeRoleDto> mapToListEmployeeRoleDto (List<EmployeeRole> EmployeeRoleSet);
 
 }

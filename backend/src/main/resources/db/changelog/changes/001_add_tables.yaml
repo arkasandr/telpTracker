@@ -19,31 +19,21 @@ databaseChangeLog:
               - column:
                   name: surname
                   type: varchar(255)
-                  constraints:
-                    nullable: true
               - column:
                   name: first_name
                   type: varchar(255)
-                  constraints:
-                    nullable: true
               - column:
                   name: middle_name
                   type: varchar(255)
               - column:
                   name: department
                   type: varchar(255)
-                  constraints:
-                    nullable: true
               - column:
                   name: group_number
                   type: int
-                  constraints:
-                    nullable: true
               - column:
                   name: position
                   type: varchar(255)
-                  constraints:
-                    nullable: true
               - column:
                   name: username
                   type: varchar(255)
@@ -85,23 +75,15 @@ databaseChangeLog:
               - column:
                   name: title
                   type: varchar(255)
-                  constraints:
-                    nullable: false
               - column:
                   name: description
                   type: blob
-                  constraints:
-                    nullable: false
               - column:
                   name: start_date
                   type: datetime
-                  constraints:
-                    nullable: false
               - column:
                   name: finish_date
                   type: datetime
-                  constraints:
-                    nullable: false
 #              - column:
 #                  name: employee_task_id
 #                  type: bigint
