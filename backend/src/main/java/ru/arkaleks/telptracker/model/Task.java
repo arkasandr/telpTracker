@@ -29,6 +29,9 @@ public class Task {
 
     private String title;
 
+    @Enumerated(EnumType.STRING)
+    private Status taskStatus;
+
     @Lob
     private String description;
 

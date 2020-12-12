@@ -1,0 +1,448 @@
+<template>
+    <div>
+        <b-overlay :show="busy" rounded="lg" opacity="0.6" z-index="40">
+            <template #overlay>
+                <div class="d-flex align-items-center">
+                    <b-spinner small type="grow" variant="secondary"></b-spinner>
+                    <b-spinner type="grow" variant="dark"></b-spinner>
+                    <b-spinner small type="grow" variant="secondary"></b-spinner>
+                    <!-- We add an SR only text for screen readers -->
+                    <span class="sr-only">Please wait...</span>
+                </div>
+            </template>
+
+
+            <b-jumbotron>
+                <b-row class="mPageTitle">
+                    <b-col></b-col>
+                    <b-col>Диспетчер задач</b-col>
+                    <b-col></b-col>
+                </b-row>
+                <p>
+
+                </p>
+
+                <b-container>
+                    <b-row>
+                        <b-col lg="4">
+                        </b-col>
+                        <b-col lg="5">
+                        </b-col>
+                        <b-col lg="3">
+                            <b-button class="task_ls_btn" @click="addNewTask" variant="success" size="lg"
+                                      ref="archive"
+                            >Добавить
+                            </b-button>
+                            <!--</b-col>-->
+                            <!--<b-col lg="2">-->
+                            <b-button class="task_ls_btn" @click="deleteTask" :disabled="this.disableState"
+                                      variant="danger" size="lg">Удалить
+                            </b-button>
+                        </b-col>
+                    </b-row>
+                </b-container>
+
+
+                <b-pagination
+                        :total-rows="rows"
+                        :per-page="perPage"
+                        aria-controls="task-table"
+                        size="sm"
+                        class="custom_pagination"
+                >
+                </b-pagination>
+
+
+                <b-table
+                        id="task-table"
+                        class="b_table"
+                        ref="selectableTable"
+                        selectable
+                        :select-mode="selectMode"
+                        :items="postsTask"
+                        :fields="fields"
+                        @row-selected="onRowSelected"
+                        :bordered="true"
+                        responsive="sm"
+                        :per-page="perPage"
+                        :current-page="currentPage"
+                >
+
+                    <template v-slot:cell(selected)="{ rowSelected }">
+                        <template v-if="rowSelected">
+                <span aria-hidden="true">
+                  <input type="checkbox" :disabled="true"/>
+                </span>
+                        </template>
+                        <template v-else>
+                            <span aria-hidden="true">&nbsp;</span>
+                        </template>
+                    </template>
+
+                </b-table>
+
+
+                <div>
+                    <b-modal id="bv-modal-task" size="lg" hide-footer :no-close-on-backdrop="true">
+                        <template v-slot:modal-title>
+                            Добавить новую задачу
+                        </template>
+                        <div class="mPageModal">
+                            <b-container>
+
+                                <b-row class="mPageModalRow">
+                                    <b-col sm="3" align-v="end">
+                                        <label>Название</label>
+                                    </b-col>
+                                    <b-col sm="9">
+                                        <b-form-input
+                                                id="input-live-title"
+                                                v-model="taskTitle"
+                                                aria-describedby="input-live-title-help input-live-title-feedback"
+                                                placeholder="Введите название"
+                                                trim
+                                        ></b-form-input>
+
+                                    </b-col>
+                                </b-row>
+
+                                <b-row class="mPageModalRow">
+                                    <b-col sm="3" align-v="end">
+                                        <label>Описание</label>
+                                    </b-col>
+                                    <b-col sm="9">
+                                        <b-form-textarea
+                                                id="input-live-description"
+                                                v-model="taskDescription"
+                                                aria-describedby="input-live-description-help input-live-description-feedback"
+                                                placeholder="Введите описание"
+                                                trim
+                                        ></b-form-textarea>
+                                    </b-col>
+                                </b-row>
+
+                                <b-row class="mPageModalRow">
+                                    <b-col sm="3" align-v="end">
+                                        <label>Исполнитель</label>
+                                    </b-col>
+                                    <b-col sm="9">
+                                        <b-form-input
+                                                id="input-live-executor"
+                                                v-model="taskExecutor"
+                                                aria-describedby="input-live-executor-help input-live-executor-feedback"
+                                                placeholder="Выберите исполнителя из списка"
+                                                list="executors-list"
+                                        ></b-form-input>
+                                        <b-form-datalist id="executors-list" :options="executors">
+                                        </b-form-datalist>
+                                    </b-col>
+                                </b-row>
+
+                                <b-row class="mPageModalRow">
+                                    <b-col sm="3" align-v="end">
+                                        <label>Дата начала</label>
+                                    </b-col>
+                                    <b-col sm="9">
+                                        <template>
+                                            <div>
+                                                <b-form-datepicker id="task-start-datepicker" v-model="taskStartDate"
+                                                                   placeholder="Выберите дату" locale="ru"
+                                                                   class="mb-2"></b-form-datepicker>
+                                            </div>
+                                        </template>
+
+                                    </b-col>
+                                </b-row>
+
+                                <b-row class="mPageModalRow">
+                                    <b-col sm="3" align-v="end">
+                                        <label>Дата окончания</label>
+                                    </b-col>
+                                    <b-col sm="9">
+                                        <template>
+                                            <div>
+                                                <b-form-datepicker id="task-end-datepicker" v-model="taskFinishDate"
+                                                                   placeholder="Выберите дату" locale="ru"
+                                                                   class="mb-2"></b-form-datepicker>
+                                            </div>
+                                        </template>
+
+                                    </b-col>
+                                </b-row>
+
+                            </b-container>
+
+
+                        </div>
+                        <b-row>
+                            <b-col lg="3">
+                            </b-col>
+                            <b-col>
+                            </b-col>
+                            <b-col lg="5">
+                                <b-button class="task_sh_btn" @click="createNewTask"
+                                          variant="outline-dark" size="sm">Создать
+                                </b-button>
+                                <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task')"
+                                          variant="outline-dark" size="sm">Отмена
+                                </b-button>
+                            </b-col>
+
+                        </b-row>
+                    </b-modal>
+                </div>
+
+
+            </b-jumbotron>
+
+
+            <b-toast id="success-toast" variant="success" solid :append-toast=true>
+                <template v-slot:toast-title>
+                    <div class="d-flex flex-grow-1 align-items-baseline">
+                        <b-img blank blank-color="#8FBC8F" class="mr-2" width="12" height="12"></b-img>
+                        <strong class="mr-auto">Успешно!</strong>
+                    </div>
+                </template>
+                {{ this.message }}
+            </b-toast>
+
+            <b-toast id="warning-toast" variant="warning" solid :append-toast=true>
+                <template v-slot:toast-title>
+                    <div class="d-flex flex-grow-1 align-items-baseline">
+                        <b-img blank blank-color="#FF8C00" class="mr-2" width="12" height="12"></b-img>
+                        <strong class="mr-auto">Предупреждение!</strong>
+                    </div>
+                </template>
+                {{ this.message }}
+            </b-toast>
+
+            <b-toast id="danger-toast" variant="danger" solid :append-toast=true>
+                <template v-slot:toast-title>
+                    <div class="d-flex flex-grow-1 align-items-baseline">
+                        <b-img blank blank-color="#8B0000" class="mr-2" width="12" height="12"></b-img>
+                        <strong class="mr-auto">Ошибка!</strong>
+                    </div>
+                </template>
+                {{ this.message }}
+            </b-toast>
+        </b-overlay>
+    </div>
+</template>
+
+<script>
+
+    import 'bootstrap/dist/css/bootstrap.css'
+    import 'bootstrap-vue/dist/bootstrap-vue.css'
+    import axios from 'axios'
+
+    export default {
+        name: 'AdminTasks',
+        computed: {
+            currentUser() {
+                return this.$store.state.auth.user;
+            }
+        },
+        mounted() {
+            if (!this.currentUser) {
+                this.$router.push('/login');
+            }
+        },
+        data() {
+            return {
+                postsTask: [],
+                messageTask: '',
+                message: '',
+                taskTitle: '',
+                taskDescription: '',
+                taskExecutor: '',
+                taskStartDate:'',
+                taskFinishDate:'',
+
+                executors: ['Иванов', 'Петров', 'Сидоров'],
+
+
+                currentPage: 1,
+                checkboxSelected: false,
+                isBusyTable: false,
+                disableState: true,
+                disableStateDownloadOriginArchive: true,
+                disableStateDownloadModifyArchive: true,
+                disableStateCheck: true,
+                disableStateErratumXsd: true,
+                disableStateErratumXsdCheck: true,
+                disableSaveAllErratumsToArchive: true,
+                rowSelected: '',
+                isInfoPopupVisible: false,
+                files: [],
+
+                items: [],
+                selectMode: 'single',
+
+
+                messageView: false,
+                boxOne: '',
+                fields: [
+                    {key: 'id', label: '#'},
+                    {key: 'title', label: 'Название', sortable: true},
+                    {key: 'memberList', label: 'Исполнитель', sortable: true},
+                    {key: 'startDate', label: 'Начало'},
+                    {key: 'finishDate', label: 'Окончание'},
+                    {key: 'taskStatus', label: 'Статус'},
+                    {key: 'action', label: 'Действие'}
+                ],
+                postsXsd: [],
+                fieldsErratum: [
+                    {key: 'wrongValue', label: 'Ошибочное значение'},
+                    {key: 'correctValue', label: 'Корректное значение'},
+                ],
+                postsErratum: [],
+                archiveId: [],
+                busy: false,
+                erratumCount: 0
+            }
+        },
+        methods: {
+
+            getAllTasks() {
+                this.busy = true
+                axios.get('/api/tasks/getall'
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.messageTask = "Список задач загружен"
+                    this.postsTask = response.data
+                    this.$bvToast.show('success-toast')
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось загрузить ошибки!"
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
+            addNewTask() {
+                this.$bvModal.show('bv-modal-task')
+            },
+
+            createNewTask() {
+                this.busy = true
+                let currentObj = this;
+                axios.post('/api/tasks/add',
+                    {
+                        title: this.taskTitle,
+                        description: this.taskDescription,
+                        startDate: this.taskStartDate,
+                        endDate: this.taskFinishDate,
+                        membersList: this.taskExecutor
+                    },
+                ).then(response => {
+                    currentObj.output = response.data;
+                    console.log('success', response.data)
+                    this.message = "Новая задача создана!"
+                    this.$bvToast.show('success-toast')
+                    this.getAllTasks()
+                    this.$bvModal.hide('bv-modal-task')
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось создать задачу!"
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
+            deleteTask() {
+
+            },
+
+            // onRowSelected(items) {
+            //     this.selected = items
+            //     console.log(this.selected);
+            //     if (this.selected.length === 0) {
+            //         this.disableState = true
+            //     } else {
+            //         this.disableState = false
+            //     }
+            // },
+
+        },
+
+        beforeMount() {
+            this.getAllTasks()
+
+        },
+
+        beforeDestroy() {
+        },
+    };
+
+
+</script>
+
+<style>
+    .mPageTitle {
+        font-family: Arial;
+        margin: 10px 10px 50px 10px;
+        font-size: 28px;
+        text-align: center;
+
+    }
+
+    .mPageText {
+        font-family: Arial;
+        margin: 10px 10px 20px 10px;
+        font-size: 18px;
+    }
+
+    .mPageModal {
+        font-family: Arial;
+        margin: 10px 10px 10px 10px;
+        font-size: 18px;
+    }
+
+    .mPageModalRow {
+        margin: 0 0 10px 0;
+    }
+
+    .task_ls_btn {
+        margin: 0 0 0 10px;
+        text-align: center;
+        width: 90px;
+        font-family: Arial;
+        font-size: 14px;
+    }
+
+    .task_sh_btn {
+        margin: 10px 0 0 30px;
+        text-align: center;
+        width: 100px;
+        font-family: Arial;
+        font-size: 14px;
+    }
+
+    .b_table thead {
+        background-color: white;
+        border: 3px solid limegreen !important;
+    }
+
+
+    .page-item.active .page-link {
+        z-index: 3;
+        color: #fff;
+        background-color: limegreen !important;
+        border-color: limegreen !important;
+    }
+
+
+    .page-link {
+        position: relative;
+        display: block;
+        padding: 0.5rem 0.75rem;
+        margin-left: -1px;
+        line-height: 1.25;
+        color: black !important;
+        background-color: #fff;
+        border: 1px solid #dee2e6;
+    }
+
+</style>
