@@ -134,6 +134,7 @@ public class TaskService {
         }
         employee.setTasks(newTasks);
         employeeRepository.save(employee);
+        taskRepository.deleteTaskByTaskId(taskId);
         log.info("Задача под номером taskId = " + taskId + " успешно удалена");
     }
 }
