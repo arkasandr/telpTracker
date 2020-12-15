@@ -4,6 +4,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import ru.arkaleks.telptracker.controllers.mapper.EmployeeMapper;
+import ru.arkaleks.telptracker.controllers.mapper.TaskMapper;
 
 @Configuration
 public class MapperConfig {
@@ -12,4 +13,8 @@ public class MapperConfig {
         return Mappers.getMapper(EmployeeMapper.class);
     }
 
+    @Bean
+    TaskMapper taskMapper() {
+        return Mappers.getMapper(TaskMapper.class);
+    }
 }

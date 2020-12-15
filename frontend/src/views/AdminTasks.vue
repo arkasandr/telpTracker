@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div>
         <b-overlay :show="busy" rounded="lg" opacity="0.6" z-index="40">
             <template #overlay>
@@ -35,7 +35,7 @@
                             </b-button>
                             <!--</b-col>-->
                             <!--<b-col lg="2">-->
-                            <b-button class="task_ls_btn" @click="deleteTask" :disabled="this.disableState"
+                            <b-button class="task_ls_btn" @click="deleteCurrentTask" :disabled="this.disableState"
                                       variant="danger" size="lg">Удалить
                             </b-button>
                         </b-col>
@@ -44,6 +44,7 @@
 
 
                 <b-pagination
+                        v-model="currentPage"
                         :total-rows="rows"
                         :per-page="perPage"
                         aria-controls="task-table"
@@ -54,19 +55,33 @@
 
 
                 <b-table
-                        id="task-table"
+                         id="task-table"
                         class="b_table"
                         ref="selectableTable"
                         selectable
                         :select-mode="selectMode"
                         :items="postsTask"
-                        :fields="fields"
+                        :fields="taskFields"
                         @row-selected="onRowSelected"
                         :bordered="true"
                         responsive="sm"
                         :per-page="perPage"
                         :current-page="currentPage"
                 >
+
+                    <template
+                            v-slot:cell(members)="data"
+                    >
+                        {{ data.item.members.join(', ')}}
+                    </template>
+                         <!--A custom formatted column-->
+                        <!--<template slot="name" slot-scope="data">{{data.value.empId}}</template>-->
+
+                        <!--<template v-slot:cell()="{empId}">-->
+                        <!--</template>-->
+                        <!--<div v-for="post in this.postsTask" :key="post.id">-->
+                            <!--<slot :empId="post"></slot>-->
+                        <!--</div>-->
 
                     <template v-slot:cell(selected)="{ rowSelected }">
                         <template v-if="rowSelected">
@@ -180,7 +195,7 @@
                             <b-col>
                             </b-col>
                             <b-col lg="5">
-                                <b-button class="task_sh_btn" @click="createNewTask"
+                                <b-button class="task_sh_btn" @click="getEmployeeByFio"
                                           variant="outline-dark" size="sm">Создать
                                 </b-button>
                                 <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task')"
@@ -191,6 +206,34 @@
                         </b-row>
                     </b-modal>
                 </div>
+
+
+                <div>
+                    <b-modal id="bv-modal-task-delete" size="lg" hide-footer :no-close-on-backdrop="true">
+                        <template v-slot:modal-title>
+                            Вы действительно хотите удалить задачу?
+                        </template>
+                        <div class="mPageModal">
+
+                        </div>
+                        <b-row>
+                            <b-col lg="3">
+                            </b-col>
+                            <b-col>
+                            </b-col>
+                            <b-col lg="5">
+                                <b-button class="task_sh_btn" @click="deleteTask"
+                                          variant="outline-dark" size="sm">Да, удалить
+                                </b-button>
+                                <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task-delete')"
+                                          variant="outline-dark" size="sm">Отмена
+                                </b-button>
+                            </b-col>
+
+                        </b-row>
+                    </b-modal>
+                </div>
+
 
 
             </b-jumbotron>
@@ -240,6 +283,10 @@
         computed: {
             currentUser() {
                 return this.$store.state.auth.user;
+            },
+
+            rows() {
+                return this.postsTask.length
             }
         },
         mounted() {
@@ -247,6 +294,8 @@
                 this.$router.push('/login');
             }
         },
+
+
         data() {
             return {
                 postsTask: [],
@@ -255,13 +304,15 @@
                 taskTitle: '',
                 taskDescription: '',
                 taskExecutor: '',
-                taskStartDate:'',
-                taskFinishDate:'',
-
-                executors: ['Иванов', 'Петров', 'Сидоров'],
-
-
+                taskStartDate: '',
+                taskFinishDate: '',
+                executors: [],
+                executor: [],
+                isDeletePopup: false,
                 currentPage: 1,
+                perPage: 5,
+
+
                 checkboxSelected: false,
                 isBusyTable: false,
                 disableState: true,
@@ -281,14 +332,19 @@
 
                 messageView: false,
                 boxOne: '',
-                fields: [
-                    {key: 'id', label: '#'},
+                taskFields: [
+                    {key: 'taskId', label: '#'},
                     {key: 'title', label: 'Название', sortable: true},
-                    {key: 'memberList', label: 'Исполнитель', sortable: true},
                     {key: 'startDate', label: 'Начало'},
                     {key: 'finishDate', label: 'Окончание'},
-                    {key: 'taskStatus', label: 'Статус'},
-                    {key: 'action', label: 'Действие'}
+                    {key: 'status', label: 'Статус'},
+                    {key: 'members', label: "Исполнитель"}
+                ],
+                taskFieldsTwo: [
+                    {taskId: 1, title: 'Название', startDate: '2020-07-07', finishDate: '2020-08-08', status: 'Статус', members:"Иванов-Спиртов"}
+                ],
+                membersList: [
+                    {taskId: 1, members: 'Петров-Водкин'}
                 ],
                 postsXsd: [],
                 fieldsErratum: [
@@ -309,34 +365,78 @@
                 ).then(response => {
                     console.log('success', response.data)
                     this.messageTask = "Список задач загружен"
+                    // const vaeOne = {taskId: 1, title: 'Название', startDate: '2020-07-07', finishDate: '2020-08-08', status: 'Статус', members:"Иванов-Спиртов"}
+                    // const varTwo = {taskId: 1, members: 'Петров-Водкин'}
+                    // const newVar = Object.assign(this.taskFieldsTwo, this.membersList)
+                    // const newVar = Object.assign(response.data[0], varTwo)
+                    // this.postsTask = [newVar]
                     this.postsTask = response.data
+                    console.log('postsTask', this.postsTask)
+                    // console.log('newVar', newVar)
                     this.$bvToast.show('success-toast')
                 }).catch(error => {
                     console.log(error)
-                    this.message = "Не удалось загрузить ошибки!"
+                    this.message = "Не удалось загрузить задачи!"
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
                 })
             },
 
+
             addNewTask() {
                 this.$bvModal.show('bv-modal-task')
+                this.getAllEmployees()
+
             },
+
+            deleteCurrentTask() {
+                this.$bvModal.show('bv-modal-task-delete')
+            },
+
+            getAllEmployees() {
+                this.busy = true
+                axios.get('/api/employee/getall'
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.executors = response.data
+                }).catch(error => {
+                    console.log(error)
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
+
+
+            getEmployeeByFio() {
+                let arr = this.taskExecutor.split(' ')
+                axios.post('/api/employee/getbyfio',
+                    arr,
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.executor = response.data
+                    this.createNewTask()
+                }).catch(error => {
+                    console.log(error)
+                }).finally(() => {
+                })
+            },
+
 
             createNewTask() {
                 this.busy = true
-                let currentObj = this;
-                axios.post('/api/tasks/add',
+                let arr = [this.executor];
+                console.log('members', arr)
+                axios.post('/api/tasks/admin/add',
                     {
                         title: this.taskTitle,
                         description: this.taskDescription,
                         startDate: this.taskStartDate,
-                        endDate: this.taskFinishDate,
-                        membersList: this.taskExecutor
+                        finishDate: this.taskFinishDate,
+                        members: arr
                     },
                 ).then(response => {
-                    currentObj.output = response.data;
                     console.log('success', response.data)
                     this.message = "Новая задача создана!"
                     this.$bvToast.show('success-toast')
@@ -351,19 +451,37 @@
                 })
             },
 
-            deleteTask() {
 
+            deleteTask() {
+                this.busy = true
+                let id = this.selected[0]["taskId"]
+                console.log('>> id >> ', id);
+                axios.delete('/api/tasks/' + id + '/delete',
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.message = "Задача удалена."
+                    this.$bvToast.show('success-toast')
+                    this.getAllTasks()
+                    this.$bvModal.hide('bv-modal-task-delete')
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось удалить задачу!"
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
             },
 
-            // onRowSelected(items) {
-            //     this.selected = items
-            //     console.log(this.selected);
-            //     if (this.selected.length === 0) {
-            //         this.disableState = true
-            //     } else {
-            //         this.disableState = false
-            //     }
-            // },
+            onRowSelected(items) {
+                this.selected = items
+                console.log(this.selected);
+                if (this.selected.length === 0) {
+                    this.disableState = true
+                } else {
+                    this.disableState = false
+                }
+            },
+
 
         },
 
@@ -421,6 +539,11 @@
     }
 
     .b_table thead {
+        background-color: white;
+        border: 3px solid limegreen !important;
+    }
+
+    .b_table tbody {
         background-color: white;
         border: 3px solid limegreen !important;
     }

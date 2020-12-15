@@ -1,5 +1,7 @@
 package ru.arkaleks.telptracker.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,6 +23,9 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "EMPLOYEES")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "employeeId")
 public class Employee {
 
     public Employee(String username, String password, String email) {
@@ -77,16 +82,19 @@ public class Employee {
 
     private String email;
 
-//    @ManyToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-//    @JoinTable(
-//            name = "Tasks",
-//            joinColumns = { @JoinColumn(name = "employee_id") },
-//            inverseJoinColumns = { @JoinColumn(name = "task_id") }
-//    )
+    @Enumerated(EnumType.STRING)
+    private WorkRole role;
 
 
-    @OneToMany(mappedBy = "employeeId", cascade = CascadeType.ALL)
-    private Set<EmployeeTask> tasks = new HashSet<>();
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "employee_task",
+            joinColumns = { @JoinColumn(name = "employee_id") },
+            inverseJoinColumns = { @JoinColumn(name = "task_id") })
+    @ElementCollection
+    private Set<Task> tasks = new HashSet<>();
 
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<EmployeeRole> employeeRole;
@@ -105,4 +113,30 @@ public class Employee {
                 ", email='" + email + '\'' +
                 '}';
     }
+
+    @Override
+    public int hashCode() {
+        int result = surname.hashCode();
+        result = 31 * result + (tasks != null ? tasks.hashCode() : 0);
+        return result;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Employee employee = (Employee) o;
+
+        if (!surname.equals(employee.surname)) return false;
+        if (!firstName.equals(employee.firstName)) return false;
+        if (!middleName.equals(employee.middleName)) return false;
+        if (!department.equals(employee.department)) return false;
+        if (groupNumber != (employee.groupNumber)) return false;
+        if (!position.equals(employee.position)) return false;
+        return !(tasks != null ? !tasks.equals(employee.tasks) : employee.tasks != null);
+    }
 }
+
+

@@ -1,8 +1,8 @@
 package ru.arkaleks.telptracker.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,12 +15,32 @@ import java.util.Set;
  * @version $Id$
  * @since 0.1
  */
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "TASKS")
+//@JsonIdentityInfo(
+//        generator = ObjectIdGenerators.PropertyGenerator.class,
+//        property = "taskId")
 public class Task {
+
+    public Task(String title, Status taskStatus, String description, LocalDate startDate, LocalDate finishDate) {
+        this.title = title;
+        this.status = taskStatus;
+        this.description = description;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+    }
+
+    public Task(Status status, String description, LocalDate startDate, LocalDate finishDate, Set<Employee> members) {
+        this.status = status;
+        this.description = description;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.members = members;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +50,7 @@ public class Task {
     private String title;
 
     @Enumerated(EnumType.STRING)
-    private Status taskStatus;
+    private Status status;
 
     @Lob
     private String description;
@@ -38,10 +58,22 @@ public class Task {
     private LocalDate startDate;
 
     private LocalDate finishDate;
-//
-//    @ManyToMany(mappedBy = "tasks")
-//    private Set<Employee> membersList;
 
-    @OneToMany(mappedBy = "taskId", cascade = CascadeType.ALL)
-    private Set<EmployeeTask> membersList = new HashSet<>();
+    @ManyToMany
+    @JoinTable(name = "employee_task",
+            joinColumns = { @JoinColumn(name = "task_id") },
+            inverseJoinColumns = { @JoinColumn(name = "employee_id") })
+    @ElementCollection
+    private Set<Employee> members;
+
+    @Override
+    public String toString() {
+        return "Task{" +
+                "title='" + title + '\'' +
+                ", status=" + status +
+                ", startDate=" + startDate +
+                ", finishDate=" + finishDate +
+                ", members=" + members +
+                '}';
+    }
 }

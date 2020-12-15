@@ -2,7 +2,6 @@ package ru.arkaleks.telptracker.controllers.impl;
 
 
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,7 +10,9 @@ import ru.arkaleks.telptracker.controllers.mapper.EmployeeMapper;
 import ru.arkaleks.telptracker.model.Employee;
 import ru.arkaleks.telptracker.repository.EmployeeRepository;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author Alex Arkashev (arkasandr@gmail.com)
@@ -38,6 +39,33 @@ public class EmployeeService {
                     throw new IllegalArgumentException("Извините, имя пользователя \" " + username + " \" не существует!");
                 }));
     }
+
+//    @Transactional(readOnly = true)
+//    public List<EmployeeDto> getAllEmployees() {
+//        return employeeMapper.mapToListEmployeeDto(employeeRepository.findAll());
+//    }
+
+    @Transactional(readOnly = true)
+    public List<String> getAllEmployees() {
+        List<String> result = new ArrayList<>();
+        List<Employee> employeeList = employeeRepository.findAll();
+        for(Employee emp : employeeList) {
+            if(emp != null) {
+                result.add(emp.getSurname() + " " + emp.getFirstName() + " " + emp.getMiddleName());
+            }
+        }
+        return result;
+    }
+
+    @Transactional(readOnly = true)
+    public EmployeeDto getEmployeeByFio(String[] array) {
+        String surname = array[0];
+        String firstName = array[1];
+        String middleName = array[2];
+        Employee employee= employeeRepository.findByFio(surname, firstName, middleName);
+        return employeeMapper.mapToEmployeeDto(employee);
+    }
+
 
 
 //    @Transactional
@@ -105,22 +133,6 @@ public class EmployeeService {
         log.info("Данные профиля будут обновлены: " + employee.toString());
         employeeRepository.save(employee);
         return  employeeMapper.mapToEmployeeDto(employee);
-
-//                .findByUsername(username)
-//        return employeeMapper.mapToEmployeeDto(employeeRepository
-//                .findByUsername(username)
-//                .map(x -> {
-//                    x.setSurname(employee.getSurname());
-//                    x.setFirstName(employee.getFirstName());
-//                    x.setMiddleName(employee.getMiddleName());
-//                    x.setGroupNumber(employee.getGroupNumber());
-//                    x.setDepartment(employee.getDepartment());
-//                    x.setPosition(employee.getPosition());
-//                    log.info("Данные профиля будут обновлены: " + x.toString());
-//                    return employeeRepository.save(x);
-//
-//
-//                })
 
     }
 }

@@ -1,11 +1,13 @@
 package ru.arkaleks.telptracker.controllers.dto;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import lombok.*;
 import ru.arkaleks.telptracker.model.EmployeeRole;
 import ru.arkaleks.telptracker.model.EmployeeTask;
+import ru.arkaleks.telptracker.model.Task;
+import ru.arkaleks.telptracker.model.WorkRole;
 
 import java.util.List;
 import java.util.Set;
@@ -15,8 +17,8 @@ import java.util.Set;
  * @version $Id$
  * @since 0.1
  */
-@Data
-@AllArgsConstructor
+@Getter
+@Setter
 @NoArgsConstructor
 public class EmployeeDto {
 
@@ -28,6 +30,19 @@ public class EmployeeDto {
         this.department = department;
         this.position = position;
         this.email = email;
+    }
+
+    public EmployeeDto(String surname, String firstName, String middleName, String department, int groupNumber, String position, String username, String password, String email, WorkRole role) {
+        this.surname = surname;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.department = department;
+        this.groupNumber = groupNumber;
+        this.position = position;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.role = role;
     }
 
     public EmployeeDto(String surname, String firstName, String middleName, String department, int groupNumber, String position, String username, String password, String email, List<EmployeeRole> employeeRole) {
@@ -43,11 +58,40 @@ public class EmployeeDto {
         this.employeeRole = employeeRole;
     }
 
+    public EmployeeDto(String surname, String firstName, String middleName, String department, int groupNumber, String position, String username, String password, String email, Set<Task> tasks, List<EmployeeRole> employeeRole) {
+        this.surname = surname;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.department = department;
+        this.groupNumber = groupNumber;
+        this.position = position;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.tasks = tasks;
+        this.employeeRole = employeeRole;
+    }
+
     public EmployeeDto(String email) {
         this.email = email;
     }
 
-    private int employeeId;
+    public EmployeeDto(long employeeId, String surname, String firstName, String middleName, String department, int groupNumber, String position, String username, String password, String email, Set<Task> tasks, List<EmployeeRole> employeeRole) {
+        this.employeeId = employeeId;
+        this.surname = surname;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.department = department;
+        this.groupNumber = groupNumber;
+        this.position = position;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.tasks = tasks;
+        this.employeeRole = employeeRole;
+    }
+
+    private long employeeId;
 
     private String surname;
 
@@ -67,8 +111,10 @@ public class EmployeeDto {
 
     private String email;
 
+    private WorkRole role;
+
     @JsonIgnore
-    private  Set<EmployeeTask> tasks;
+    private Set<Task> tasks;
 
     private List<EmployeeRole> employeeRole;
 

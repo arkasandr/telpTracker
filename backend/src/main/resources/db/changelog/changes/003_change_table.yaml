@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 3
+      author: Alex Arkashev
+      changes:
+        - deleteColumn:
+            tableName: employee_task
+            columns:
+              - column:
+                  name: id

@@ -1,12 +1,11 @@
 package ru.arkaleks.telptracker.controllers.mapper;
 
+
 import org.mapstruct.Mapper;
 import org.springframework.stereotype.Service;
 import ru.arkaleks.telptracker.controllers.dto.EmployeeDto;
-import ru.arkaleks.telptracker.controllers.dto.EmployeeRoleDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskDto;
 import ru.arkaleks.telptracker.model.Employee;
-import ru.arkaleks.telptracker.model.EmployeeRole;
 import ru.arkaleks.telptracker.model.Task;
 
 import java.util.List;
@@ -19,18 +18,17 @@ import java.util.Set;
  */
 @Service
 @Mapper
-public interface EmployeeMapper {
+public interface TaskMapper {
 
-    EmployeeDto mapToEmployeeDto(Employee employeeEntity);
+    TaskDto mapToTaskDto(Task task);
 
-    List<EmployeeDto> mapToListEmployeeDto(List<Employee> employeeList);
+    Task mapToTask(TaskDto taskDto);
 
-    Set<EmployeeDto> mapToSetEmployeeDto(Set<Employee> employeeSet);
+    List<TaskDto> mapToTaskDtoList(List<Task> taskList);
 
     Set<TaskDto> mapToSetTaskDto(Set<Task> taskSet);
 
-    EmployeeRoleDto mapToEmployeeRoleDto (EmployeeRole employeeRole);
+    Set<Task> mapToSetTask(Set<TaskDto> taskDtoSet);
 
-    List<EmployeeRoleDto> mapToListEmployeeRoleDto (List<EmployeeRole> EmployeeRoleSet);
-
+    Set<EmployeeDto> mapToSetEmployeeDto(Set<Employee> employeeSet);
 }

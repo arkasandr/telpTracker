@@ -51,26 +51,6 @@ public class RegistrationService {
     }
 
 
-//    /**
-//     * Метод устанавливает роль USER для добавляемого сотрудника Employee
-//     */
-//    public void setUserRoleToEmployee(Employee newEmployee) {
-//        List<EmployeeRole> roles = Collections.singletonList(new EmployeeRole("ROLE_USER"));
-//        Optional<Employee> optionalEmployee = employeeRepository.findByUsername(newEmployee.getUsername());
-//        Employee employee = optionalEmployee.orElseGet(Employee::new);
-//        roles.get(0).setEmployee(employee);
-//    }
-//
-//    /**
-//     * Метод добавляет нового пользователя сотрудника Employee в приложение
-//     */
-//    public EmployeeDto addNewEmployee(Employee newEmployee) {
-//        Optional<Employee> optionalEmployee = employeeRepository.findByUsername(newEmployee.getUsername());
-//        Employee employee = optionalEmployee.orElseGet(Employee::new);
-//        return employeeMapper.mapToEmployeeDto(employee);
-//    }
-
-
     /**
      * Метод обновляет данные сотрудника Employee
      */

@@ -3,15 +3,13 @@ package ru.arkaleks.telptracker.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ru.arkaleks.telptracker.controllers.dto.EmployeeDto;
 import ru.arkaleks.telptracker.controllers.impl.EmployeeService;
 import ru.arkaleks.telptracker.model.Employee;
 
-import java.io.IOException;
-import java.text.ParseException;
+import java.util.List;
+
 
 /**
  * @author Alex Arkashev (arkasandr@gmail.com)
@@ -33,6 +31,21 @@ public class EmployeeController {
         return employeeService.getCurrentEmployeeInfo();
     }
 
+    /**
+     * Метод вовращает список всех сотруднков
+     */
+    @GetMapping("api/employee/getall")
+    List<String> getAllEmployees() {
+        return employeeService.getAllEmployees();
+    }
+
+    /**
+     * Метод вовращает одного сотруднка по ФИО
+     */
+    @PostMapping("api/employee/getbyfio")
+    EmployeeDto getEmployeeByFio(@RequestBody String[] array) {
+        return employeeService.getEmployeeByFio(array);
+    }
 
     @PostMapping("api/employee/changeinfo")
     EmployeeDto updateEmployeeProfile(@RequestBody Employee employee) {
