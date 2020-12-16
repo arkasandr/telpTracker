@@ -27,7 +27,7 @@
         </b-navbar-nav>
 
         <b-navbar-nav v-if="showAdminBoard" class="ml-auto">
-          <b-nav-item  @click="$router.push('/tasks/admin')">Задачи</b-nav-item>
+          <b-nav-item  @click="$router.push('/tasks')">Задачи</b-nav-item>
           <b-nav-item  @click="$router.push('/tasks')">Планшет</b-nav-item>
           <b-nav-item  @click="$router.push('/profile')">{{ currentUser.username }}</b-nav-item>
           <b-nav-item  @click.prevent="logOut">Выйти</b-nav-item>

@@ -22,26 +22,25 @@
 
                 </p>
 
-
-                    <b-row  class="ml-auto">
-                        <b-col lg="5">
-                        </b-col>
+                <b-container>
+                    <b-row>
                         <b-col lg="4">
                         </b-col>
-                        <b-col lg="3 justify-content-end d-flex">
-                            <b-button v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
-                                      class="task_lt_btn"
-                                      @click="addNewTask" variant="success" size="lg"
-                            >Добавить
+                        <b-col lg="5">
+                        </b-col>
+                        <b-col lg="3">
+                            <b-button class="task_ls_btn" @click="addNewTask" variant="success" size="lg"
+                                      ref="archive"
+                            >Начать
                             </b-button>
-                            <b-button v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
-                                      class="task_lt_btn"
-                                      @click="deleteCurrentTask" :disabled="this.disableState"
-                                      variant="danger" size="lg">Удалить
+                            <!--</b-col>-->
+                            <!--<b-col lg="2">-->
+                            <b-button class="task_ls_btn" @click="deleteCurrentTask" :disabled="this.disableState"
+                                      variant="danger" size="lg">Закончить
                             </b-button>
-
                         </b-col>
                     </b-row>
+                </b-container>
 
 
                 <b-pagination
@@ -56,7 +55,7 @@
 
 
                 <b-table
-                        id="task-table"
+                         id="task-table"
                         class="b_table"
                         ref="selectableTable"
                         selectable
@@ -75,14 +74,14 @@
                     >
                         {{ data.item.members.join(', ')}}
                     </template>
-                    <!--A custom formatted column-->
-                    <!--<template slot="name" slot-scope="data">{{data.value.empId}}</template>-->
+                         <!--A custom formatted column-->
+                        <!--<template slot="name" slot-scope="data">{{data.value.empId}}</template>-->
 
-                    <!--<template v-slot:cell()="{empId}">-->
-                    <!--</template>-->
-                    <!--<div v-for="post in this.postsTask" :key="post.id">-->
-                    <!--<slot :empId="post"></slot>-->
-                    <!--</div>-->
+                        <!--<template v-slot:cell()="{empId}">-->
+                        <!--</template>-->
+                        <!--<div v-for="post in this.postsTask" :key="post.id">-->
+                            <!--<slot :empId="post"></slot>-->
+                        <!--</div>-->
 
                     <template v-slot:cell(selected)="{ rowSelected }">
                         <template v-if="rowSelected">
@@ -96,32 +95,6 @@
                     </template>
 
                 </b-table>
-
-                    <b-row>
-                        <b-col lg="4">
-                        </b-col>
-                        <b-col lg="3">
-
-                        </b-col>
-
-                        <b-col lg="5 justify-content-end d-flex">
-                            <b-button class="task_ls_btn"
-                                      @click="taskStart" :disabled="this.disableState"
-                                      variant="success" size="lg"
-                            >Начать
-                            </b-button>
-                            <b-button class="task_fl_btn"
-                                      @click="taskPause" :disabled="this.disableState"
-                                      variant="success" size="lg"
-                            >Приостановить
-                            </b-button>
-                            <b-button class="task_mid_btn"
-                                      @click="taskEnd" :disabled="this.disableState"
-                                      variant="success" size="lg"
-                            >Закончить
-                            </b-button>
-                        </b-col>
-                    </b-row>
 
 
                 <div>
@@ -262,6 +235,7 @@
                 </div>
 
 
+
             </b-jumbotron>
 
 
@@ -305,7 +279,7 @@
     import axios from 'axios'
 
     export default {
-        name: 'AdminTasks',
+        name: 'UserTasks',
         computed: {
             currentUser() {
                 return this.$store.state.auth.user;
@@ -361,20 +335,13 @@
                 taskFields: [
                     {key: 'taskId', label: '#'},
                     {key: 'title', label: 'Название', sortable: true},
-                    {key: 'startDate', label: 'Начало', sortable: true},
-                    {key: 'finishDate', label: 'Окончание', sortable: true},
-                    {key: 'status', label: 'Статус', sortable: true},
-                    {key: 'members', label: "Исполнитель", sortable: true}
+                    {key: 'startDate', label: 'Начало'},
+                    {key: 'finishDate', label: 'Окончание'},
+                    {key: 'status', label: 'Статус'},
+                    {key: 'members', label: "Исполнитель"}
                 ],
                 taskFieldsTwo: [
-                    {
-                        taskId: 1,
-                        title: 'Название',
-                        startDate: '2020-07-07',
-                        finishDate: '2020-08-08',
-                        status: 'Статус',
-                        members: "Иванов-Спиртов"
-                    }
+                    {taskId: 1, title: 'Название', startDate: '2020-07-07', finishDate: '2020-08-08', status: 'Статус', members:"Иванов-Спиртов"}
                 ],
                 membersList: [
                     {taskId: 1, members: 'Петров-Водкин'}
@@ -441,12 +408,13 @@
             },
 
 
+
             getEmployeeByFio() {
                 let arr = this.taskExecutor.split(' ')
                 axios.post('/api/employee/getbyfio',
                     arr,
                 ).then(response => {
-                    console.log('success employee by fio', response.data)
+                    console.log('success', response.data)
                     this.executor = response.data
                     this.createNewTask()
                 }).catch(error => {
@@ -487,7 +455,7 @@
             deleteTask() {
                 this.busy = true
                 let id = this.selected[0]["taskId"]
-                console.log('taskId=', id);
+                console.log('>> id >> ', id);
                 axios.delete('/api/tasks/' + id + '/delete',
                 ).then(response => {
                     console.log('success', response.data)
@@ -503,64 +471,6 @@
                     this.busy = false
                 })
             },
-
-            taskStart() {
-                this.busy = true
-                let id = this.selected[0]["taskId"]
-                console.log('taskId=', id);
-                axios.post('/api/tasks/status/' + id +'/start',
-                ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Статус задачи изменен"
-                    this.$bvToast.show('success-toast')
-                    this.getAllTasks()
-                }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось изменить статус!"
-                    this.$bvToast.show('danger-toast')
-                }).finally(() => {
-                    this.busy = false
-                })
-            },
-
-            taskPause() {
-                this.busy = true
-                let id = this.selected[0]["taskId"]
-                console.log('taskId=', id);
-                axios.post('/api/tasks/status/' + id +'/pause',
-                ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Статус задачи изменен"
-                    this.$bvToast.show('success-toast')
-                    this.getAllTasks()
-                }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось изменить статус!"
-                    this.$bvToast.show('danger-toast')
-                }).finally(() => {
-                    this.busy = false
-                })
-            },
-
-            taskEnd() {
-                this.busy = true
-                let id = this.selected[0]["taskId"]
-                console.log('taskId=', id);
-                axios.post('/api/tasks/status/' + id +'/end',
-                ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Статус задачи изменен"
-                    this.$bvToast.show('success-toast')
-                    this.getAllTasks()
-                }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось изменить статус!"
-                    this.$bvToast.show('danger-toast')
-                }).finally(() => {
-                    this.busy = false
-                })
-            },
-
 
             onRowSelected(items) {
                 this.selected = items
@@ -620,34 +530,10 @@
         font-size: 14px;
     }
 
-    .task_lt_btn {
-        margin: 0 0 0 5px;
-        text-align: center;
-        width: 90px;
-        font-family: Arial;
-        font-size: 14px;
-    }
-
-    .task_mid_btn {
-        margin: 0 0 0 5px;
-        text-align: center;
-        width: 100px;
-        font-family: Arial;
-        font-size: 14px;
-    }
-
     .task_sh_btn {
         margin: 10px 0 0 30px;
         text-align: center;
         width: 100px;
-        font-family: Arial;
-        font-size: 14px;
-    }
-
-    .task_fl_btn {
-        margin: 0 0 0 5px;
-        text-align: center;
-        width: 130px;
         font-family: Arial;
         font-size: 14px;
     }

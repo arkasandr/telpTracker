@@ -28,6 +28,18 @@ import java.util.Set;
 //        property = "employeeId")
 public class Employee {
 
+    public Employee(String surname, String firstName, String middleName, String department, int groupNumber, String position, String email, WorkRole role, List<EmployeeRole> employeeRole) {
+        this.surname = surname;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.department = department;
+        this.groupNumber = groupNumber;
+        this.position = position;
+        this.email = email;
+        this.role = role;
+        this.employeeRole = employeeRole;
+    }
+
     public Employee(String username, String password, String email) {
         this.username = username;
         this.password = password;
@@ -41,6 +53,8 @@ public class Employee {
         this.department = department;
         this.position = position;
     }
+
+
 
     public Employee(String username) {
         this.username = username;
@@ -86,10 +100,11 @@ public class Employee {
     private WorkRole role;
 
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
+//    @ManyToMany(cascade = {
+//            CascadeType.PERSIST,
+//            CascadeType.MERGE
+//    })
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "employee_task",
             joinColumns = { @JoinColumn(name = "employee_id") },
             inverseJoinColumns = { @JoinColumn(name = "task_id") })

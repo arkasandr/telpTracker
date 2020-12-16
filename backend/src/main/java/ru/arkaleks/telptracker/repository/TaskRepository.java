@@ -14,4 +14,6 @@ import ru.arkaleks.telptracker.model.Task;
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
     void deleteTaskByTaskId(long taskId);
+
+    Task findTaskByTaskId(long taskId);
 }

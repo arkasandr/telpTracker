@@ -63,6 +63,8 @@ public class EmployeeService {
         String firstName = array[1];
         String middleName = array[2];
         Employee employee= employeeRepository.findByFio(surname, firstName, middleName);
+        log.info("Employee by FIO: " + employee.toString());
+        log.info("EmployeeRole by FIO: " + employee.getEmployeeRole().get(0));
         return employeeMapper.mapToEmployeeDto(employee);
     }
 

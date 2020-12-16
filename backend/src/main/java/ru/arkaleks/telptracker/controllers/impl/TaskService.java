@@ -45,13 +45,14 @@ public class TaskService {
     @Transactional
     public TaskDto addNewTaskToEmployee(Task task) {
         log.info("Будет создана задача: " + task.toString());
-        String emplName = currentUserService.getCurrentEmployee().getUsername();
-        Optional<Employee> optionalEmployee = employeeRepository.findByUsername(emplName);
-        Employee manager = optionalEmployee.orElseGet(Employee::new);
+        Employee manager = getLoginEmployeeTasks();
         Set<Task> employeeTasks = manager.getTasks();
         Set<Employee> employeeSet = task.getMembers();
         Employee[] array = employeeSet.toArray(new Employee[employeeSet.size()]);
         Employee executor = array[0];
+        executor.getEmployeeRole().get(0).setEmployee(executor);
+        log.info("Executor: " + executor);
+        log.info("Executor roleName: " + executor.getEmployeeRole().get(0));
         executor.setRole(WorkRole.ИСПОЛНИТЕЛЬ);
         manager.setRole(WorkRole.ПОСТАНОВЩИК);
         task.getMembers().add(manager);
@@ -65,6 +66,7 @@ public class TaskService {
         taskRepository.save(task);
         employeeRepository.save(manager);
         employeeRepository.save(executor);
+        log.info("Executor roleName_again: " + executor.getEmployeeRole().get(0));
         log.info("Новая задача: " + task.toString() + " создана успешно");
         return taskMapper.mapToTaskDto(task);
     }
@@ -85,19 +87,16 @@ public class TaskService {
 //                .collect(Collectors.toList());
 //        return taskMapper.mapToTaskDtoList(result);
 //    }
-
     @Transactional
     public List<TaskListDto> getAllEmployeeTasks() {
         List<TaskListDto> result = new ArrayList<>();
-        String emplName = currentUserService.getCurrentEmployee().getUsername();
-        Optional<Employee> optionalEmployee = employeeRepository.findByUsername(emplName);
-        Employee employee = optionalEmployee.orElseGet(Employee::new);
+        Employee employee = getLoginEmployeeTasks();
         Set<Task> employeeTasks = employee.getTasks();
         List<Task> resultTasks = employeeTasks
                 .stream()
                 .sorted(Comparator.comparing(Task::getTaskId))
                 .collect(Collectors.toList());
-        for(Task oldTask : resultTasks) {
+        for (Task oldTask : resultTasks) {
             TaskListDto task = new TaskListDto();
             task.setTaskId(oldTask.getTaskId());
             task.setTitle(oldTask.getTitle());
@@ -120,21 +119,70 @@ public class TaskService {
     /**
      * Метод удаляет задачу
      */
+//    @Transactional
+//    public void deleteTask(long taskId) {
+////        String emplName = currentUserService.getCurrentEmployee().getUsername();
+////        Optional<Employee> optionalEmployee = employeeRepository.findByUsername(emplName);
+////        Employee employee = optionalEmployee.orElseGet(Employee::new);
+//        Employee employee = currentUserService.getLogInEmployee();
+//        Set<Task> employeeTasks = employee.getTasks();
+//        Set<Task> newTasks = new HashSet<>();
+//        for(Task task : employeeTasks) {
+//            if(task.getTaskId() != taskId) {
+//                newTasks.add(task);
+//            }
+//        }
+//        employee.setTasks(newTasks);
+//        employeeRepository.save(employee);
+//        taskRepository.deleteTaskByTaskId(taskId);
+//        log.info("Задача под номером taskId = " + taskId + " успешно удалена");
+//    }
+
+    /**
+     * Метод удаляет задачу
+     */
     @Transactional
     public void deleteTask(long taskId) {
+        taskRepository.deleteTaskByTaskId(taskId);
+        log.info("Задача под номером taskId = " + taskId + " удалена");
+    }
+
+    /**
+     * Метод меняет статус задачи на "Начата"
+     */
+    @Transactional
+    public void setTaskStatusToStart(long taskId) {
+        Task task = taskRepository.findTaskByTaskId(taskId);
+        task.setStatus(Status.НАЧАТА);
+        taskRepository.save(task);
+        log.info("Задача taskId = " + taskId + " начата");
+    }
+
+    /**
+     * Метод меняет статус задачи на "Приостановлена"
+     */
+    @Transactional
+    public void setTaskStatusToPause(long taskId) {
+        Task task = taskRepository.findTaskByTaskId(taskId);
+        task.setStatus(Status.ПРИОСТАНОВЛЕНА);
+        taskRepository.save(task);
+        log.info("Задача taskId = " + taskId + " приостановлена");
+    }
+
+    /**
+     * Метод меняет статус задачи на "Закончена"
+     */
+    @Transactional
+    public void setTaskStatusToEnd(long taskId) {
+        Task task = taskRepository.findTaskByTaskId(taskId);
+        task.setStatus(Status.ЗАКОНЧЕНА);
+        taskRepository.save(task);
+        log.info("Задача taskId = " + taskId + " закончена");
+    }
+
+    private Employee getLoginEmployeeTasks() {
         String emplName = currentUserService.getCurrentEmployee().getUsername();
         Optional<Employee> optionalEmployee = employeeRepository.findByUsername(emplName);
-        Employee employee = optionalEmployee.orElseGet(Employee::new);
-        Set<Task> employeeTasks = employee.getTasks();
-        Set<Task> newTasks = new HashSet<>();
-        for(Task task : employeeTasks) {
-            if(task.getTaskId() != taskId) {
-                newTasks.add(task);
-            }
-        }
-        employee.setTasks(newTasks);
-        employeeRepository.save(employee);
-        taskRepository.deleteTaskByTaskId(taskId);
-        log.info("Задача под номером taskId = " + taskId + " успешно удалена");
+        return optionalEmployee.orElseGet(Employee::new);
     }
 }

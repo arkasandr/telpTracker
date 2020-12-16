@@ -21,9 +21,6 @@ import java.util.Set;
 @NoArgsConstructor
 @Entity
 @Table(name = "TASKS")
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "taskId")
 public class Task {
 
     public Task(String title, Status taskStatus, String description, LocalDate startDate, LocalDate finishDate) {
@@ -59,7 +56,8 @@ public class Task {
 
     private LocalDate finishDate;
 
-    @ManyToMany
+//    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "employee_task",
             joinColumns = { @JoinColumn(name = "task_id") },
             inverseJoinColumns = { @JoinColumn(name = "employee_id") })

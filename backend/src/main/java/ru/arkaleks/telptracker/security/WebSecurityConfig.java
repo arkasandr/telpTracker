@@ -66,15 +66,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(customLoginFilter(), RememberMeAuthenticationFilter.class)
                 .authorizeRequests()
-//                .antMatchers("/index.html", "/login*", "/error.html",
-//                        "/registrationstart.html", "/registrationstart/**")
                 .antMatchers("/", "/api/test/**", "/api/auth/**", "/login*", "/home",
                         "/registrationstart.html", "/registrationstart/**")
                 .permitAll()
-                .antMatchers("/register", "/api/employee/**")
+                .antMatchers("/register", "/api/employee/**", "/tasks/status/**")
                 .hasAnyRole("USER", "ADMIN")
                 .antMatchers("/tasks/admin/**")
                 .hasRole("ADMIN")
+                .antMatchers("/tasks/user/**")
+                .hasRole("USER")
                 .antMatchers("/resources/**")
                 .permitAll()
                 .anyRequest()

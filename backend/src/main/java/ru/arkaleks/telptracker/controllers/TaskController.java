@@ -49,4 +49,29 @@ public class TaskController {
     void deleteTask(@PathVariable long taskId) {
         taskService.deleteTask(taskId);
     }
+
+    /**
+     * Метод меняет статус задачи на "Начата"
+     */
+    @PostMapping("/api/tasks/status/{taskId}/start")
+    void setTaskStatusToStart (@PathVariable long taskId) {
+        taskService.setTaskStatusToStart(taskId);
+    }
+
+    /**
+     * Метод меняет статус задачи на "Приостановлена"
+     */
+    @PostMapping("/api/tasks/status/{taskId}/pause")
+    void setTaskStatusToPause (@PathVariable long taskId) {
+        taskService.setTaskStatusToPause(taskId);
+    }
+
+    /**
+     * Метод меняет статус задачи на "Закончена"
+     */
+    @PostMapping("/api/tasks/status/{taskId}/end")
+    void setTaskStatusToEnd (@PathVariable long taskId) {
+        taskService.setTaskStatusToEnd(taskId);
+    }
+
 }

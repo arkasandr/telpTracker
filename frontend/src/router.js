@@ -51,10 +51,16 @@ export const router = new Router({
             component: () => import('./views/BoardUser.vue')
         },
         {
-            path: '/tasks/admin',
+            path: '/tasks',
             name: 'adminTasks',
             // lazy-loaded
             component: () => import('./views/AdminTasks.vue')
+        },
+        {
+            path: '/tasks',
+            name: 'userTasks',
+            // lazy-loaded
+            component: () => import('./views/UserTasks.vue')
         }
     ]
 });
