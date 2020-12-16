@@ -108,7 +108,9 @@
                             <b-button class="task_ls_btn"
                                       @click="taskStart" :disabled="this.disableState"
                                       variant="success" size="lg"
-                            >Начать
+                            >
+                                <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
+                                Начать
                             </b-button>
                             <b-button class="task_fl_btn"
                                       @click="taskPause" :disabled="this.disableState"
@@ -265,7 +267,13 @@
             </b-jumbotron>
 
 
-            <b-toast id="success-toast" variant="success" solid :append-toast=true>
+            <b-toast
+                    id="success-toast"
+                    variant="success"
+                    solid
+                    :append-toast=true
+                    toaster = 'b-toaster-bottom-right'
+            >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
                         <b-img blank blank-color="#8FBC8F" class="mr-2" width="12" height="12"></b-img>
@@ -275,7 +283,13 @@
                 {{ this.message }}
             </b-toast>
 
-            <b-toast id="warning-toast" variant="warning" solid :append-toast=true>
+            <b-toast
+                    id="warning-toast"
+                    variant="warning"
+                    solid
+                    :append-toast=true
+                    toaster = 'b-toaster-bottom-right'
+            >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
                         <b-img blank blank-color="#FF8C00" class="mr-2" width="12" height="12"></b-img>
@@ -285,7 +299,13 @@
                 {{ this.message }}
             </b-toast>
 
-            <b-toast id="danger-toast" variant="danger" solid :append-toast=true>
+            <b-toast
+                    id="danger-toast"
+                    variant="danger"
+                    solid
+                    :append-toast=true
+                    toaster = 'b-toaster-bottom-right'
+            >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
                         <b-img blank blank-color="#8B0000" class="mr-2" width="12" height="12"></b-img>
@@ -338,23 +358,16 @@
                 currentPage: 1,
                 perPage: 5,
 
-
                 checkboxSelected: false,
-                isBusyTable: false,
+
                 disableState: true,
-                disableStateDownloadOriginArchive: true,
-                disableStateDownloadModifyArchive: true,
-                disableStateCheck: true,
-                disableStateErratumXsd: true,
-                disableStateErratumXsdCheck: true,
-                disableSaveAllErratumsToArchive: true,
+
                 rowSelected: '',
                 isInfoPopupVisible: false,
                 files: [],
 
                 items: [],
                 selectMode: 'single',
-
 
                 messageView: false,
                 boxOne: '',
@@ -366,28 +379,7 @@
                     {key: 'status', label: 'Статус', sortable: true},
                     {key: 'members', label: "Исполнитель", sortable: true}
                 ],
-                taskFieldsTwo: [
-                    {
-                        taskId: 1,
-                        title: 'Название',
-                        startDate: '2020-07-07',
-                        finishDate: '2020-08-08',
-                        status: 'Статус',
-                        members: "Иванов-Спиртов"
-                    }
-                ],
-                membersList: [
-                    {taskId: 1, members: 'Петров-Водкин'}
-                ],
-                postsXsd: [],
-                fieldsErratum: [
-                    {key: 'wrongValue', label: 'Ошибочное значение'},
-                    {key: 'correctValue', label: 'Корректное значение'},
-                ],
-                postsErratum: [],
-                archiveId: [],
                 busy: false,
-                erratumCount: 0
             }
         },
         methods: {
@@ -398,11 +390,6 @@
                 ).then(response => {
                     console.log('success', response.data)
                     this.messageTask = "Список задач загружен"
-                    // const vaeOne = {taskId: 1, title: 'Название', startDate: '2020-07-07', finishDate: '2020-08-08', status: 'Статус', members:"Иванов-Спиртов"}
-                    // const varTwo = {taskId: 1, members: 'Петров-Водкин'}
-                    // const newVar = Object.assign(this.taskFieldsTwo, this.membersList)
-                    // const newVar = Object.assign(response.data[0], varTwo)
-                    // this.postsTask = [newVar]
                     this.postsTask = response.data
                     console.log('postsTask', this.postsTask)
                     // console.log('newVar', newVar)
@@ -594,12 +581,6 @@
         font-size: 28px;
         text-align: center;
 
-    }
-
-    .mPageText {
-        font-family: Arial;
-        margin: 10px 10px 20px 10px;
-        font-size: 18px;
     }
 
     .mPageModal {

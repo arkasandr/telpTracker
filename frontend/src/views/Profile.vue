@@ -192,7 +192,13 @@
             </div>
 
 
-            <b-toast id="success-toast" variant="success" solid :append-toast=true>
+            <b-toast
+                    id="success-toast"
+                    variant="success"
+                    solid
+                    :append-toast=true
+                    toaster = 'b-toaster-bottom-right'
+            >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
                         <b-img blank blank-color="#8FBC8F" class="mr-2" width="12" height="12"></b-img>
@@ -202,7 +208,13 @@
                 {{ this.message }}
             </b-toast>
 
-            <b-toast id="warning-toast" variant="warning" solid :append-toast=true>
+            <b-toast
+                    id="warning-toast"
+                    variant="warning"
+                    solid
+                    :append-toast=true
+                    toaster = 'b-toaster-bottom-right'
+            >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
                         <b-img blank blank-color="#FF8C00" class="mr-2" width="12" height="12"></b-img>
@@ -212,7 +224,13 @@
                 {{ this.message }}
             </b-toast>
 
-            <b-toast id="danger-toast" variant="danger" solid :append-toast=true>
+            <b-toast
+                    id="danger-toast"
+                    variant="danger"
+                    solid
+                    :append-toast=true
+                    toaster = 'b-toaster-bottom-right'
+            >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
                         <b-img blank blank-color="#8B0000" class="mr-2" width="12" height="12"></b-img>

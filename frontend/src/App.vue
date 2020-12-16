@@ -7,31 +7,57 @@
 
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <!--<template>-->
-            <!--<b-icon-house-door scale="2"></b-icon-house-door>-->
-          <!--</template>-->
+          <template>
+            <b-icon-house-door variant="light" font-scale="1.5" shift-v="-5"  @click="$router.push('/home')"></b-icon-house-door>
+          </template>
+
           <b-nav-item  @click="$router.push('/home')">На главную</b-nav-item>
+
+          <b-navbar-nav v-if="currentUser && !showAdminBoard" class="ml-auto">
+            <template>
+              <b-icon-list-task variant="light" font-scale="1.7" shift-v="-5"  @click="$router.push('/tasks')"></b-icon-list-task>
+            </template>
+            <b-nav-item  @click="$router.push('/tasks')">Мои задачи</b-nav-item>
+          </b-navbar-nav>
+
+          <b-navbar-nav v-if="showAdminBoard" class="ml-auto">
+            <template>
+              <b-icon-list-task variant="light" font-scale="1.7" shift-v="-5"  @click="$router.push('/tasks')"></b-icon-list-task>
+            </template>
+            <b-nav-item  @click="$router.push('/tasks')">Задачи</b-nav-item>
+            <template>
+              <b-icon-table variant="light" font-scale="1.35" shift-v="-6"  @click="$router.push('/tablet')"></b-icon-table>
+            </template>
+            <b-nav-item  @click="$router.push('/tablet')">Планшет</b-nav-item>
+          </b-navbar-nav>
+
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav v-if="!currentUser" class="ml-auto">
+          <template>
+            <b-icon-list-task variant="light" font-scale="1.5" shift-v="-5"  @click="$router.push('/register')"></b-icon-list-task>
+          </template>
           <b-nav-item  @click="$router.push('/register')">Регистрация</b-nav-item>
+
+          <template>
+            <b-icon-box-arrow-in-right variant="light" font-scale="1.5" shift-v="-5"  @click="$router.push('/login')"></b-icon-box-arrow-in-right>
+          </template>
           <b-nav-item  @click="$router.push('/login')">Войти</b-nav-item>
 
         </b-navbar-nav>
 
-        <b-navbar-nav v-if="currentUser && !showAdminBoard" class="ml-auto">
-          <b-nav-item  @click="$router.push('/tasks')">Мои задачи</b-nav-item>
+        <b-navbar-nav v-if="currentUser" class="ml-auto">
+          <template>
+            <b-icon-person-square variant="light" font-scale="1.5" shift-v="-5" @click="$router.push('/profile')"></b-icon-person-square>
+          </template>
           <b-nav-item  @click="$router.push('/profile')">{{ currentUser.username }}</b-nav-item>
+          <template>
+            <b-icon-box-arrow-right variant="light" font-scale="1.8" shift-v="-3"  @click.prevent="logOut"></b-icon-box-arrow-right>
+          </template>
           <b-nav-item  @click.prevent="logOut">Выйти</b-nav-item>
         </b-navbar-nav>
 
-        <b-navbar-nav v-if="showAdminBoard" class="ml-auto">
-          <b-nav-item  @click="$router.push('/tasks')">Задачи</b-nav-item>
-          <b-nav-item  @click="$router.push('/tasks')">Планшет</b-nav-item>
-          <b-nav-item  @click="$router.push('/profile')">{{ currentUser.username }}</b-nav-item>
-          <b-nav-item  @click.prevent="logOut">Выйти</b-nav-item>
-        </b-navbar-nav>
 
 
       </b-collapse>
@@ -192,6 +218,12 @@
   .b_table {
     text-align: center;
     font-size: smaller;
+  }
+
+  .b-icon.bi {
+    display: inline-block;
+    overflow: visible;
+    vertical-align: 0;
   }
 
 </style>
