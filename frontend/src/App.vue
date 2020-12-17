@@ -36,12 +36,12 @@
         <!-- Right aligned nav items -->
         <b-navbar-nav v-if="!currentUser" class="ml-auto">
           <template>
-            <b-icon-list-task variant="light" font-scale="1.5" shift-v="-5"  @click="$router.push('/register')"></b-icon-list-task>
+            <b-icon-people variant="light" font-scale="1.5" shift-v="-5"  @click="$router.push('/register')"></b-icon-people>
           </template>
           <b-nav-item  @click="$router.push('/register')">Регистрация</b-nav-item>
 
           <template>
-            <b-icon-box-arrow-in-right variant="light" font-scale="1.5" shift-v="-5"  @click="$router.push('/login')"></b-icon-box-arrow-in-right>
+            <b-icon-box-arrow-in-right variant="light" font-scale="1.8" shift-v="-3"  @click="$router.push('/login')"></b-icon-box-arrow-in-right>
           </template>
           <b-nav-item  @click="$router.push('/login')">Войти</b-nav-item>
 

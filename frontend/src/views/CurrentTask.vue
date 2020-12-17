@@ -14,88 +14,123 @@
 
             <b-jumbotron>
                 <b-row class="mPageTitle">
-                    <b-col></b-col>
-                    <b-col>Диспетчер задач</b-col>
-                    <b-col></b-col>
+                    <b-col>#{{this.$route.params.Pid.taskId}} Задача "{{this.$route.params.Pid.title}}"</b-col>
                 </b-row>
                 <p>
 
                 </p>
 
-                <b-container>
-                    <b-row>
-                        <b-col lg="4">
-                        </b-col>
-                        <b-col lg="5">
-                        </b-col>
-                        <b-col lg="3">
-                            <b-button class="task_ls_btn" @click="addNewTask" variant="success" size="lg"
-                                      ref="archive"
-                            >Начать
-                            </b-button>
-                            <!--</b-col>-->
-                            <!--<b-col lg="2">-->
-                            <b-button class="task_ls_btn" @click="deleteCurrentTask" :disabled="this.disableState"
-                                      variant="danger" size="lg">Закончить
-                            </b-button>
-                        </b-col>
-                    </b-row>
-                </b-container>
+
+                <b-row>
+                    <b-col lg="2">
+                        <b-row>
+                            <b-col class = "task-bold-letter">
+                                Лукашевич
+                            </b-col>
+                        </b-row>
+
+                        <b-row>
+                            <b-col class="task-sm-letter">
+                                Постановщик
+                            </b-col>
+                        </b-row>
+                    </b-col>
+
+                    <b-col lg="2">
+                        <b-row>
+                            <b-col class = "task-bold-letter">
+                                Аркашев
+                            </b-col>
+                        </b-row>
+
+                        <b-row>
+                            <b-col class="task-sm-letter">
+                                Исполнитель
+                            </b-col>
+                        </b-row>
+                    </b-col>
 
 
-                <b-pagination
-                        v-model="currentPage"
-                        :total-rows="rows"
-                        :per-page="perPage"
-                        aria-controls="task-table"
-                        size="sm"
-                        class="custom_pagination"
-                >
-                </b-pagination>
+                    <b-col lg="2">
+                        <b-row>
+                            <b-col class = "task-bold-letter">
+                                {{this.$route.params.Pid.startDate}}
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col class="task-sm-letter">
+                                Старт
+                            </b-col>
+                        </b-row>
+                    </b-col>
+                    <b-col lg="2">
+                        <b-row>
+                            <b-col class = "task-bold-letter">
+                                {{this.$route.params.Pid.finishDate}}
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col class="task-sm-letter">
+                                Дедлайн
+                            </b-col>
+                        </b-row>
+                    </b-col>
+                    <b-col lg="1">
+                    </b-col>
+                    <b-col lg="3">
+                        <b-row>
+                            <b-col class="task-bold-letter">
+                               {{this.$route.params.Pid.finishDate}}
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col class="task-sm-letter">
+                                Статус: "{{this.$route.params.Pid.status}}"
+                            </b-col>
+                        </b-row>
+                    </b-col>
+                </b-row>
 
+                <hr class="my-4">
 
-                <b-table
-                         id="task-table"
-                        class="b_table"
-                        ref="selectableTable"
-                        selectable
-                        :select-mode="selectMode"
-                        :items="postsTask"
-                        :fields="taskFields"
-                        @row-selected="onRowSelected"
-                        :bordered="true"
-                        responsive="sm"
-                        :per-page="perPage"
-                        :current-page="currentPage"
-                >
+                <b-row>
+                    <b-col class="task-bold-letter">
+                        {{this.$route.params.Pid.description}}
+                    </b-col>
+                </b-row>
 
-                    <template
-                            v-slot:cell(members)="data"
-                    >
-                        {{ data.item.members.join(', ')}}
-                    </template>
-                         <!--A custom formatted column-->
-                        <!--<template slot="name" slot-scope="data">{{data.value.empId}}</template>-->
+                <hr class="my-4">
 
-                        <!--<template v-slot:cell()="{empId}">-->
-                        <!--</template>-->
-                        <!--<div v-for="post in this.postsTask" :key="post.id">-->
-                            <!--<slot :empId="post"></slot>-->
-                        <!--</div>-->
+                <b-row>
+                    <b-col lg="4">
+                    </b-col>
+                    <b-col lg="3">
 
-                    <template v-slot:cell(selected)="{ rowSelected }">
-                        <template v-if="rowSelected">
-                <span aria-hidden="true">
-                  <input type="checkbox" :disabled="true"/>
-                </span>
-                        </template>
-                        <template v-else>
-                            <span aria-hidden="true">&nbsp;</span>
-                        </template>
-                    </template>
+                    </b-col>
 
-                </b-table>
-
+                    <b-col lg="5 justify-content-end d-flex">
+                        <b-button class="task_ls_btn"
+                                  @click="taskStart"
+                                  variant="success"
+                                  size="lg"
+                        >
+                            <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
+                            Начать
+                        </b-button>
+                        <b-button class="task_fl_btn"
+                                  @click="taskPause"
+                                  variant="success"
+                                  size="lg"
+                        >Приостановить
+                        </b-button>
+                        <b-button class="task_mid_btn"
+                                  @click="taskEnd"
+                                  variant="success"
+                                  size="lg"
+                        >Закончить
+                        </b-button>
+                    </b-col>
+                </b-row>
 
                 <div>
                     <b-modal id="bv-modal-task" size="lg" hide-footer :no-close-on-backdrop="true">
@@ -235,11 +270,16 @@
                 </div>
 
 
-
             </b-jumbotron>
 
 
-            <b-toast id="success-toast" variant="success" solid :append-toast=true>
+            <b-toast
+                    id="success-toast"
+                    variant="success"
+                    solid
+                    :append-toast=true
+                    toaster='b-toaster-bottom-right'
+            >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
                         <b-img blank blank-color="#8FBC8F" class="mr-2" width="12" height="12"></b-img>
@@ -249,7 +289,13 @@
                 {{ this.message }}
             </b-toast>
 
-            <b-toast id="warning-toast" variant="warning" solid :append-toast=true>
+            <b-toast
+                    id="warning-toast"
+                    variant="warning"
+                    solid
+                    :append-toast=true
+                    toaster='b-toaster-bottom-right'
+            >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
                         <b-img blank blank-color="#FF8C00" class="mr-2" width="12" height="12"></b-img>
@@ -259,7 +305,13 @@
                 {{ this.message }}
             </b-toast>
 
-            <b-toast id="danger-toast" variant="danger" solid :append-toast=true>
+            <b-toast
+                    id="danger-toast"
+                    variant="danger"
+                    solid
+                    :append-toast=true
+                    toaster='b-toaster-bottom-right'
+            >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
                         <b-img blank blank-color="#8B0000" class="mr-2" width="12" height="12"></b-img>
@@ -341,7 +393,14 @@
                     {key: 'members', label: "Исполнитель"}
                 ],
                 taskFieldsTwo: [
-                    {taskId: 1, title: 'Название', startDate: '2020-07-07', finishDate: '2020-08-08', status: 'Статус', members:"Иванов-Спиртов"}
+                    {
+                        taskId: 1,
+                        title: 'Название',
+                        startDate: '2020-07-07',
+                        finishDate: '2020-08-08',
+                        status: 'Статус',
+                        members: "Иванов-Спиртов"
+                    }
                 ],
                 membersList: [
                     {taskId: 1, members: 'Петров-Водкин'}
@@ -406,7 +465,6 @@
                     this.busy = false
                 })
             },
-
 
 
             getEmployeeByFio() {
@@ -506,10 +564,17 @@
 
     }
 
-    .mPageText {
+    .task-sm-letter {
         font-family: Arial;
-        margin: 10px 10px 20px 10px;
-        font-size: 18px;
+        /*margin: 10px 10px 20px 10px;*/
+        font-size: 14px;
+    }
+
+    .task-bold-letter {
+        font-family: Arial;
+        /*margin: 10px 10px 20px 10px;*/
+        font-size: 14px;
+        font-weight: bold;
     }
 
     .mPageModal {

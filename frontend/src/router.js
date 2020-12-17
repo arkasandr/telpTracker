@@ -56,11 +56,17 @@ export const router = new Router({
             // lazy-loaded
             component: () => import('./views/AdminTasks.vue')
         },
+        // {
+        //     path: '/tasks',
+        //     name: 'userTasks',
+        //     // lazy-loaded
+        //     component: () => import('./views/CurrentTask.vue')
+        // },
         {
-            path: '/tasks',
-            name: 'userTasks',
+            path: '/tasks/:Pid',
+            name: 'currentTask',
             // lazy-loaded
-            component: () => import('./views/UserTasks.vue')
+            component: () => import('./views/CurrentTask.vue')
         }
     ]
 });

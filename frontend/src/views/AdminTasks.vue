@@ -23,25 +23,25 @@
                 </p>
 
 
-                    <b-row  class="ml-auto">
-                        <b-col lg="5">
-                        </b-col>
-                        <b-col lg="4">
-                        </b-col>
-                        <b-col lg="3 justify-content-end d-flex">
-                            <b-button v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
-                                      class="task_lt_btn"
-                                      @click="addNewTask" variant="success" size="lg"
-                            >Добавить
-                            </b-button>
-                            <b-button v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
-                                      class="task_lt_btn"
-                                      @click="deleteCurrentTask" :disabled="this.disableState"
-                                      variant="danger" size="lg">Удалить
-                            </b-button>
+                <b-row class="ml-auto">
+                    <b-col lg="5">
+                    </b-col>
+                    <b-col lg="4">
+                    </b-col>
+                    <b-col lg="3 justify-content-end d-flex">
+                        <b-button v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
+                                  class="task_lt_btn"
+                                  @click="addNewTask" variant="success" size="lg"
+                        >Добавить
+                        </b-button>
+                        <b-button v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
+                                  class="task_lt_btn"
+                                  @click="deleteCurrentTask" :disabled="this.disableState"
+                                  variant="danger" size="lg">Удалить
+                        </b-button>
 
-                        </b-col>
-                    </b-row>
+                    </b-col>
+                </b-row>
 
 
                 <b-pagination
@@ -68,6 +68,7 @@
                         responsive="sm"
                         :per-page="perPage"
                         :current-page="currentPage"
+                        @row-dblclicked="onRowDoubleClick"
                 >
 
                     <template
@@ -97,33 +98,33 @@
 
                 </b-table>
 
-                    <b-row>
-                        <b-col lg="4">
-                        </b-col>
-                        <b-col lg="3">
+                <b-row>
+                    <b-col lg="4">
+                    </b-col>
+                    <b-col lg="3">
 
-                        </b-col>
+                    </b-col>
 
-                        <b-col lg="5 justify-content-end d-flex">
-                            <b-button class="task_ls_btn"
-                                      @click="taskStart" :disabled="this.disableState"
-                                      variant="success" size="lg"
-                            >
-                                <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
-                                Начать
-                            </b-button>
-                            <b-button class="task_fl_btn"
-                                      @click="taskPause" :disabled="this.disableState"
-                                      variant="success" size="lg"
-                            >Приостановить
-                            </b-button>
-                            <b-button class="task_mid_btn"
-                                      @click="taskEnd" :disabled="this.disableState"
-                                      variant="success" size="lg"
-                            >Закончить
-                            </b-button>
-                        </b-col>
-                    </b-row>
+                    <b-col lg="5 justify-content-end d-flex">
+                        <b-button class="task_ls_btn"
+                                  @click="taskStart" :disabled="this.disableState"
+                                  variant="success" size="lg"
+                        >
+                            <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
+                            Начать
+                        </b-button>
+                        <b-button class="task_fl_btn"
+                                  @click="taskPause" :disabled="this.disableState"
+                                  variant="success" size="lg"
+                        >Приостановить
+                        </b-button>
+                        <b-button class="task_mid_btn"
+                                  @click="taskEnd" :disabled="this.disableState"
+                                  variant="success" size="lg"
+                        >Закончить
+                        </b-button>
+                    </b-col>
+                </b-row>
 
 
                 <div>
@@ -225,10 +226,10 @@
                             </b-col>
                             <b-col lg="5">
                                 <b-button class="task_sh_btn" @click="getEmployeeByFio"
-                                          variant="outline-dark" size="sm">Создать
+                                          variant="success" size="sm">Создать
                                 </b-button>
                                 <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task')"
-                                          variant="outline-dark" size="sm">Отмена
+                                          variant="danger" size="sm">Отмена
                                 </b-button>
                             </b-col>
 
@@ -252,10 +253,10 @@
                             </b-col>
                             <b-col lg="5">
                                 <b-button class="task_sh_btn" @click="deleteTask"
-                                          variant="outline-dark" size="sm">Да, удалить
+                                          variant="success" size="sm">Да, удалить
                                 </b-button>
                                 <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task-delete')"
-                                          variant="outline-dark" size="sm">Отмена
+                                          variant="danger" size="sm">Отмена
                                 </b-button>
                             </b-col>
 
@@ -272,7 +273,7 @@
                     variant="success"
                     solid
                     :append-toast=true
-                    toaster = 'b-toaster-bottom-right'
+                    toaster='b-toaster-bottom-right'
             >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
@@ -288,7 +289,7 @@
                     variant="warning"
                     solid
                     :append-toast=true
-                    toaster = 'b-toaster-bottom-right'
+                    toaster='b-toaster-bottom-right'
             >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
@@ -304,7 +305,7 @@
                     variant="danger"
                     solid
                     :append-toast=true
-                    toaster = 'b-toaster-bottom-right'
+                    toaster='b-toaster-bottom-right'
             >
                 <template v-slot:toast-title>
                     <div class="d-flex flex-grow-1 align-items-baseline">
@@ -495,7 +496,7 @@
                 this.busy = true
                 let id = this.selected[0]["taskId"]
                 console.log('taskId=', id);
-                axios.post('/api/tasks/status/' + id +'/start',
+                axios.post('/api/tasks/status/' + id + '/start',
                 ).then(response => {
                     console.log('success', response.data)
                     this.message = "Статус задачи изменен"
@@ -514,7 +515,7 @@
                 this.busy = true
                 let id = this.selected[0]["taskId"]
                 console.log('taskId=', id);
-                axios.post('/api/tasks/status/' + id +'/pause',
+                axios.post('/api/tasks/status/' + id + '/pause',
                 ).then(response => {
                     console.log('success', response.data)
                     this.message = "Статус задачи изменен"
@@ -533,7 +534,7 @@
                 this.busy = true
                 let id = this.selected[0]["taskId"]
                 console.log('taskId=', id);
-                axios.post('/api/tasks/status/' + id +'/end',
+                axios.post('/api/tasks/status/' + id + '/end',
                 ).then(response => {
                     console.log('success', response.data)
                     this.message = "Статус задачи изменен"
@@ -558,6 +559,11 @@
                     this.disableState = false
                 }
             },
+
+            onRowDoubleClick(taskId) {
+                // this.$router.push('/tasks/current')
+                this.$router.push({name:'currentTask',params:{Pid:taskId}})
+            }
 
 
         },
