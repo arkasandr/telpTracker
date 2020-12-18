@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+        <router-view></router-view>
         <!--<header class="jumbotron">-->
         <!--<h3>{{content}}</h3>-->
         <!--</header>-->
@@ -33,11 +34,21 @@
 
     export default {
         name: 'Home',
+        watch: {
+            $route: {
+                immediate: true,
+                handler(to) {
+                    document.title = to.meta.title || 'TELPTracker';
+                }
+            },
+        },
+
         data() {
             return {
                 content: ''
             };
         },
+
         mounted() {
             UserService.getPublicContent().then(
                 response => {

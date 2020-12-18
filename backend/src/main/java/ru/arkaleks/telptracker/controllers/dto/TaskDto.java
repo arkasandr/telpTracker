@@ -13,30 +13,33 @@ import java.util.Set;
 @NoArgsConstructor
 public class TaskDto {
 
-    public TaskDto(String title, Status taskStatus, String description, LocalDate startDate, LocalDate finishDate) {
+    public TaskDto(String title, Status taskStatus, String description, LocalDate startDate, LocalDate statusUpdateDate, LocalDate finishDate) {
         this.title = title;
         this.status = taskStatus;
         this.description = description;
         this.startDate = startDate;
         this.finishDate = finishDate;
+        this.statusUpdateDate = statusUpdateDate;
     }
 
-    public TaskDto(String title, Status taskStatus, String description, LocalDate startDate, LocalDate finishDate, Set<Employee> members) {
+    public TaskDto(String title, Status taskStatus, String description, LocalDate startDate, LocalDate finishDate, LocalDate statusUpdateDate, Set<Employee> members) {
         this.title = title;
         this.status = taskStatus;
         this.description = description;
         this.startDate = startDate;
         this.finishDate = finishDate;
+        this.statusUpdateDate = statusUpdateDate;
         this.members = members;
     }
 
-    public TaskDto(long taskId, String title, Status status, String description, LocalDate startDate, LocalDate finishDate, Set<Employee> members) {
+    public TaskDto(long taskId, String title, Status status, String description, LocalDate startDate, LocalDate finishDate, LocalDate statusUpdateDate, Set<Employee> members) {
         this.taskId = taskId;
         this.title = title;
         this.status = status;
         this.description = description;
         this.startDate = startDate;
         this.finishDate = finishDate;
+        this.statusUpdateDate = statusUpdateDate;
         this.members = members;
     }
 
@@ -51,6 +54,8 @@ public class TaskDto {
     private LocalDate startDate;
 
     private LocalDate finishDate;
+
+    private LocalDate statusUpdateDate;
 
     @JsonIgnore
     private Set<Employee> members;

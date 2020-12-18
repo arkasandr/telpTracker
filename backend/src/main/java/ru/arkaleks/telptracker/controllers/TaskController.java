@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import ru.arkaleks.telptracker.controllers.dto.EmployeeDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskListDto;
 import ru.arkaleks.telptracker.controllers.impl.TaskService;
+import ru.arkaleks.telptracker.model.Employee;
 import ru.arkaleks.telptracker.model.Task;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Alex Arkashev (arkasandr@gmail.com)
@@ -72,6 +75,22 @@ public class TaskController {
     @PostMapping("/api/tasks/status/{taskId}/end")
     void setTaskStatusToEnd (@PathVariable long taskId) {
         taskService.setTaskStatusToEnd(taskId);
+    }
+
+    /**
+     * Метод вовращает список участников задачи
+     */
+    @PostMapping("api/tasks/members/{taskId}")
+    Set<EmployeeDto> getTaskMembers(@PathVariable long taskId) {
+        return taskService.getAllEmployeeByTaskId(taskId);
+    }
+
+    /**
+     * Метод вовращает задачу по taskId
+     */
+    @PostMapping("api/tasks/current/{taskId}")
+    TaskDto getTaskByTaskId(@PathVariable long taskId) {
+        return taskService.getTaskeByTaskId(taskId);
     }
 
 }

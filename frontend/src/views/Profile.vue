@@ -10,7 +10,7 @@
                     <span class="sr-only">Please wait...</span>
                 </div>
             </template>
-
+            <router-view></router-view>
 
             <b-jumbotron>
                 <b-row class="mPageTitle">
@@ -251,6 +251,14 @@
 
     export default {
         name: 'Profile',
+        watch: {
+            $route: {
+                immediate: true,
+                handler(to) {
+                    document.title = to.meta.title || 'TELPTracker';
+                }
+            },
+        },
         computed: {
             currentUser() {
                 return this.$store.state.auth.user;

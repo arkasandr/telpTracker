@@ -22,5 +22,7 @@ public class TaskListDto {
 
     private LocalDate finishDate;
 
+    private LocalDate statusUpdateDate;
+
     private String[] members;
 }

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.arkaleks.telptracker.controllers.dto.EmployeeDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskListDto;
 import ru.arkaleks.telptracker.controllers.mapper.TaskMapper;
@@ -15,6 +16,7 @@ import ru.arkaleks.telptracker.repository.EmployeeRepository;
 import ru.arkaleks.telptracker.repository.TaskRepository;
 
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -104,6 +106,7 @@ public class TaskService {
             task.setStartDate(oldTask.getStartDate());
             task.setFinishDate(oldTask.getFinishDate());
             task.setStatus((oldTask.getStatus()));
+            task.setStatusUpdateDate((oldTask.getStatusUpdateDate()));
             List<String> surnames = oldTask.getMembers()
                     .stream()
                     .filter(x -> x.getRole().equals(WorkRole.ИСПОЛНИТЕЛЬ))
@@ -154,6 +157,7 @@ public class TaskService {
     public void setTaskStatusToStart(long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId);
         task.setStatus(Status.НАЧАТА);
+        task.setStatusUpdateDate(LocalDate.now());
         taskRepository.save(task);
         log.info("Задача taskId = " + taskId + " начата");
     }
@@ -165,6 +169,7 @@ public class TaskService {
     public void setTaskStatusToPause(long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId);
         task.setStatus(Status.ПРИОСТАНОВЛЕНА);
+        task.setStatusUpdateDate(LocalDate.now());
         taskRepository.save(task);
         log.info("Задача taskId = " + taskId + " приостановлена");
     }
@@ -176,6 +181,7 @@ public class TaskService {
     public void setTaskStatusToEnd(long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId);
         task.setStatus(Status.ЗАКОНЧЕНА);
+        task.setStatusUpdateDate(LocalDate.now());
         taskRepository.save(task);
         log.info("Задача taskId = " + taskId + " закончена");
     }
@@ -184,5 +190,28 @@ public class TaskService {
         String emplName = currentUserService.getCurrentEmployee().getUsername();
         Optional<Employee> optionalEmployee = employeeRepository.findByUsername(emplName);
         return optionalEmployee.orElseGet(Employee::new);
+    }
+
+
+    /**
+     * Метод меняет статус задачи на "Закончена"
+     */
+    @Transactional
+    public Set<EmployeeDto> getAllEmployeeByTaskId(long taskId) {
+        Task task = taskRepository.findTaskByTaskId(taskId);
+        Set<Employee> result = new HashSet<>(task.getMembers());
+        log.info("Задача taskId = " + taskId + " имеет " + result.size() + " участника");
+        return taskMapper.mapToSetEmployeeDto(result);
+    }
+
+
+    /**
+     * Метод меняет статус задачи на "Закончена"
+     */
+    @Transactional
+    public TaskDto getTaskeByTaskId(long taskId) {
+        Task task = taskRepository.findTaskByTaskId(taskId);
+        log.info("Задача taskId = " + taskId + " найдена успешно");
+        return taskMapper.mapToTaskDto(task);
     }
 }

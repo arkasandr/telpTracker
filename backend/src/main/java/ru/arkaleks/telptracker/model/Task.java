@@ -23,20 +23,22 @@ import java.util.Set;
 @Table(name = "TASKS")
 public class Task {
 
-    public Task(String title, Status taskStatus, String description, LocalDate startDate, LocalDate finishDate) {
+    public Task(String title, Status taskStatus, String description, LocalDate startDate, LocalDate finishDate, LocalDate statusUpdateDate) {
         this.title = title;
         this.status = taskStatus;
         this.description = description;
         this.startDate = startDate;
         this.finishDate = finishDate;
+        this.statusUpdateDate = statusUpdateDate;
     }
 
-    public Task(Status status, String description, LocalDate startDate, LocalDate finishDate, Set<Employee> members) {
+    public Task(Status status, String description, LocalDate startDate, LocalDate finishDate, LocalDate statusUpdateDate, Set<Employee> members) {
         this.status = status;
         this.description = description;
         this.startDate = startDate;
         this.finishDate = finishDate;
         this.members = members;
+        this.statusUpdateDate = statusUpdateDate;
     }
 
     @Id
@@ -56,6 +58,8 @@ public class Task {
 
     private LocalDate finishDate;
 
+    private LocalDate statusUpdateDate;
+
 //    @ManyToMany
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "employee_task",
@@ -71,6 +75,7 @@ public class Task {
                 ", status=" + status +
                 ", startDate=" + startDate +
                 ", finishDate=" + finishDate +
+                ", statusUpdateDate=" + statusUpdateDate +
                 ", members=" + members +
                 '}';
     }
