@@ -14,7 +14,8 @@
 
             <b-jumbotron>
                 <b-row class="mPageTitle">
-                    <b-col>#{{this.$route.params.Pid.taskId}} Задача "{{this.$route.params.Pid.title}}"</b-col>
+                    <!--<b-col>#{{this.$route.params.Pid.taskId}} Задача "{{this.$route.params.Pid.title}}"</b-col>-->
+                    <b-col>#{{this.currentTask.taskId}} Задача "{{this.currentTask.title}}"</b-col>
                 </b-row>
                 <p>
 
@@ -25,7 +26,7 @@
                     <b-col lg="2">
                         <b-row>
                             <b-col class = "task-bold-letter">
-                                Лукашевич
+                                {{this.getCurrentManager}}
                             </b-col>
                         </b-row>
 
@@ -39,7 +40,7 @@
                     <b-col lg="2">
                         <b-row>
                             <b-col class = "task-bold-letter">
-                                Аркашев
+                                {{this.getCurrentExecutor}}
                             </b-col>
                         </b-row>
 
@@ -54,7 +55,7 @@
                     <b-col lg="2">
                         <b-row>
                             <b-col class = "task-bold-letter">
-                                {{this.$route.params.Pid.startDate}}
+                                {{this.currentTask.startDate}}
                             </b-col>
                         </b-row>
                         <b-row>
@@ -66,7 +67,7 @@
                     <b-col lg="2">
                         <b-row>
                             <b-col class = "task-bold-letter">
-                                {{this.$route.params.Pid.finishDate}}
+                                {{this.currentTask.finishDate}}
                             </b-col>
                         </b-row>
                         <b-row>
@@ -80,12 +81,12 @@
                     <b-col lg="3">
                         <b-row>
                             <b-col class="task-bold-letter">
-                               {{this.$route.params.Pid.finishDate}}
+                               {{this.currentTask.statusUpdateDate}}
                             </b-col>
                         </b-row>
                         <b-row>
                             <b-col class="task-sm-letter">
-                                Статус: "{{this.$route.params.Pid.status}}"
+                                Статус: "{{this.currentTask.status}}"
                             </b-col>
                         </b-row>
                     </b-col>
@@ -95,7 +96,7 @@
 
                 <b-row>
                     <b-col class="task-bold-letter">
-                        {{this.$route.params.Pid.description}}
+                        {{this.currentTask.description}}
                     </b-col>
                 </b-row>
 
@@ -131,143 +132,6 @@
                         </b-button>
                     </b-col>
                 </b-row>
-
-                <div>
-                    <b-modal id="bv-modal-task" size="lg" hide-footer :no-close-on-backdrop="true">
-                        <template v-slot:modal-title>
-                            Добавить новую задачу
-                        </template>
-                        <div class="mPageModal">
-                            <b-container>
-
-                                <b-row class="mPageModalRow">
-                                    <b-col sm="3" align-v="end">
-                                        <label>Название</label>
-                                    </b-col>
-                                    <b-col sm="9">
-                                        <b-form-input
-                                                id="input-live-title"
-                                                v-model="taskTitle"
-                                                aria-describedby="input-live-title-help input-live-title-feedback"
-                                                placeholder="Введите название"
-                                                trim
-                                        ></b-form-input>
-
-                                    </b-col>
-                                </b-row>
-
-                                <b-row class="mPageModalRow">
-                                    <b-col sm="3" align-v="end">
-                                        <label>Описание</label>
-                                    </b-col>
-                                    <b-col sm="9">
-                                        <b-form-textarea
-                                                id="input-live-description"
-                                                v-model="taskDescription"
-                                                aria-describedby="input-live-description-help input-live-description-feedback"
-                                                placeholder="Введите описание"
-                                                trim
-                                        ></b-form-textarea>
-                                    </b-col>
-                                </b-row>
-
-                                <b-row class="mPageModalRow">
-                                    <b-col sm="3" align-v="end">
-                                        <label>Исполнитель</label>
-                                    </b-col>
-                                    <b-col sm="9">
-                                        <b-form-input
-                                                id="input-live-executor"
-                                                v-model="taskExecutor"
-                                                aria-describedby="input-live-executor-help input-live-executor-feedback"
-                                                placeholder="Выберите исполнителя из списка"
-                                                list="executors-list"
-                                        ></b-form-input>
-                                        <b-form-datalist id="executors-list" :options="executors">
-                                        </b-form-datalist>
-                                    </b-col>
-                                </b-row>
-
-                                <b-row class="mPageModalRow">
-                                    <b-col sm="3" align-v="end">
-                                        <label>Дата начала</label>
-                                    </b-col>
-                                    <b-col sm="9">
-                                        <template>
-                                            <div>
-                                                <b-form-datepicker id="task-start-datepicker" v-model="taskStartDate"
-                                                                   placeholder="Выберите дату" locale="ru"
-                                                                   class="mb-2"></b-form-datepicker>
-                                            </div>
-                                        </template>
-
-                                    </b-col>
-                                </b-row>
-
-                                <b-row class="mPageModalRow">
-                                    <b-col sm="3" align-v="end">
-                                        <label>Дата окончания</label>
-                                    </b-col>
-                                    <b-col sm="9">
-                                        <template>
-                                            <div>
-                                                <b-form-datepicker id="task-end-datepicker" v-model="taskFinishDate"
-                                                                   placeholder="Выберите дату" locale="ru"
-                                                                   class="mb-2"></b-form-datepicker>
-                                            </div>
-                                        </template>
-
-                                    </b-col>
-                                </b-row>
-
-                            </b-container>
-
-
-                        </div>
-                        <b-row>
-                            <b-col lg="3">
-                            </b-col>
-                            <b-col>
-                            </b-col>
-                            <b-col lg="5">
-                                <b-button class="task_sh_btn" @click="getEmployeeByFio"
-                                          variant="outline-dark" size="sm">Создать
-                                </b-button>
-                                <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task')"
-                                          variant="outline-dark" size="sm">Отмена
-                                </b-button>
-                            </b-col>
-
-                        </b-row>
-                    </b-modal>
-                </div>
-
-
-                <div>
-                    <b-modal id="bv-modal-task-delete" size="lg" hide-footer :no-close-on-backdrop="true">
-                        <template v-slot:modal-title>
-                            Вы действительно хотите удалить задачу?
-                        </template>
-                        <div class="mPageModal">
-
-                        </div>
-                        <b-row>
-                            <b-col lg="3">
-                            </b-col>
-                            <b-col>
-                            </b-col>
-                            <b-col lg="5">
-                                <b-button class="task_sh_btn" @click="deleteTask"
-                                          variant="outline-dark" size="sm">Да, удалить
-                                </b-button>
-                                <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task-delete')"
-                                          variant="outline-dark" size="sm">Отмена
-                                </b-button>
-                            </b-col>
-
-                        </b-row>
-                    </b-modal>
-                </div>
 
 
             </b-jumbotron>
@@ -332,14 +196,43 @@
 
     export default {
         name: 'UserTasks',
+        watch: {
+            $route: {
+                immediate: true,
+                handler() {
+                    document.title = 'Задача [#' + this.$route.params.Pid + ']' || 'TELPTracker';
+                }
+            },
+        },
         computed: {
             currentUser() {
                 return this.$store.state.auth.user;
             },
 
+            getCurrentExecutor() {
+                let user;
+                this.executors.forEach(function(item) {
+                    if(item.role === "ИСПОЛНИТЕЛЬ") {
+                        user =  item.surname
+                    }
+                });
+                return user
+            },
+
+            getCurrentManager() {
+                let user;
+                this.executors.forEach(function(item) {
+                    if(item.role === "ПОСТАНОВЩИК") {
+                        user =  item.surname
+                    }
+                });
+                return user
+            },
+
             rows() {
                 return this.postsTask.length
-            }
+            },
+
         },
         mounted() {
             if (!this.currentUser) {
@@ -355,110 +248,40 @@
                 message: '',
                 taskTitle: '',
                 taskDescription: '',
-                taskExecutor: '',
+                currentExecutor: '',
+                currentManager: '',
                 taskStartDate: '',
                 taskFinishDate: '',
                 executors: [],
-                executor: [],
+                currentTask:'',
+
                 isDeletePopup: false,
                 currentPage: 1,
                 perPage: 5,
-
+                currentId:'',
 
                 checkboxSelected: false,
-                isBusyTable: false,
                 disableState: true,
-                disableStateDownloadOriginArchive: true,
-                disableStateDownloadModifyArchive: true,
-                disableStateCheck: true,
-                disableStateErratumXsd: true,
-                disableStateErratumXsdCheck: true,
-                disableSaveAllErratumsToArchive: true,
                 rowSelected: '',
                 isInfoPopupVisible: false,
                 files: [],
-
                 items: [],
                 selectMode: 'single',
-
-
                 messageView: false,
                 boxOne: '',
-                taskFields: [
-                    {key: 'taskId', label: '#'},
-                    {key: 'title', label: 'Название', sortable: true},
-                    {key: 'startDate', label: 'Начало'},
-                    {key: 'finishDate', label: 'Окончание'},
-                    {key: 'status', label: 'Статус'},
-                    {key: 'members', label: "Исполнитель"}
-                ],
-                taskFieldsTwo: [
-                    {
-                        taskId: 1,
-                        title: 'Название',
-                        startDate: '2020-07-07',
-                        finishDate: '2020-08-08',
-                        status: 'Статус',
-                        members: "Иванов-Спиртов"
-                    }
-                ],
-                membersList: [
-                    {taskId: 1, members: 'Петров-Водкин'}
-                ],
-                postsXsd: [],
-                fieldsErratum: [
-                    {key: 'wrongValue', label: 'Ошибочное значение'},
-                    {key: 'correctValue', label: 'Корректное значение'},
-                ],
-                postsErratum: [],
-                archiveId: [],
                 busy: false,
-                erratumCount: 0
             }
         },
         methods: {
 
-            getAllTasks() {
-                this.busy = true
-                axios.get('/api/tasks/getall'
+            getTaskMembers() {
+                this.busy = true;
+                let id = this.$route.params.Pid;
+                console.log('taskId for members', id);
+                axios.post('/api/tasks/members/' + id,
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.messageTask = "Список задач загружен"
-                    // const vaeOne = {taskId: 1, title: 'Название', startDate: '2020-07-07', finishDate: '2020-08-08', status: 'Статус', members:"Иванов-Спиртов"}
-                    // const varTwo = {taskId: 1, members: 'Петров-Водкин'}
-                    // const newVar = Object.assign(this.taskFieldsTwo, this.membersList)
-                    // const newVar = Object.assign(response.data[0], varTwo)
-                    // this.postsTask = [newVar]
-                    this.postsTask = response.data
-                    console.log('postsTask', this.postsTask)
-                    // console.log('newVar', newVar)
-                    this.$bvToast.show('success-toast')
-                }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось загрузить задачи!"
-                    this.$bvToast.show('danger-toast')
-                }).finally(() => {
-                    this.busy = false
-                })
-            },
-
-
-            addNewTask() {
-                this.$bvModal.show('bv-modal-task')
-                this.getAllEmployees()
-
-            },
-
-            deleteCurrentTask() {
-                this.$bvModal.show('bv-modal-task-delete')
-            },
-
-            getAllEmployees() {
-                this.busy = true
-                axios.get('/api/employee/getall'
-                ).then(response => {
-                    console.log('success', response.data)
-                    this.executors = response.data
+                    console.log('taskMembers', response.data);
+                    this.executors = response.data;
                 }).catch(error => {
                     console.log(error)
                 }).finally(() => {
@@ -466,69 +289,20 @@
                 })
             },
 
-
-            getEmployeeByFio() {
-                let arr = this.taskExecutor.split(' ')
-                axios.post('/api/employee/getbyfio',
-                    arr,
+            getTaskById() {
+                this.busy = true;
+                let id = this.$route.params.Pid;
+                axios.post('/api/tasks/current/' + id,
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.executor = response.data
-                    this.createNewTask()
+                    this.currentTask = response.data;
+                    console.log("currentTask" + this.currentTask)
                 }).catch(error => {
                     console.log(error)
-                }).finally(() => {
-                })
-            },
-
-
-            createNewTask() {
-                this.busy = true
-                let arr = [this.executor];
-                console.log('members', arr)
-                axios.post('/api/tasks/admin/add',
-                    {
-                        title: this.taskTitle,
-                        description: this.taskDescription,
-                        startDate: this.taskStartDate,
-                        finishDate: this.taskFinishDate,
-                        members: arr
-                    },
-                ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Новая задача создана!"
-                    this.$bvToast.show('success-toast')
-                    this.getAllTasks()
-                    this.$bvModal.hide('bv-modal-task')
-                }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось создать задачу!"
-                    this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
                 })
             },
 
-
-            deleteTask() {
-                this.busy = true
-                let id = this.selected[0]["taskId"]
-                console.log('>> id >> ', id);
-                axios.delete('/api/tasks/' + id + '/delete',
-                ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Задача удалена."
-                    this.$bvToast.show('success-toast')
-                    this.getAllTasks()
-                    this.$bvModal.hide('bv-modal-task-delete')
-                }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось удалить задачу!"
-                    this.$bvToast.show('danger-toast')
-                }).finally(() => {
-                    this.busy = false
-                })
-            },
 
             onRowSelected(items) {
                 this.selected = items
@@ -541,11 +315,70 @@
             },
 
 
+            taskStart() {
+                this.busy = true
+                let id = this.$route.params.Pid;
+                console.log('taskId=', id);
+                axios.post('/api/tasks/status/' + id + '/start',
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.message = "Статус задачи изменен"
+                    this.$bvToast.show('success-toast')
+                    this.getTaskById()
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось изменить статус!"
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
+            taskPause() {
+                this.busy = true
+                let id = this.$route.params.Pid;
+                console.log('taskId=', id);
+                axios.post('/api/tasks/status/' + id + '/pause',
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.message = "Статус задачи изменен"
+                    this.$bvToast.show('success-toast')
+                    this.getTaskById()
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось изменить статус!"
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
+            taskEnd() {
+                this.busy = true
+                let id = this.$route.params.Pid;
+                console.log('taskId=', id);
+                axios.post('/api/tasks/status/' + id + '/end',
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.message = "Статус задачи изменен"
+                    this.$bvToast.show('success-toast')
+                    this.getTaskById()
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось изменить статус!"
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
+
+
         },
 
         beforeMount() {
-            this.getAllTasks()
-
+            this.getTaskMembers()
+            this.getTaskById()
         },
 
         beforeDestroy() {

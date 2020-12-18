@@ -68,7 +68,7 @@
                         responsive="sm"
                         :per-page="perPage"
                         :current-page="currentPage"
-                        @row-dblclicked="onRowDoubleClick"
+                        @row-dblclicked = "(item) => onRowDoubleClick(item)"
                 >
 
                     <template
@@ -76,14 +76,18 @@
                     >
                         {{ data.item.members.join(', ')}}
                     </template>
-                    <!--A custom formatted column-->
-                    <!--<template slot="name" slot-scope="data">{{data.value.empId}}</template>-->
 
-                    <!--<template v-slot:cell()="{empId}">-->
+                    <!--<template v-slot:cell(taskId)>-->
+                        <!--<b-button size="sm" @click="onRowDoubleClick" class="mr-1">-->
+                            <!--Info modal-->
+                        <!--</b-button>-->
                     <!--</template>-->
-                    <!--<div v-for="post in this.postsTask" :key="post.id">-->
-                    <!--<slot :empId="post"></slot>-->
-                    <!--</div>-->
+
+                <template v-slot:cell(taskId)="data">
+                    <!--<router-link :to="{path:'/tasks/${data.value'}">{{ data.value }}</router-link>-->
+                    <!--<router-link :to="{ path:'/tasks/${data.value', params: { taskId: data.value.id} }">{{ data.value }}</router-link>-->
+                    <router-link :to="{name:'currentTask', params: {Pid:data.value} }">{{ data.value }}</router-link>
+                </template>
 
                     <template v-slot:cell(selected)="{ rowSelected }">
                         <template v-if="rowSelected">
@@ -327,6 +331,14 @@
 
     export default {
         name: 'AdminTasks',
+        watch: {
+            $route: {
+                immediate: true,
+                handler(to) {
+                    document.title = to.meta.title || 'TELPTracker';
+                }
+            },
+        },
         computed: {
             currentUser() {
                 return this.$store.state.auth.user;
@@ -560,11 +572,10 @@
                 }
             },
 
-            onRowDoubleClick(taskId) {
-                // this.$router.push('/tasks/current')
-                this.$router.push({name:'currentTask',params:{Pid:taskId}})
+            onRowDoubleClick(item) {
+                console.log('item=', item.taskId);
+                this.$router.push({name:'currentTask',params:{Pid:item.taskId}})
             }
-
 
         },
 

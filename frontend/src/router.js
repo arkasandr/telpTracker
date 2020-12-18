@@ -12,23 +12,43 @@ export const router = new Router({
         {
             path: '/',
             name: 'home',
-            component: Home
+            component: Home,
+            meta: {
+                auth: true,
+                title: 'TELPTracker'
+            }
         },
         {
             path: '/home',
-            component: Home
+            component: Home,
+            meta: {
+                auth: true,
+                title: 'TELPTracker'
+            }
         },
         {
             path: '/login',
-            component: Login
+            component: Login,
+            meta: {
+                auth: true,
+                title: 'Login'
+            }
         },
         {
             path: '/register',
-            component: Register
+            component: Register,
+            meta: {
+                auth: true,
+                title: 'Регистрация'
+            }
         },
         {
             path: '/profile',
             name: 'profile',
+            meta: {
+                auth: true,
+                title: 'Профиль'
+            },
             // lazy-loaded
             component: () => import('./views/Profile.vue')
         },
@@ -53,18 +73,21 @@ export const router = new Router({
         {
             path: '/tasks',
             name: 'adminTasks',
+            meta: {
+                auth: true,
+                title: 'Задачи'
+            },
             // lazy-loaded
             component: () => import('./views/AdminTasks.vue')
         },
-        // {
-        //     path: '/tasks',
-        //     name: 'userTasks',
-        //     // lazy-loaded
-        //     component: () => import('./views/CurrentTask.vue')
-        // },
+
         {
             path: '/tasks/:Pid',
             name: 'currentTask',
+            meta: {
+                auth: true,
+                title: ':Pid'
+            },
             // lazy-loaded
             component: () => import('./views/CurrentTask.vue')
         }
