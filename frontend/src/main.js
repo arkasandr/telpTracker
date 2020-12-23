@@ -14,6 +14,12 @@ import {
     faSignOutAlt
 } from '@fortawesome/free-solid-svg-icons'
 
+import moment from 'moment-timezone'
+moment.tz.setDefault('Asia/Jakarta')
+
+// import moment from 'moment'
+Vue.prototype.moment = moment;
+
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 
 Vue.use(VeeValidate);

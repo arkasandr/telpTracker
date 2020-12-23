@@ -47,7 +47,7 @@ public class TaskService {
     @Transactional
     public TaskDto addNewTaskToEmployee(Task task) {
         log.info("Будет создана задача: " + task.toString());
-        Employee manager = getLoginEmployeeTasks();
+        Employee manager = getLoginEmployee();
         Set<Task> employeeTasks = manager.getTasks();
         Set<Employee> employeeSet = task.getMembers();
         Employee[] array = employeeSet.toArray(new Employee[employeeSet.size()]);
@@ -92,7 +92,7 @@ public class TaskService {
     @Transactional
     public List<TaskListDto> getAllEmployeeTasks() {
         List<TaskListDto> result = new ArrayList<>();
-        Employee employee = getLoginEmployeeTasks();
+        Employee employee = getLoginEmployee();
         Set<Task> employeeTasks = employee.getTasks();
         List<Task> resultTasks = employeeTasks
                 .stream()
@@ -186,7 +186,7 @@ public class TaskService {
         log.info("Задача taskId = " + taskId + " закончена");
     }
 
-    private Employee getLoginEmployeeTasks() {
+    private Employee getLoginEmployee() {
         String emplName = currentUserService.getCurrentEmployee().getUsername();
         Optional<Employee> optionalEmployee = employeeRepository.findByUsername(emplName);
         return optionalEmployee.orElseGet(Employee::new);

@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 13
+      author: Alex Arkashev
+      changes:
+        - dropColumn:
+            tableName: task_messages
+            columns:
+              - column:
+                  name: spend_time
+        - addColumn:
+            tableName: task_messages
+            columns:
+              - column:
+                  name: spend_time
+                  type: time
+

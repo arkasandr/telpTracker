@@ -68,6 +68,9 @@ public class Task {
     @ElementCollection
     private Set<Employee> members;
 
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private List<TaskMessage> messages;
+
     @Override
     public String toString() {
         return "Task{" +

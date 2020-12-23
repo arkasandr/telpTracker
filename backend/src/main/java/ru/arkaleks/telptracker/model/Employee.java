@@ -114,6 +114,11 @@ public class Employee {
     @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
     private List<EmployeeRole> employeeRole;
 
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
+    private List<TaskMessage> taskMessage;
+
+
+
     @Override
     public String toString() {
         return "Employee{" +

@@ -3,13 +3,11 @@ package ru.arkaleks.telptracker.controllers;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ru.arkaleks.telptracker.controllers.dto.EmployeeDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskListDto;
 import ru.arkaleks.telptracker.controllers.impl.TaskService;
-import ru.arkaleks.telptracker.model.Employee;
 import ru.arkaleks.telptracker.model.Task;
 
 import java.util.List;

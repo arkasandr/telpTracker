@@ -12,129 +12,227 @@
             </template>
 
 
-            <b-jumbotron>
-                <b-row class="mPageTitle">
-                    <!--<b-col>#{{this.$route.params.Pid.taskId}} Задача "{{this.$route.params.Pid.title}}"</b-col>-->
-                    <b-col>#{{this.currentTask.taskId}} Задача "{{this.currentTask.title}}"</b-col>
-                </b-row>
-                <p>
+            <div class="task-card">
+                <b-card bg-variant="light" border-variant="light">
+                    <b-row class="mPageTitle">
+                        <!--<b-col>#{{this.$route.params.Pid.taskId}} Задача "{{this.$route.params.Pid.title}}"</b-col>-->
+                        <b-col>#{{this.currentTask.taskId}} Задача "{{this.currentTask.title}}"</b-col>
+                    </b-row>
+                    <p>
 
-                </p>
+                    </p>
 
 
-                <b-row>
-                    <b-col lg="2">
+                    <b-row>
+                        <b-col lg="2">
+                            <b-row>
+                                <b-col class="task-bold-letter">
+                                    {{this.getCurrentManager[0] + " " + this.getCurrentManager[1]}}
+                                </b-col>
+                            </b-row>
+
+                            <b-row>
+                                <b-col class="task-sm-letter">
+                                    Постановщик
+                                </b-col>
+                            </b-row>
+                        </b-col>
+
+                        <b-col lg="2">
+                            <b-row>
+                                <b-col class="task-bold-letter">
+                                    {{this.getCurrentExecutor[0] + " " + this.getCurrentExecutor[1]}}
+                                </b-col>
+                            </b-row>
+
+                            <b-row>
+                                <b-col class="task-sm-letter">
+                                    Исполнитель
+                                </b-col>
+                            </b-row>
+                        </b-col>
+
+
+                        <b-col lg="2">
+                            <b-row>
+                                <b-col class="task-bold-letter">
+                                    {{this.currentTask.startDate}}
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col class="task-sm-letter">
+                                    Старт
+                                </b-col>
+                            </b-row>
+                        </b-col>
+                        <b-col lg="2">
+                            <b-row>
+                                <b-col class="task-bold-letter">
+                                    {{this.currentTask.finishDate}}
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col class="task-sm-letter">
+                                    Дедлайн
+                                </b-col>
+                            </b-row>
+                        </b-col>
+                        <b-col lg="1">
+                        </b-col>
+                        <b-col lg="3">
+                            <b-row>
+                                <b-col class="task-bold-letter">
+                                    {{this.currentTask.statusUpdateDate}}
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col class="task-sm-letter">
+                                    Статус: "{{this.currentTask.status}}"
+                                </b-col>
+                            </b-row>
+                        </b-col>
+                    </b-row>
+
+                    <hr class="my-4">
+
+                    <b-row>
+                        <b-col class="task-bold-letter">
+                            {{this.currentTask.description}}
+                        </b-col>
+                    </b-row>
+
+                    <hr class="my-4">
+
+                    <b-row>
+                        <b-col lg="4">
+                        </b-col>
+                        <b-col lg="3">
+
+                        </b-col>
+
+                        <b-col lg="5 justify-content-end d-flex">
+                            <b-button class="task_ls_btn"
+                                      @click="taskStart"
+                                      variant="success"
+                                      size="lg"
+                            >
+                                <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
+                                Начать
+                            </b-button>
+                            <b-button class="task_fl_btn"
+                                      @click="taskPause"
+                                      variant="success"
+                                      size="lg"
+                            >Приостановить
+                            </b-button>
+                            <b-button class="task_mid_btn"
+                                      @click="taskEnd"
+                                      variant="success"
+                                      size="lg"
+                            >Закончить
+                            </b-button>
+                        </b-col>
+                    </b-row>
+                </b-card>
+            </div>
+
+
+            <div class="task-card">
+                <b-card bg-variant="light" border-variant="light">
+                    <div>
                         <b-row>
-                            <b-col class = "task-bold-letter">
-                                {{this.getCurrentManager}}
+                            <!--<b-col lg="2">-->
+                            <!--<b-button class="task_fl_btn"-->
+                            <!--variant="success"-->
+                            <!--size="lg"> Прикрепить-->
+                            <!--<b-icon-paperclip variant="light" font-scale="1.4" shift-v="-2"  ></b-icon-paperclip>-->
+                            <!--</b-button>-->
+                            <!--</b-col>-->
+                            <b-col lg="1">
+                                <b-button class="task_xs_btn"
+                                          variant="white"
+                                          size="lg"
+                                          id="add-file-button"
+                                >
+                                    <b-icon-paperclip font-scale="2.3" shift-v="-1"></b-icon-paperclip>
+                                </b-button>
+                                <b-tooltip target="add-file-button" placement="bottom" variant="dark">
+                                    Прикрепить
+                                </b-tooltip>
+                            </b-col>
+                            <b-col lg="10">
+                                <b-form-textarea
+                                        id="input-live-description"
+                                        v-model="messageBody"
+                                        aria-describedby="input-live-description-help input-live-description-feedback"
+                                        placeholder="Напишите сообщение"
+                                        trim
+                                ></b-form-textarea>
+                            </b-col>
+                            <b-col lg="1">
+                                <b-button class="task_xs_btn"
+                                          variant="white"
+                                          size="lg"
+                                          id="send-button"
+                                          @click="addNewMessage"
+                                >
+                                    <b-icon-reply font-scale="2.3"></b-icon-reply>
+                                </b-button>
+                                <b-tooltip target="send-button" placement="bottom" variant="dark">
+                                    Отправить
+                                </b-tooltip>
                             </b-col>
                         </b-row>
 
                         <b-row>
-                            <b-col class="task-sm-letter">
-                                Постановщик
+                            <b-col class="time-spend">
+                                Потрачено
                             </b-col>
-                        </b-row>
-                    </b-col>
 
-                    <b-col lg="2">
+                        </b-row>
                         <b-row>
-                            <b-col class = "task-bold-letter">
-                                {{this.getCurrentExecutor}}
+                            <b-col lg="1">
+                              Когда
                             </b-col>
-                        </b-row>
+                            <b-col lg="5">
 
-                        <b-row>
-                            <b-col class="task-sm-letter">
-                                Исполнитель
+                                <b-form-datepicker
+                                        v-model="spendDate"
+                                        placeholder="Выберите дату" locale="ru"
+                                ></b-form-datepicker>
                             </b-col>
-                        </b-row>
-                    </b-col>
-
-
-                    <b-col lg="2">
-                        <b-row>
-                            <b-col class = "task-bold-letter">
-                                {{this.currentTask.startDate}}
+                            <b-col lg="5">
                             </b-col>
                         </b-row>
                         <b-row>
-                            <b-col class="task-sm-letter">
-                                Старт
+                            <b-col >
+                                Сколько
+                            </b-col>
+                            <b-col lg="5">
+
+                                <b-form-timepicker
+                                        v-model="timeSpendValue"
+                                        v-bind="labels[locale] || {}"
+                                        :locale="locale"
+                                ></b-form-timepicker>
+                            </b-col>
+                            <b-col lg="5">
+                            </b-col>
+                            <b-col >
+
                             </b-col>
                         </b-row>
-                    </b-col>
-                    <b-col lg="2">
-                        <b-row>
-                            <b-col class = "task-bold-letter">
-                                {{this.currentTask.finishDate}}
-                            </b-col>
-                        </b-row>
-                        <b-row>
-                            <b-col class="task-sm-letter">
-                                Дедлайн
-                            </b-col>
-                        </b-row>
-                    </b-col>
-                    <b-col lg="1">
-                    </b-col>
-                    <b-col lg="3">
-                        <b-row>
-                            <b-col class="task-bold-letter">
-                               {{this.currentTask.statusUpdateDate}}
-                            </b-col>
-                        </b-row>
-                        <b-row>
-                            <b-col class="task-sm-letter">
-                                Статус: "{{this.currentTask.status}}"
-                            </b-col>
-                        </b-row>
-                    </b-col>
-                </b-row>
+                    </div>
+                </b-card>
+            </div>
 
-                <hr class="my-4">
+            <div>
+                <b-card bg-variant="light" border-variant="light">
+                    <div>
 
-                <b-row>
-                    <b-col class="task-bold-letter">
-                        {{this.currentTask.description}}
-                    </b-col>
-                </b-row>
-
-                <hr class="my-4">
-
-                <b-row>
-                    <b-col lg="4">
-                    </b-col>
-                    <b-col lg="3">
-
-                    </b-col>
-
-                    <b-col lg="5 justify-content-end d-flex">
-                        <b-button class="task_ls_btn"
-                                  @click="taskStart"
-                                  variant="success"
-                                  size="lg"
-                        >
-                            <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
-                            Начать
-                        </b-button>
-                        <b-button class="task_fl_btn"
-                                  @click="taskPause"
-                                  variant="success"
-                                  size="lg"
-                        >Приостановить
-                        </b-button>
-                        <b-button class="task_mid_btn"
-                                  @click="taskEnd"
-                                  variant="success"
-                                  size="lg"
-                        >Закончить
-                        </b-button>
-                    </b-col>
-                </b-row>
-
-
-            </b-jumbotron>
+                    </div>
+                </b-card>
+            </div>
 
 
             <b-toast
@@ -191,8 +289,9 @@
 <script>
 
     import 'bootstrap/dist/css/bootstrap.css'
-    import 'bootstrap-vue/dist/bootstrap-vue.css'
     import axios from 'axios'
+    import moment from 'moment'
+    import 'moment-timezone'
 
     export default {
         name: 'UserTasks',
@@ -210,20 +309,20 @@
             },
 
             getCurrentExecutor() {
-                let user;
-                this.executors.forEach(function(item) {
-                    if(item.role === "ИСПОЛНИТЕЛЬ") {
-                        user =  item.surname
+                let user = [];
+                this.executors.forEach(function (item) {
+                    if (item.role === "ИСПОЛНИТЕЛЬ") {
+                        user = [item.surname, item.firstName]
                     }
                 });
                 return user
             },
 
             getCurrentManager() {
-                let user;
-                this.executors.forEach(function(item) {
-                    if(item.role === "ПОСТАНОВЩИК") {
-                        user =  item.surname
+                let user = [];
+                this.executors.forEach(function (item) {
+                    if (item.role === "ПОСТАНОВЩИК") {
+                        user = [item.surname, item.firstName]
                     }
                 });
                 return user
@@ -253,12 +352,28 @@
                 taskStartDate: '',
                 taskFinishDate: '',
                 executors: [],
-                currentTask:'',
+                currentTask: '',
+                messageBody: '',
+                locale: 'de',
+                labels: {
+                    de: {
+                        labelHours: 'Часы',
+                        labelMinutes: 'Минуты',
+                        labelSeconds: 'Секунды',
+                        labelIncrement: 'Erhöhen',
+                        labelDecrement: 'Verringern',
+                        labelSelected: 'Ausgewählte Zeit',
+                        labelNoTimeSelected: 'Введите время',
+                        labelCloseButton: 'Применить'
+                    }
+                },
+                timeSpendValue: '',
+                spendDate: '',
 
                 isDeletePopup: false,
                 currentPage: 1,
                 perPage: 5,
-                currentId:'',
+                currentId: '',
 
                 checkboxSelected: false,
                 disableState: true,
@@ -372,6 +487,28 @@
                 })
             },
 
+            addNewMessage() {
+                this.busy = true
+                console.log('timeSpendValue', moment.tz(this.timeSpendValue, "America/New_York"))
+                axios.post('/api/tasks/message/add',
+                    {
+                        text: this.messageBody,
+                        spendTime: this.timeSpendValue,
+                        spendDate: this.spendDate,
+                        taskNumber: this.currentTask.taskId
+                    },
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.message = "Новый комментарий добавлен!"
+                    this.$bvToast.show('success-toast')
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось добавить комментарий!"
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
 
 
         },
@@ -391,10 +528,20 @@
 <style>
     .mPageTitle {
         font-family: Arial;
-        margin: 10px 10px 50px 10px;
+        margin: 0 10px 50px 10px;
         font-size: 28px;
         text-align: center;
 
+    }
+
+    .task-card {
+        margin: 0 0 20px 0;
+    }
+    .time-spend {
+        font-family: Arial;
+        margin: 20px 10px 10px 90px;
+        font-size: 16px;
+        font-weight: bold;
     }
 
     .task-sm-letter {
@@ -421,9 +568,17 @@
     }
 
     .task_ls_btn {
-        margin: 0 0 0 10px;
+        margin: 0 0 0 0;
         text-align: center;
         width: 90px;
+        font-family: Arial;
+        font-size: 14px;
+    }
+
+    .task_xs_btn {
+        margin: 0 0 0 0;
+        text-align: center;
+        width: 60px;
         font-family: Arial;
         font-size: 14px;
     }
@@ -464,6 +619,10 @@
         color: black !important;
         background-color: #fff;
         border: 1px solid #dee2e6;
+    }
+
+    .bg-light {
+        background-color: #e9ecef !important;
     }
 
 </style>
