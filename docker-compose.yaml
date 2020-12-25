@@ -8,8 +8,8 @@ services:
       DB_HOST: 10.167.128.109
       DB_PORT: 15432
     restart: always
-        links:
-          - db
+    links:
+      - db
     build:
       context: .
       target: backend
