@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 7
+      author: Alex Arkashev
+      changes:
+        - createTable:
+            tableName: task_messages
+            columns:
+              - column:
+                  name: message_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: text
+                  type: text
+              - column:
+                  name: spendTime
+                  type: datetime
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    references: tasks(task_id)
+                    foreignKeyName: fk_tasks_to_messages
+              - column:
+                  name: employee_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    references: employees(employee_id)
+                    foreignKeyName: fk_employees_to_messages
+        - createTable:
+            tableName: enclosures
+            columns:
+              - column:
+                  name: enclosure_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: true
+                    primaryKey: true
+              - column:
+                  name: unit
+                  type: blob
+              - column:
+                  name: message_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    references: task_messages(message_id)
+                    foreignKeyName: fk_task_messages_to_enclosures
+

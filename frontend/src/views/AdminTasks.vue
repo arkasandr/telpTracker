@@ -629,7 +629,7 @@
     .task_mid_btn {
         margin: 0 0 0 5px;
         text-align: center;
-        width: 100px;
+        width: 110px;
         font-family: Arial;
         font-size: 14px;
     }
@@ -645,7 +645,7 @@
     .task_fl_btn {
         margin: 0 0 0 5px;
         text-align: center;
-        width: 130px;
+        width: 140px;
         font-family: Arial;
         font-size: 14px;
     }

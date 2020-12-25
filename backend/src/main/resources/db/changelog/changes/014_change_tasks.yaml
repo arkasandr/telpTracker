@@ -1,0 +1,15 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 14
+      author: Alex Arkashev
+      changes:
+        - addColumn:
+            tableName: task_messages
+            columns:
+              - column:
+                  name: task_number
+                  type: bigint
