@@ -28,4 +28,5 @@ public class TaskMessageDto {
     private LocalDate spendDate;
 
     private long taskNumber;
+
 }

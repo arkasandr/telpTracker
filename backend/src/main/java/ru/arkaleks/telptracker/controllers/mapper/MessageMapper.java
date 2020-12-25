@@ -24,5 +24,7 @@ public interface MessageMapper {
 
     TaskMessageDto mapToTaskMessageDto(TaskMessage taskMessage);
 
+    List<TaskMessageDto> mapToTaskMessageDtoList(List<TaskMessage> taskMessageList);
+
 
 }

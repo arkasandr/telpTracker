@@ -229,7 +229,56 @@
             <div>
                 <b-card bg-variant="light" border-variant="light">
                     <div>
+                        <b-table
+                                id="single-task-table"
+                                class="b_message_table"
+                                ref="messageTable"
+                                selectable
+                                :select-mode="selectMode"
+                                :items="singleTask"
+                                :fields="singleTaskFields"
+                                responsive="sm"
+                                thead-class="hidden_header"
+                        >
 
+                            <template
+                                    v-slot:cell(members)="data"
+                            >
+                                {{ data.item.members.join(', ')}}
+                            </template>
+
+                            <template
+                                    v-slot:cell(text)="data"
+                            >
+                                <b-row>
+                                    <b-col class="message-header">
+                                        {{ data.item.spendDate}}
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col class="task-bold-letter">
+                                        {{ data.item.sender}}
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col >
+                                        {{ data.item.text}}
+                                    </b-col>
+                                </b-row>
+                                <b-row>
+                                    <b-col lg="2">
+                                        <b-icon-alarm font-scale="0.8"></b-icon-alarm>
+                                        {{ data.item.spendTime}}
+                                    </b-col>
+                                    <b-col lg="1">
+                                    </b-col>
+                                    <b-col >
+
+                                    </b-col>
+                                </b-row>
+                            </template>
+
+                        </b-table>
                     </div>
                 </b-card>
             </div>
@@ -328,6 +377,10 @@
                 return user
             },
 
+            getSender(){
+                return this.singleTask
+            },
+
             rows() {
                 return this.postsTask.length
             },
@@ -342,7 +395,7 @@
 
         data() {
             return {
-                postsTask: [],
+                singleTask: [],
                 messageTask: '',
                 message: '',
                 taskTitle: '',
@@ -369,6 +422,15 @@
                 },
                 timeSpendValue: '',
                 spendDate: '',
+                singleTaskFields: [
+                    {key: 'text', label: 'Текст', sortable: true},
+                    // {key: 'spendTime', label: 'Время', sortable: true},
+                    // {key: 'spendDate', label: 'Дата', sortable: true},
+                    // {key: 'sender', label: 'Отправитель', sortable: true},
+                ],
+                sender:'',
+                singleMessage: '',
+
 
                 isDeletePopup: false,
                 currentPage: 1,
@@ -510,12 +572,83 @@
                 })
             },
 
+            getAllMessages() {
+                this.busy = true
+                let id = this.$route.params.Pid;
+                axios.post('/api/tasks/message/'+ id + '/getall'
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.messageTask = "Все комментарии загружены"
+                    this.singleTask = response.data
+                    console.log('allMessages', this.singleTask)
+                    this.singleTask.forEach(element =>
+                        // console.log('with sender', Object.assign(element, this.getSenderByTaskMessageId(element.messageId)))
+                        Object.assign(element, this.getSenderByTaskMessageId(element.messageId)),
+                    console.log('allModifyMessages', this.singleTask)
+                    )
+                    this.$bvToast.show('success-toast')
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось загрузить комментарии!"
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
 
+            // modifySingleTask() {
+            //     this.singleTask.forEach(element =>
+            //         Object.assign(element, this.getSenderByTaskMessageId(element.messageId)),
+            //     console.log('allMessages with senders one', this.singleTask)
+            //     )
+            //     console.log('allMessages with senders', this.singleTask)
+            //     // let messageId = this.singleTask.messageId
+            //     // let sender
+            //     // console.log('this.singleTask.messageId', messageId)
+            //     // this.busy = true
+            //     // axios.post('/api/tasks/message/'+ messageId + '/getsender'
+            //     // ).then(response => {
+            //     //     console.log('sender after response', {sender:  response.data.surname})
+            //     //     sender = {sender:  response.data.surname}
+            //     // }).catch(error => {
+            //     //     console.log(error)
+            //     // }).finally(() => {
+            //     // })
+            //     // return sender
+            // },
+
+            getSenderByTaskMessageId(id) {
+                // let messageId = this.singleTask.messageId
+                let sender
+                console.log('this.singleTask.messageId', id)
+                this.busy = true
+                axios.post('/api/tasks/message/'+ id + '/getsender'
+                ).then(response => {
+                    console.log('sender after response', {sender:  response.data.surname})
+                    let fi = response.data.surname + ' ' + response.data.firstName
+                    sender = {sender:  fi}
+                    for (let i of this.singleTask) {
+                        if (i.messageId === id) {
+                            Object.assign(i, sender),
+                                console.log('allModifyMessages', this.singleTask)
+                        }
+                    }
+                }).catch(error => {
+                    console.log(error)
+                }).finally(() => {
+                    this.$refs.messageTable.refresh();
+                })
+                return sender
+            },
         },
+
+
 
         beforeMount() {
             this.getTaskMembers()
             this.getTaskById()
+            this.getAllMessages()
+
         },
 
         beforeDestroy() {
@@ -591,15 +724,15 @@
         font-size: 14px;
     }
 
-    .b_table thead {
-        background-color: white;
-        border: 3px solid limegreen !important;
-    }
+    /*.b_table thead {*/
+        /*background-color: white;*/
+        /*border: 3px solid limegreen !important;*/
+    /*}*/
 
-    .b_table tbody {
-        background-color: white;
-        border: 3px solid limegreen !important;
-    }
+    /*.b_table tbody {*/
+        /*background-color: white;*/
+        /*border: 3px solid limegreen !important;*/
+    /*}*/
 
 
     .page-item.active .page-link {
@@ -623,6 +756,19 @@
 
     .bg-light {
         background-color: #e9ecef !important;
+    }
+
+    .hidden_header {
+        display: none;
+    }
+
+    .message-header {
+        font-family: Arial;
+        /*margin: 10px 10px 20px 10px;*/
+        font-size: 14px;
+        text-align: center;
+        color: grey;
+
     }
 
 </style>
