@@ -3,7 +3,7 @@ RUN apt-get update && apt-get install maven -y
 WORKDIR /backend
 COPY backend .
 RUN mvn install
-ENTRYPOINT ["java", "-jar", "target/archivePSN-1.0.jar"]
+ENTRYPOINT ["java", "-jar", "target/telpTracker-1.0.jar"]
 
 # build vue frontend static files
 FROM node:lts-buster-slim AS frontend
