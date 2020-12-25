@@ -1,56 +1,56 @@
 version: "3.5"
 
 services:
-  psn:
-    container_name: psn
+  telp:
+    container_name: telp_backend
     #    image: backend_psn:v2
     environment:
       DB_HOST: 10.167.128.109
       DB_PORT: 15432
     restart: always
-    #    links:
-    #      - db
+        links:
+          - db
     build:
       context: .
       target: backend
     ports:
-      - 8885:8885
+      - 8881:8881
     networks:
       - internal-network
 
   nginx_psn:
-    container_name: nginx_psn
+    container_name: nginx_telp
     #    image: nginx_psn:v
     restart: always
     build:
       context: .
       target: nginx-frontend
     ports:
-      - 8884:8884
+      - 8882:8882
     links:
-      - psn:psn
+      - telp:telp
     networks:
       - internal-network
 
-#  db:
-#    image: postgres:10-alpine
-#    container_name: db
-#    ports:
-#      - 5433:5432
-##      - 5433:15432
-#    volumes:
-#      - ./pg_data:/var/lib/postgresql/data/pgdata
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres
-#      POSTGRES_DB: archivepsn
-##      POSTGRES_USER: db3u
-##      POSTGRES_PASSWORD: wvhFR7pwYtxUz5j7
-##      POSTGRES_DB: db3
-#      PGDATA: /var/lib/postgresql/data/pgdata
-#    restart: always
-#    networks:
-#      - internal-network
+  db:
+    image: telp_db
+    container_name: telp_db
+    ports:
+      - 5433:5432
+#      - 5433:15432
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: telptracker
+#      POSTGRES_USER: db3u
+#      POSTGRES_PASSWORD: wvhFR7pwYtxUz5j7
+#      POSTGRES_DB: db3
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+    networks:
+      - internal-network
 
 networks:
   internal-network:
