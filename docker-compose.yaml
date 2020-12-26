@@ -5,11 +5,11 @@ services:
     container_name: telp_backend
     #    image: backend_psn:v2
     environment:
-      DB_HOST: localhost
-      DB_PORT: 5432
+      DB_HOST: db
+#      DB_PORT: 5432
     restart: always
-#    links:
-#      - db
+    links:
+      - db
     build:
       context: .
       target: backend
