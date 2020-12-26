@@ -33,7 +33,7 @@ services:
       - internal-network
 
   db:
-    image: telp_db
+    image: postgres:10-alpine
     container_name: telp_db
     ports:
       - 5433:5432
