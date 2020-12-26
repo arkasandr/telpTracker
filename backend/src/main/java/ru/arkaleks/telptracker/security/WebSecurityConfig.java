@@ -87,7 +87,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(accessDeniedHandler())
-                .authenticationEntryPoint(myHttp403ForbiddenEntryPoint())
+//                .authenticationEntryPoint(myHttp403ForbiddenEntryPoint())
                 .and()
                 .rememberMe()
                 .rememberMeServices(rememberMeServices());
@@ -105,10 +105,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new MyAccessDeniedHandler();
     }
 
-    @Bean
-    public AuthenticationEntryPoint myHttp403ForbiddenEntryPoint() {
-        return new MyHttp403ForbiddenEntryPoint();
-    }
+//    @Bean
+//    public AuthenticationEntryPoint myHttp403ForbiddenEntryPoint() {
+//        return new MyHttp403ForbiddenEntryPoint();
+//    }
 
 
     @Bean
