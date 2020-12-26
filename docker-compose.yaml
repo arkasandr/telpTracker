@@ -32,25 +32,25 @@ services:
     networks:
       - internal-network
 
-#  db:
-#    image: telp_db
-#    container_name: telp_db
-#    ports:
-#      - 5433:5432
-##      - 5433:15432
-#    volumes:
-#      - ./pg_data:/var/lib/postgresql/data/pgdata
-#    environment:
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres
-#      POSTGRES_DB: telptracker
-##      POSTGRES_USER: db3u
-##      POSTGRES_PASSWORD: wvhFR7pwYtxUz5j7
-##      POSTGRES_DB: db3
-#      PGDATA: /var/lib/postgresql/data/pgdata
-#    restart: always
-#    networks:
-#      - internal-network
+  db:
+    image: telp_db
+    container_name: telp_db
+    ports:
+      - 5433:5432
+#      - 5433:15432
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: telptracker
+#      POSTGRES_USER: db3u
+#      POSTGRES_PASSWORD: wvhFR7pwYtxUz5j7
+#      POSTGRES_DB: db3
+      PGDATA: /var/lib/postgresql/data/pgdata
+    restart: always
+    networks:
+      - internal-network
 
 networks:
   internal-network:
