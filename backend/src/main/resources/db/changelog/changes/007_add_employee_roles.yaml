@@ -1,0 +1,36 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 7
+      author: Alex Arkashev
+      changes:
+        - insert:
+            tableName: employee_role
+            columns:
+              - column:
+                  name: rolename
+                  value: "ROLE_USER"
+              - column:
+                  name: employee_id
+                  value: 1
+        - insert:
+            tableName: employee_role
+            columns:
+              - column:
+                  name: rolename
+                  value: "ROLE_ADMIN"
+              - column:
+                  name: employee_id
+                  value: 2
+        - insert:
+            tableName: employee_role
+            columns:
+              - column:
+                  name: rolename
+                  value: "ROLE_USER"
+              - column:
+                  name: employee_id
+                  value: 3

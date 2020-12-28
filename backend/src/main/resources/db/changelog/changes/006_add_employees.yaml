@@ -1,0 +1,108 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 6
+      author: Alex Arkashev
+      changes:
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: surname
+                  value: "Арканов"
+              - column:
+                  name: first_name
+                  value: "Александр"
+              - column:
+                  name: middle_name
+                  value: "Евгеньевич"
+              - column:
+                  name: department
+                  value: "Электроснабжения"
+              - column:
+                  name: group_number
+                  value: 1
+              - column:
+                  name: position
+                  value: "ведущий инженер"
+              - column:
+                  name: username
+                  value: "arkaleks"
+              - column:
+                  name: password
+                  value: "$2a$10$wmLBF8sR/oHqb2svm0S4GeGmh6LcpH6zdlOXUCMdCOh3kqD/Hx3r."
+              - column:
+                  name: email
+                  value: "arkaleks@yandex.ru"
+              - column:
+                  name: role
+                  value: "ИСПОЛНИТЕЛЬ"
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: surname
+                  value: "Лукашевич"
+              - column:
+                  name: first_name
+                  value: "Владимир"
+              - column:
+                  name: middle_name
+                  value: "Иосифович"
+              - column:
+                  name: department
+                  value: "Электроснабжения"
+              - column:
+                  name: group_number
+                  value: 1
+              - column:
+                  name: position
+                  value: "Руководитель группы"
+              - column:
+                  name: username
+                  value: "luka"
+              - column:
+                  name: password
+                  value: "$2a$10$pEYvxeCS7kYjkGIEo5POh.c/YwEw3n9J3x2fujsh5OMI.aS7l3ZJ2"
+              - column:
+                  name: email
+                  value: "luka@telp.ru"
+              - column:
+                  name: role
+                  value: "ПОСТАНОВЩИК"
+        - insert:
+            tableName: employees
+            columns:
+              - column:
+                  name: surname
+                  value: "Подморгунский"
+              - column:
+                  name: first_name
+                  value: "Павел"
+              - column:
+                  name: middle_name
+                  value: "Геннадьевич"
+              - column:
+                  name: department
+                  value: "Электроснабжения"
+              - column:
+                  name: group_number
+                  value: 1
+              - column:
+                  name: position
+                  value: "ведущий инженер"
+              - column:
+                  name: username
+                  value: "pavel"
+              - column:
+                  name: password
+                  value: "$2a$10$Ee8iZi5waxxDC49ol5yfF.hkSXTjnlmlN6KKmhZs4EWOVzrcv2DtG"
+              - column:
+                  name: email
+                  value: "luka@telp.ru"
+              - column:
+                  name: role
+                  value: "ИСПОЛНИТЕЛЬ"

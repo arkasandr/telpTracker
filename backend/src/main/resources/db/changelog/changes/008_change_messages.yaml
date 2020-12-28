@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 8
+      author: Alex Arkashev
+      changes:
+        - addColumn:
+            tableName: task_messages
+            columns:
+              - column:
+                  name: spend_date
+                  type: datetime
+
