@@ -4,7 +4,7 @@ databaseChangeLog:
           username: postgres
 
   - changeSet:
-      id: 14
+      id: 5
       author: Alex Arkashev
       changes:
         - addColumn:

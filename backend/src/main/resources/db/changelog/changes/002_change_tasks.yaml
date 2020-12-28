@@ -4,11 +4,12 @@ databaseChangeLog:
           username: postgres
 
   - changeSet:
-      id: 3
+      id: 2
       author: Alex Arkashev
       changes:
-        - dropColumn:
-            tableName: employee_task
+        - addColumn:
+            tableName: tasks
             columns:
               - column:
-                  name: id
+                  name: status_update_date
+                  type: datetime

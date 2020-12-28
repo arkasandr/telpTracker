@@ -43,6 +43,9 @@ databaseChangeLog:
               - column:
                   name: email
                   type: varchar(255)
+              - column:
+                  name: role
+                  type: varchar(255)
         - createTable:
             tableName: employee_role
             columns:
@@ -84,21 +87,12 @@ databaseChangeLog:
               - column:
                   name: finish_date
                   type: datetime
-#              - column:
-#                  name: employee_task_id
-#                  type: bigint
-#                  constraints:
-#                    references: employee_task(id)
-#                    foreignKeyName: fk_tasks_to_employee_task
+              - column:
+                  name: status
+                  type: varchar(255)
         - createTable:
             tableName: employee_task
             columns:
-              - column:
-                  name: id
-                  type: bigint
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
               - column:
                   name: employee_id
                   type: bigint

@@ -4,7 +4,7 @@ databaseChangeLog:
           username: postgres
 
   - changeSet:
-      id: 7
+      id: 3
       author: Alex Arkashev
       changes:
         - createTable:
@@ -19,9 +19,6 @@ databaseChangeLog:
               - column:
                   name: text
                   type: text
-              - column:
-                  name: spendTime
-                  type: datetime
               - column:
                   name: task_id
                   type: bigint

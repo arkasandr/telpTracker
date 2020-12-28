@@ -4,12 +4,13 @@ databaseChangeLog:
           username: postgres
 
   - changeSet:
-      id: 5
+      id: 4
       author: Alex Arkashev
       changes:
         - addColumn:
-            tableName: employees
+            tableName: task_messages
             columns:
               - column:
-                  name: role
-                  type: varchar(255)
+                  name: spend_time
+                  type: time
+

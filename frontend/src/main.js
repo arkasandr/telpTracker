@@ -19,6 +19,7 @@ moment.tz.setDefault('Asia/Jakarta')
 
 // import moment from 'moment'
 Vue.prototype.moment = moment;
+moment.locale('ru');
 
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 

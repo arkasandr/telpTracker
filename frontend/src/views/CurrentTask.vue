@@ -175,10 +175,12 @@
                                           size="lg"
                                           id="send-button"
                                           @click="addNewMessage"
+                                          :disabled="this.sendMessageText"
+                                          v-b-tooltip.focus
                                 >
                                     <b-icon-reply font-scale="2.3"></b-icon-reply>
                                 </b-button>
-                                <b-tooltip target="send-button" placement="bottom" variant="dark">
+                                <b-tooltip ref="sendTooltip" target="send-button" placement="bottom" variant="dark">
                                     Отправить
                                 </b-tooltip>
                             </b-col>
@@ -252,7 +254,7 @@
                             >
                                 <b-row>
                                     <b-col class="message-header">
-                                        {{ data.item.spendDate}}
+                                        {{ moment(data.item.spendDate).format('dddd, D MMMM YYYY')}}
                                     </b-col>
                                 </b-row>
                                 <b-row>
@@ -266,9 +268,9 @@
                                     </b-col>
                                 </b-row>
                                 <b-row>
-                                    <b-col lg="2">
+                                    <b-col lg="2" v-if="data.item.spendTime !== null">
                                         <b-icon-alarm font-scale="0.8"></b-icon-alarm>
-                                        {{ data.item.spendTime}}
+                                        {{moment(data.item.spendTime, "HH:mm:ss").format("hh:mm")}}
                                     </b-col>
                                     <b-col lg="1">
                                     </b-col>
@@ -385,6 +387,10 @@
                 return this.postsTask.length
             },
 
+            sendMessageText() {
+               return this.messageBody.length === 0 || this.spendDate.length === 0
+            },
+
         },
         mounted() {
             if (!this.currentUser) {
@@ -424,12 +430,10 @@
                 spendDate: '',
                 singleTaskFields: [
                     {key: 'text', label: 'Текст', sortable: true},
-                    // {key: 'spendTime', label: 'Время', sortable: true},
-                    // {key: 'spendDate', label: 'Дата', sortable: true},
-                    // {key: 'sender', label: 'Отправитель', sortable: true},
                 ],
                 sender:'',
                 singleMessage: '',
+                disableSendMessageState: true,
 
 
                 isDeletePopup: false,
@@ -568,6 +572,11 @@
                     this.message = "Не удалось добавить комментарий!"
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
+                    this.messageBody = ''
+                    this.spendDate = ''
+                    this.timeSpendValue = ''
+                    this.$refs.sendTooltip.$emit('close')
+                    this.getAllMessages()
                     this.busy = false
                 })
             },
