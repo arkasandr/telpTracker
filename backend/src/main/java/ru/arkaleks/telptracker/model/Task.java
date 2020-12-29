@@ -32,6 +32,11 @@ public class Task {
         this.statusUpdateDate = statusUpdateDate;
     }
 
+    public Task(LocalDate finishDate, Set<Employee> members) {
+        this.finishDate = finishDate;
+        this.members = members;
+    }
+
     public Task(Status status, String description, LocalDate startDate, LocalDate finishDate, LocalDate statusUpdateDate, Set<Employee> members) {
         this.status = status;
         this.description = description;

@@ -104,6 +104,16 @@
 
                 <b-row>
                     <b-col lg="4">
+                        <b-button
+                                v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
+                                class="task_mid_btn"
+                                @click="taskChange"
+                                variant="success"
+                                size="lg"
+                        >
+                            <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
+                            Изменить
+                        </b-button>
                     </b-col>
                     <b-col lg="3">
 
@@ -230,7 +240,7 @@
                             </b-col>
                             <b-col lg="5">
                                 <b-button class="task_sh_btn"
-                                          @click="getEmployeeByFio"
+                                          @click="createNewTask"
                                           :disabled="disableNewTask"
                                           variant="success" size="sm">Создать
                                 </b-button>
@@ -262,6 +272,89 @@
                                           variant="success" size="sm">Да, удалить
                                 </b-button>
                                 <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task-delete')"
+                                          variant="danger" size="sm">Отмена
+                                </b-button>
+                            </b-col>
+
+                        </b-row>
+                    </b-modal>
+                </div>
+
+                <div>
+                    <b-modal id="bv-modal-task-change" size="lg" hide-footer :no-close-on-backdrop="true">
+                        <template v-slot:modal-title>
+                            Внесите изменения
+                        </template>
+                        <div class="mPageModal">
+                            <b-row>
+                                <b-col lg="3">
+
+                                </b-col>
+                                <b-col>
+                                    Текущее значение
+                                </b-col>
+                                <b-col lg="4">
+                                    Новое значение
+                                </b-col>
+
+                            </b-row>
+                            <b-row>
+                                <b-col >
+                                    <p></p>
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col lg="3">
+                                    Исполнитель
+                                </b-col>
+                                <b-col>
+                                    {{this.currentTaskExecutor}}
+                                </b-col>
+                                <b-col lg="4">
+                                    <b-form-input
+                                            v-model="newTaskExecutor"
+                                            placeholder="Выберите исполнителя"
+                                            list="taskExecutors-list"
+                                    ></b-form-input>
+                                    <b-form-datalist id="taskExecutors-list" :options="executors">
+                                    </b-form-datalist>
+                                </b-col>
+
+                            </b-row>
+                            <b-row>
+                                <b-col >
+                                    <p></p>
+                                </b-col>
+                            </b-row>
+                            <b-row>
+                                <b-col lg="3">
+                                    Дедлайн
+                                </b-col>
+                                <b-col>
+                                    {{this.currentFinishDate}}
+                                </b-col>
+                                <b-col lg="4">
+                                    <template>
+                                        <div>
+                                            <b-form-datepicker id="task-end-datepicker" v-model="newTaskFinishDate"
+                                                               placeholder="Выберите дату" locale="ru"
+                                                               class="mb-2"></b-form-datepicker>
+                                        </div>
+                                    </template>
+                                </b-col>
+
+                            </b-row>
+                        </div>
+                        <b-row>
+                            <b-col lg="3">
+                            </b-col>
+                            <b-col>
+                            </b-col>
+                            <b-col lg="5">
+                                <b-button class="task_sh_btn" @click="changeTaskDetails"
+                                          variant="success" size="sm">Сохранить
+                                </b-button>
+                                <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task-change')"
                                           variant="danger" size="sm">Отмена
                                 </b-button>
                             </b-col>
@@ -355,6 +448,7 @@
                     this.taskExecutor.length === 0 || this.taskStartDate === 0 ||
                     this.taskFinishDate.length === 0
             },
+
         },
         mounted() {
             if (!this.currentUser) {
@@ -371,6 +465,8 @@
                 taskTitle: '',
                 taskDescription: '',
                 taskExecutor: '',
+                employeeByFio: '',
+                taskExecutors: [],
                 taskStartDate: '',
                 taskFinishDate: '',
                 executors: [],
@@ -401,6 +497,11 @@
                     {key: 'members', label: "Исполнитель", sortable: true}
                 ],
                 busy: false,
+                newTaskExecutor: '',
+                newTaskFinishDate:'',
+                currentFinishDate:'',
+                currentTaskExecutor:'',
+                currentTaskId:'',
             }
         },
         methods: {
@@ -449,14 +550,15 @@
             },
 
 
-            getEmployeeByFio() {
+            createNewTask() {
                 let arr = this.taskExecutor.split(' ')
+                console.log('by fio', arr)
                 axios.post('/api/employee/getbyfio',
                     arr,
                 ).then(response => {
-                    console.log('success employee by fio', response.data)
-                    this.executor = response.data
-                    this.createNewTask()
+                    this.employeeByFio = response.data
+                    console.log('success employee by fio', this.employeeByFio)
+                    this.saveNewTask()
                 }).catch(error => {
                     console.log(error)
                 }).finally(() => {
@@ -464,10 +566,9 @@
                 })
             },
 
-
-            createNewTask() {
+            saveNewTask() {
                 this.busy = true
-                let arr = [this.executor];
+                let arr = [this.employeeByFio];
                 console.log('members', arr)
                 axios.post('/api/tasks/admin/add',
                     {
@@ -583,6 +684,62 @@
                 })
             },
 
+            taskChange() {
+                this.currentTaskId = this.selected[0]["taskId"]
+                this.currentFinishDate = this.selected[0]["finishDate"]
+                this.currentTaskExecutor = this.selected[0]["members"][0]
+                let exec = this.selected[0]["members"][0]
+                for(let e in this.executors) {
+                    if(this.executors[e].includes(exec)) {
+                        this.taskExecutor = this.executors[e]
+                        // this.currentTaskExecutor = this.executors[e]
+                    }
+                }
+                this.$bvModal.show('bv-modal-task-change')
+            },
+
+            changeTaskDetails() {
+                let arr = this.newTaskExecutor.split(' ')
+                console.log('by fio', arr)
+                axios.post('/api/employee/getbyfio',
+                    arr,
+                ).then(response => {
+                    this.employeeByFio = response.data
+                    console.log('success employee by fio', this.employeeByFio)
+                    this.updateTask()
+                }).catch(error => {
+                    console.log(error)
+                }).finally(() => {
+                    this.refreshNewTaskInputs()
+                })
+            },
+
+
+            updateTask() {
+                this.busy = true
+                let id = this.currentTaskId
+                let date = this.newTaskFinishDate
+                let arr = [this.employeeByFio];
+                console.log('newTaskDetails', id, arr, date)
+                axios.post('/api/tasks/admin/' + id + '/update',
+                    {
+                        finishDate: date,
+                        members: arr
+                    }, id
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.message = "Задача обновлена!"
+                    this.$bvToast.show('success-toast')
+                    this.$bvModal.hide('bv-modal-task-change')
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось обновить задачу!"
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.getAllTasks()
+                    this.busy = false
+                })
+            },
 
             onRowSelected(items) {
                 this.selected = items
@@ -603,6 +760,7 @@
 
         beforeMount() {
             this.getAllTasks()
+            this.getAllEmployees()
 
         },
 

@@ -105,16 +105,7 @@
 
                     <b-row>
                         <b-col lg="4">
-                            <b-button
-                                    v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
-                                    class="task_mid_btn"
-                                    @click="taskChange"
-                                    variant="success"
-                                    size="lg"
-                            >
-                                <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
-                                Изменить...
-                            </b-button>
+
                         </b-col>
                         <b-col lg="3">
 
@@ -295,90 +286,7 @@
                 </b-card>
             </div>
 
-            <div>
-                <b-modal id="bv-modal-task-change" size="lg" hide-footer :no-close-on-backdrop="true">
-                    <template v-slot:modal-title>
-                        Внесите изменения
-                    </template>
-                    <div class="mPageModal">
-                        <b-row>
-                            <b-col lg="4">
 
-                            </b-col>
-                            <b-col>
-                                Текущее значение
-                            </b-col>
-                            <b-col lg="4">
-                              Новое значение
-                            </b-col>
-
-                        </b-row>
-                        <b-row>
-                            <b-col >
-                                <p></p>
-                            </b-col>
-                        </b-row>
-                        <b-row>
-                            <b-col lg="4">
-                                Исполнитель
-                            </b-col>
-                            <b-col>
-                                {{this.getCurrentExecutor[0] + " " + this.getCurrentExecutor[1]}}
-                            </b-col>
-                            <b-col lg="4">
-                                <b-form-input
-                                        id="input-live-executor"
-                                        v-model="taskExecutor"
-                                        aria-describedby="input-live-executor-help input-live-executor-feedback"
-                                        placeholder="Выберите исполнителя"
-                                        list="executors-list"
-                                ></b-form-input>
-                                <b-form-datalist id="executors-list" :options="executors">
-                                </b-form-datalist>
-                            </b-col>
-
-                        </b-row>
-                        <b-row>
-                            <b-col >
-                                <p></p>
-                            </b-col>
-                        </b-row>
-                        <b-row>
-                            <b-col lg="4">
-                                Дедлайн
-                            </b-col>
-                            <b-col>
-                                {{this.currentTask.finishDate}}
-                            </b-col>
-                            <b-col lg="4">
-                                <template>
-                                    <div>
-                                        <b-form-datepicker id="task-end-datepicker" v-model="taskFinishDate"
-                                                           placeholder="Выберите дату" locale="ru"
-                                                           class="mb-2"></b-form-datepicker>
-                                    </div>
-                                </template>
-                            </b-col>
-
-                        </b-row>
-                    </div>
-                    <b-row>
-                        <b-col lg="3">
-                        </b-col>
-                        <b-col>
-                        </b-col>
-                        <b-col lg="5">
-                            <b-button class="task_sh_btn" @click="deleteTask"
-                                      variant="success" size="sm">Сохранить
-                            </b-button>
-                            <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task-change')"
-                                      variant="danger" size="sm">Отмена
-                            </b-button>
-                        </b-col>
-
-                    </b-row>
-                </b-modal>
-            </div>
 
             <b-toast
                     id="success-toast"
@@ -504,7 +412,7 @@
                 currentManager: '',
                 taskStartDate: '',
                 taskFinishDate: '',
-                executors: [],
+                taskExecutors: [],
                 currentTask: '',
                 messageBody: '',
                 locale: 'de',
@@ -520,6 +428,7 @@
                         labelCloseButton: 'Применить'
                     }
                 },
+
                 timeSpendValue: '',
                 spendDate: '',
                 singleTaskFields: [
@@ -744,8 +653,18 @@
                 return sender
             },
 
-            taskChange() {
-                this.$bvModal.show('bv-modal-task-change')
+
+            getAllEmployees() {
+                this.busy = true
+                axios.get('/api/employee/getall'
+                ).then(response => {
+                    console.log('success', response.data)
+                    this.taskExecutors = response.data
+                }).catch(error => {
+                    console.log(error)
+                }).finally(() => {
+                    this.busy = false
+                })
             },
         },
 

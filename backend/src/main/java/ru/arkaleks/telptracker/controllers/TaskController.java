@@ -34,6 +34,14 @@ public class TaskController {
         return taskService.addNewTaskToEmployee(task);
     }
 
+    /**
+     * Метод обновляет текущую задачу
+     */
+
+    @PostMapping("/api/tasks/admin/{taskId}/update")
+    TaskDto updateCurrentTask(@RequestBody Task task, @PathVariable long taskId) {
+        return taskService.updateCurrentTask(task, taskId);
+    }
 
     /**
      * Метод вовращает список всех задач

@@ -43,6 +43,17 @@ public class TaskDto {
         this.members = members;
     }
 
+    public TaskDto(long taskId, LocalDate finishDate, Set<Employee> members) {
+        this.taskId = taskId;
+        this.finishDate = finishDate;
+        this.members = members;
+    }
+
+    public TaskDto(long taskId, LocalDate finishDate) {
+        this.taskId = taskId;
+        this.finishDate = finishDate;
+    }
+
     private long taskId;
 
     private String title;

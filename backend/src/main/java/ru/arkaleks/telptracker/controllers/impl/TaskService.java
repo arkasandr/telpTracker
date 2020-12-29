@@ -73,6 +73,29 @@ public class TaskService {
         return taskMapper.mapToTaskDto(task);
     }
 
+    /**
+     * Метод обновляет текущую задачу
+     */
+    @Transactional
+    public TaskDto updateCurrentTask(Task task, long taskId) {
+        Employee manager = getLoginEmployee();
+        Task currentTask = taskRepository.findTaskByTaskId(taskId);
+        Set<Employee> employeeSet = task.getMembers();
+        log.info("Будет обновлена задача под номером #" + taskId + " : " + currentTask.toString());
+        currentTask.setFinishDate(task.getFinishDate());
+
+        Employee[] array = employeeSet.toArray(new Employee[employeeSet.size()]);
+        Employee executor = array[0];
+        log.info("executor is " + executor);
+        executor.setRole(WorkRole.ИСПОЛНИТЕЛЬ);
+        manager.setRole(WorkRole.ПОСТАНОВЩИК);
+        employeeSet.add(executor);
+        employeeSet.add(manager);
+        currentTask.setMembers(employeeSet);
+        taskRepository.save(currentTask);
+        log.info("Задача успешно обновлена: " + currentTask.toString());
+        return taskMapper.mapToTaskDto(task);
+    }
 
     /**
      * Метод возвращает список всех задач
