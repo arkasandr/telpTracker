@@ -105,6 +105,16 @@
 
                     <b-row>
                         <b-col lg="4">
+                            <b-button
+                                    v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
+                                    class="task_mid_btn"
+                                    @click="taskChange"
+                                    variant="success"
+                                    size="lg"
+                            >
+                                <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
+                                Изменить...
+                            </b-button>
                         </b-col>
                         <b-col lg="3">
 
@@ -194,7 +204,7 @@
                         </b-row>
                         <b-row>
                             <b-col lg="1">
-                              Когда
+                                Когда
                             </b-col>
                             <b-col lg="5">
 
@@ -207,7 +217,7 @@
                             </b-col>
                         </b-row>
                         <b-row>
-                            <b-col >
+                            <b-col>
                                 Сколько
                             </b-col>
                             <b-col lg="5">
@@ -220,7 +230,7 @@
                             </b-col>
                             <b-col lg="5">
                             </b-col>
-                            <b-col >
+                            <b-col>
 
                             </b-col>
                         </b-row>
@@ -263,7 +273,7 @@
                                     </b-col>
                                 </b-row>
                                 <b-row>
-                                    <b-col >
+                                    <b-col>
                                         {{ data.item.text}}
                                     </b-col>
                                 </b-row>
@@ -274,7 +284,7 @@
                                     </b-col>
                                     <b-col lg="1">
                                     </b-col>
-                                    <b-col >
+                                    <b-col>
 
                                     </b-col>
                                 </b-row>
@@ -285,6 +295,90 @@
                 </b-card>
             </div>
 
+            <div>
+                <b-modal id="bv-modal-task-change" size="lg" hide-footer :no-close-on-backdrop="true">
+                    <template v-slot:modal-title>
+                        Внесите изменения
+                    </template>
+                    <div class="mPageModal">
+                        <b-row>
+                            <b-col lg="4">
+
+                            </b-col>
+                            <b-col>
+                                Текущее значение
+                            </b-col>
+                            <b-col lg="4">
+                              Новое значение
+                            </b-col>
+
+                        </b-row>
+                        <b-row>
+                            <b-col >
+                                <p></p>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col lg="4">
+                                Исполнитель
+                            </b-col>
+                            <b-col>
+                                {{this.getCurrentExecutor[0] + " " + this.getCurrentExecutor[1]}}
+                            </b-col>
+                            <b-col lg="4">
+                                <b-form-input
+                                        id="input-live-executor"
+                                        v-model="taskExecutor"
+                                        aria-describedby="input-live-executor-help input-live-executor-feedback"
+                                        placeholder="Выберите исполнителя"
+                                        list="executors-list"
+                                ></b-form-input>
+                                <b-form-datalist id="executors-list" :options="executors">
+                                </b-form-datalist>
+                            </b-col>
+
+                        </b-row>
+                        <b-row>
+                            <b-col >
+                                <p></p>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col lg="4">
+                                Дедлайн
+                            </b-col>
+                            <b-col>
+                                {{this.currentTask.finishDate}}
+                            </b-col>
+                            <b-col lg="4">
+                                <template>
+                                    <div>
+                                        <b-form-datepicker id="task-end-datepicker" v-model="taskFinishDate"
+                                                           placeholder="Выберите дату" locale="ru"
+                                                           class="mb-2"></b-form-datepicker>
+                                    </div>
+                                </template>
+                            </b-col>
+
+                        </b-row>
+                    </div>
+                    <b-row>
+                        <b-col lg="3">
+                        </b-col>
+                        <b-col>
+                        </b-col>
+                        <b-col lg="5">
+                            <b-button class="task_sh_btn" @click="deleteTask"
+                                      variant="success" size="sm">Сохранить
+                            </b-button>
+                            <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task-change')"
+                                      variant="danger" size="sm">Отмена
+                            </b-button>
+                        </b-col>
+
+                    </b-row>
+                </b-modal>
+            </div>
 
             <b-toast
                     id="success-toast"
@@ -379,7 +473,7 @@
                 return user
             },
 
-            getSender(){
+            getSender() {
                 return this.singleTask
             },
 
@@ -388,7 +482,7 @@
             },
 
             sendMessageText() {
-               return this.messageBody.length === 0 || this.spendDate.length === 0
+                return this.messageBody.length === 0 || this.spendDate.length === 0
             },
 
         },
@@ -431,7 +525,7 @@
                 singleTaskFields: [
                     {key: 'text', label: 'Текст', sortable: true},
                 ],
-                sender:'',
+                sender: '',
                 singleMessage: '',
                 disableSendMessageState: true,
 
@@ -584,16 +678,16 @@
             getAllMessages() {
                 this.busy = true
                 let id = this.$route.params.Pid;
-                axios.post('/api/tasks/message/'+ id + '/getall'
+                axios.post('/api/tasks/message/' + id + '/getall'
                 ).then(response => {
                     console.log('success', response.data)
                     this.messageTask = "Все комментарии загружены"
                     this.singleTask = response.data
                     console.log('allMessages', this.singleTask)
                     this.singleTask.forEach(element =>
-                        // console.log('with sender', Object.assign(element, this.getSenderByTaskMessageId(element.messageId)))
-                        Object.assign(element, this.getSenderByTaskMessageId(element.messageId)),
-                    console.log('allModifyMessages', this.singleTask)
+                            // console.log('with sender', Object.assign(element, this.getSenderByTaskMessageId(element.messageId)))
+                            Object.assign(element, this.getSenderByTaskMessageId(element.messageId)),
+                        console.log('allModifyMessages', this.singleTask)
                     )
                     this.$bvToast.show('success-toast')
                 }).catch(error => {
@@ -631,11 +725,11 @@
                 let sender
                 console.log('this.singleTask.messageId', id)
                 this.busy = true
-                axios.post('/api/tasks/message/'+ id + '/getsender'
+                axios.post('/api/tasks/message/' + id + '/getsender'
                 ).then(response => {
-                    console.log('sender after response', {sender:  response.data.surname})
+                    console.log('sender after response', {sender: response.data.surname})
                     let fi = response.data.surname + ' ' + response.data.firstName
-                    sender = {sender:  fi}
+                    sender = {sender: fi}
                     for (let i of this.singleTask) {
                         if (i.messageId === id) {
                             Object.assign(i, sender),
@@ -649,8 +743,11 @@
                 })
                 return sender
             },
-        },
 
+            taskChange() {
+                this.$bvModal.show('bv-modal-task-change')
+            },
+        },
 
 
         beforeMount() {
@@ -679,6 +776,7 @@
     .task-card {
         margin: 0 0 20px 0;
     }
+
     .time-spend {
         font-family: Arial;
         margin: 20px 10px 10px 90px;
@@ -734,13 +832,13 @@
     }
 
     /*.b_table thead {*/
-        /*background-color: white;*/
-        /*border: 3px solid limegreen !important;*/
+    /*background-color: white;*/
+    /*border: 3px solid limegreen !important;*/
     /*}*/
 
     /*.b_table tbody {*/
-        /*background-color: white;*/
-        /*border: 3px solid limegreen !important;*/
+    /*background-color: white;*/
+    /*border: 3px solid limegreen !important;*/
     /*}*/
 
 

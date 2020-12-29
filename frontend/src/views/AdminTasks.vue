@@ -229,10 +229,12 @@
                             <b-col>
                             </b-col>
                             <b-col lg="5">
-                                <b-button class="task_sh_btn" @click="getEmployeeByFio"
+                                <b-button class="task_sh_btn"
+                                          @click="getEmployeeByFio"
+                                          :disabled="disableNewTask"
                                           variant="success" size="sm">Создать
                                 </b-button>
-                                <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task')"
+                                <b-button class="task_sh_btn" @click="this.closeNewTaskPopup"
                                           variant="danger" size="sm">Отмена
                                 </b-button>
                             </b-col>
@@ -346,7 +348,13 @@
 
             rows() {
                 return this.postsTask.length
-            }
+            },
+
+            disableNewTask() {
+                return this.taskTitle.length === 0 || this.taskDescription.length === 0 ||
+                    this.taskExecutor.length === 0 || this.taskStartDate === 0 ||
+                    this.taskFinishDate.length === 0
+            },
         },
         mounted() {
             if (!this.currentUser) {
@@ -452,6 +460,7 @@
                 }).catch(error => {
                     console.log(error)
                 }).finally(() => {
+                    this.refreshNewTaskInputs()
                 })
             },
 
@@ -481,6 +490,19 @@
                 }).finally(() => {
                     this.busy = false
                 })
+            },
+
+            closeNewTaskPopup() {
+                this.$bvModal.hide('bv-modal-task')
+                this.refreshNewTaskInputs()
+            },
+
+            refreshNewTaskInputs() {
+                this.taskTitle = ''
+                this.taskDescription = ''
+                this.taskExecutor = ''
+                this.taskStartDate = ''
+                this.taskFinishDate = ''
             },
 
 
