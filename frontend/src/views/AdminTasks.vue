@@ -110,6 +110,7 @@
                                 @click="taskChange"
                                 variant="success"
                                 size="lg"
+                                :disabled="this.disableState"
                         >
                             <!--<b-icon icon="power" aria-hidden="true"></b-icon>-->
                             Изменить
@@ -287,13 +288,13 @@
                         </template>
                         <div class="mPageModal">
                             <b-row>
-                                <b-col lg="3">
+                                <b-col lg="2">
 
                                 </b-col>
-                                <b-col>
+                                <b-col class="task-update-st-letter">
                                     Текущее значение
                                 </b-col>
-                                <b-col lg="4">
+                                <b-col lg="4" class="task-update-st-letter">
                                     Новое значение
                                 </b-col>
 
@@ -304,10 +305,10 @@
                                 </b-col>
                             </b-row>
                             <b-row>
-                                <b-col lg="3">
+                                <b-col lg="2" class="task-update-st-letter">
                                     Исполнитель
                                 </b-col>
-                                <b-col>
+                                <b-col class="task-update-sm-letter">
                                     {{this.currentTaskExecutor}}
                                 </b-col>
                                 <b-col lg="4">
@@ -327,10 +328,10 @@
                                 </b-col>
                             </b-row>
                             <b-row>
-                                <b-col lg="3">
+                                <b-col lg="2" class="task-update-st-letter">
                                     Дедлайн
                                 </b-col>
-                                <b-col>
+                                <b-col class="task-update-sm-letter">
                                     {{this.currentFinishDate}}
                                 </b-col>
                                 <b-col lg="4">
@@ -351,11 +352,19 @@
                             <b-col>
                             </b-col>
                             <b-col lg="5">
-                                <b-button class="task_sh_btn" @click="changeTaskDetails"
-                                          variant="success" size="sm">Сохранить
+                                <b-button class="task_sh_btn"
+                                          @click="changeTaskDetails"
+                                          variant="success"
+                                          size="sm"
+                                          :disabled="disableUpdateTask"
+                                >
+                                    Сохранить
                                 </b-button>
-                                <b-button class="task_sh_btn" @click="$bvModal.hide('bv-modal-task-change')"
-                                          variant="danger" size="sm">Отмена
+                                <b-button class="task_sh_btn"
+                                          @click="$bvModal.hide('bv-modal-task-change')"
+                                          variant="danger"
+                                          size="sm">
+                                    Отмена
                                 </b-button>
                             </b-col>
 
@@ -449,6 +458,10 @@
                     this.taskFinishDate.length === 0
             },
 
+            disableUpdateTask() {
+                return this.newTaskExecutor.length === 0 && this.newTaskFinishDate.length === 0
+            },
+
         },
         mounted() {
             if (!this.currentUser) {
@@ -478,6 +491,7 @@
                 checkboxSelected: false,
 
                 disableState: true,
+                disableUpdateState: true,
 
                 rowSelected: '',
                 isInfoPopupVisible: false,
@@ -507,18 +521,16 @@
         methods: {
 
             getAllTasks() {
-                this.busy = true
+                this.busy = true;
                 axios.get('/api/tasks/getall'
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.messageTask = "Список задач загружен"
-                    this.postsTask = response.data
-                    console.log('postsTask', this.postsTask)
-                    // console.log('newVar', newVar)
+                    console.log('success');
+                    this.messageTask = "Список задач загружен";
+                    this.postsTask = response.data;
                     this.$bvToast.show('success-toast')
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось загрузить задачи!"
+                    console.log(error);
+                    this.message = "Не удалось загрузить задачи!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
@@ -527,7 +539,7 @@
 
 
             addNewTask() {
-                this.$bvModal.show('bv-modal-task')
+                this.$bvModal.show('bv-modal-task');
                 this.getAllEmployees()
 
             },
@@ -537,10 +549,10 @@
             },
 
             getAllEmployees() {
-                this.busy = true
+                this.busy = true;
                 axios.get('/api/employee/getall'
                 ).then(response => {
-                    console.log('success', response.data)
+                    console.log('success');
                     this.executors = response.data
                 }).catch(error => {
                     console.log(error)
@@ -551,13 +563,12 @@
 
 
             createNewTask() {
-                let arr = this.taskExecutor.split(' ')
-                console.log('by fio', arr)
+                let arr = this.taskExecutor.split(' ');
                 axios.post('/api/employee/getbyfio',
                     arr,
                 ).then(response => {
-                    this.employeeByFio = response.data
-                    console.log('success employee by fio', this.employeeByFio)
+                    this.employeeByFio = response.data;
+                    console.log('success');
                     this.saveNewTask()
                 }).catch(error => {
                     console.log(error)
@@ -567,9 +578,8 @@
             },
 
             saveNewTask() {
-                this.busy = true
+                this.busy = true;
                 let arr = [this.employeeByFio];
-                console.log('members', arr)
                 axios.post('/api/tasks/admin/add',
                     {
                         title: this.taskTitle,
@@ -579,14 +589,14 @@
                         members: arr
                     },
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Новая задача создана!"
-                    this.$bvToast.show('success-toast')
-                    this.getAllTasks()
+                    console.log('success', response.data);
+                    this.message = "Новая задача создана!";
+                    this.$bvToast.show('success-toast');
+                    this.getAllTasks();
                     this.$bvModal.hide('bv-modal-task')
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось создать задачу!"
+                    console.log(error);
+                    this.message = "Не удалось создать задачу!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
@@ -594,33 +604,32 @@
             },
 
             closeNewTaskPopup() {
-                this.$bvModal.hide('bv-modal-task')
+                this.$bvModal.hide('bv-modal-task');
                 this.refreshNewTaskInputs()
             },
 
             refreshNewTaskInputs() {
-                this.taskTitle = ''
-                this.taskDescription = ''
-                this.taskExecutor = ''
-                this.taskStartDate = ''
+                this.taskTitle = '';
+                this.taskDescription = '';
+                this.taskExecutor = '';
+                this.taskStartDate = '';
                 this.taskFinishDate = ''
             },
 
 
             deleteTask() {
-                this.busy = true
-                let id = this.selected[0]["taskId"]
-                console.log('taskId=', id);
+                this.busy = true;
+                let id = this.selected[0]["taskId"];
                 axios.delete('/api/tasks/' + id + '/delete',
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Задача удалена."
-                    this.$bvToast.show('success-toast')
-                    this.getAllTasks()
+                    console.log('success', response.data);
+                    this.message = "Задача удалена.";
+                    this.$bvToast.show('success-toast');
+                    this.getAllTasks();
                     this.$bvModal.hide('bv-modal-task-delete')
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось удалить задачу!"
+                    console.log(error);
+                    this.message = "Не удалось удалить задачу!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
@@ -628,18 +637,17 @@
             },
 
             taskStart() {
-                this.busy = true
-                let id = this.selected[0]["taskId"]
-                console.log('taskId=', id);
+                this.busy = true;
+                let id = this.selected[0]["taskId"];
                 axios.post('/api/tasks/status/' + id + '/start',
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Статус задачи изменен"
-                    this.$bvToast.show('success-toast')
+                    console.log('success', response.data);
+                    this.message = "Статус задачи изменен";
+                    this.$bvToast.show('success-toast');
                     this.getAllTasks()
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось изменить статус!"
+                    console.log(error);
+                    this.message = "Не удалось изменить статус!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
@@ -647,18 +655,17 @@
             },
 
             taskPause() {
-                this.busy = true
-                let id = this.selected[0]["taskId"]
-                console.log('taskId=', id);
+                this.busy = true;
+                let id = this.selected[0]["taskId"];
                 axios.post('/api/tasks/status/' + id + '/pause',
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Статус задачи изменен"
-                    this.$bvToast.show('success-toast')
+                    console.log('success', response.data);
+                    this.message = "Статус задачи изменен";
+                    this.$bvToast.show('success-toast');
                     this.getAllTasks()
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось изменить статус!"
+                    console.log(error);
+                    this.message = "Не удалось изменить статус!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
@@ -666,18 +673,17 @@
             },
 
             taskEnd() {
-                this.busy = true
-                let id = this.selected[0]["taskId"]
-                console.log('taskId=', id);
+                this.busy = true;
+                let id = this.selected[0]["taskId"];
                 axios.post('/api/tasks/status/' + id + '/end',
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Статус задачи изменен"
-                    this.$bvToast.show('success-toast')
+                    console.log('success', response.data);
+                    this.message = "Статус задачи изменен";
+                    this.$bvToast.show('success-toast');
                     this.getAllTasks()
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось изменить статус!"
+                    console.log(error);
+                    this.message = "Не удалось изменить статус!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
@@ -685,65 +691,97 @@
             },
 
             taskChange() {
-                this.currentTaskId = this.selected[0]["taskId"]
-                this.currentFinishDate = this.selected[0]["finishDate"]
-                this.currentTaskExecutor = this.selected[0]["members"][0]
-                let exec = this.selected[0]["members"][0]
+                this.currentTaskId = this.selected[0]["taskId"];
+                this.currentFinishDate = this.selected[0]["finishDate"];
+                this.currentTaskExecutor = this.selected[0]["members"][0];
+                let exec = this.selected[0]["members"][0];
                 for(let e in this.executors) {
                     if(this.executors[e].includes(exec)) {
-                        this.taskExecutor = this.executors[e]
-                        // this.currentTaskExecutor = this.executors[e]
+                        this.taskExecutor = this.executors[e];
+                        this.currentTaskExecutor = this.executors[e]
                     }
                 }
                 this.$bvModal.show('bv-modal-task-change')
             },
 
             changeTaskDetails() {
-                let arr = this.newTaskExecutor.split(' ')
-                console.log('by fio', arr)
-                axios.post('/api/employee/getbyfio',
-                    arr,
-                ).then(response => {
-                    this.employeeByFio = response.data
-                    console.log('success employee by fio', this.employeeByFio)
+                if(this.newTaskExecutor.length !== 0) {
+                    let arr = this.newTaskExecutor.split(' ');
+                    axios.post('/api/employee/getbyfio',
+                        arr,
+                    ).then(response => {
+                        this.employeeByFio = response.data;
+                        console.log('success');
+                        this.updateTask()
+                    }).catch(error => {
+                        console.log(error)
+                    }).finally(() => {
+                    })
+                } else {
                     this.updateTask()
-                }).catch(error => {
-                    console.log(error)
-                }).finally(() => {
-                    this.refreshNewTaskInputs()
-                })
+                }
             },
 
 
             updateTask() {
-                this.busy = true
-                let id = this.currentTaskId
-                let date = this.newTaskFinishDate
-                let arr = [this.employeeByFio];
-                console.log('newTaskDetails', id, arr, date)
-                axios.post('/api/tasks/admin/' + id + '/update',
-                    {
-                        finishDate: date,
-                        members: arr
-                    }, id
-                ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Задача обновлена!"
-                    this.$bvToast.show('success-toast')
-                    this.$bvModal.hide('bv-modal-task-change')
-                }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось обновить задачу!"
-                    this.$bvToast.show('danger-toast')
-                }).finally(() => {
-                    this.getAllTasks()
-                    this.busy = false
-                })
+                if(this.employeeByFio.length !== 0) {
+                    this.busy = true;
+                    let id = this.currentTaskId;
+                    let date = this.newTaskFinishDate;
+                    let arr = [this.employeeByFio];
+                    axios.post('/api/tasks/admin/' + id + '/update',
+                        {
+                            finishDate: date,
+                            members: arr
+                        }, id
+                    ).then(response => {
+                        console.log('success', response.data);
+                        this.message = "Задача обновлена!";
+                        this.$bvToast.show('success-toast');
+                        this.$bvModal.hide('bv-modal-task-change')
+                    }).catch(error => {
+                        console.log(error);
+                        this.message = "Не удалось обновить задачу!";
+                        this.$bvToast.show('danger-toast')
+                    }).finally(() => {
+                        this.refreshUpdateTaskInputs();
+                        this.getAllTasks();
+                        this.busy = false
+                    })
+                } else {
+                    this.busy = true;
+                    let id = this.currentTaskId;
+                    let date = this.newTaskFinishDate;
+                    let arr = [null];
+                    axios.post('/api/tasks/admin/' + id + '/update',
+                        {
+                            finishDate: date,
+                            members: arr
+                        }, id
+                    ).then(response => {
+                        console.log('success', response.data);
+                        this.message = "Задача обновлена!";
+                        this.$bvToast.show('success-toast');
+                        this.$bvModal.hide('bv-modal-task-change')
+                    }).catch(error => {
+                        console.log(error);
+                        this.message = "Не удалось обновить задачу!";
+                        this.$bvToast.show('danger-toast')
+                    }).finally(() => {
+                        this.refreshUpdateTaskInputs();
+                        this.getAllTasks();
+                        this.busy = false
+                    })
+                }
+            },
+
+            refreshUpdateTaskInputs() {
+                this.newTaskExecutor = '';
+                this.newTaskFinishDate = ''
             },
 
             onRowSelected(items) {
-                this.selected = items
-                console.log(this.selected);
+                this.selected = items;
                 if (this.selected.length === 0) {
                     this.disableState = true
                 } else {
@@ -752,14 +790,13 @@
             },
 
             onRowDoubleClick(item) {
-                console.log('item=', item.taskId);
                 this.$router.push({name:'currentTask',params:{Pid:item.taskId}})
             }
 
         },
 
         beforeMount() {
-            this.getAllTasks()
+            this.getAllTasks();
             this.getAllEmployees()
 
         },
@@ -788,6 +825,22 @@
 
     .mPageModalRow {
         margin: 0 0 10px 0;
+    }
+
+    .task-update-sm-letter {
+        font-family: Arial;
+        margin: 2px 0 0 0;
+        font-size: 16px;
+        color: grey;
+        text-align: center;
+        font-weight: bold;
+    }
+
+    .task-update-st-letter {
+        font-family: Arial;
+        font-size: 16px;
+        text-align: center;
+        font-weight: bold;
     }
 
     .task_ls_btn {

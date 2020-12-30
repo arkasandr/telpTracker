@@ -17,6 +17,7 @@ import ru.arkaleks.telptracker.repository.TaskRepository;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -82,16 +83,22 @@ public class TaskService {
         Task currentTask = taskRepository.findTaskByTaskId(taskId);
         Set<Employee> employeeSet = task.getMembers();
         log.info("Будет обновлена задача под номером #" + taskId + " : " + currentTask.toString());
-        currentTask.setFinishDate(task.getFinishDate());
-
-        Employee[] array = employeeSet.toArray(new Employee[employeeSet.size()]);
-        Employee executor = array[0];
-        log.info("executor is " + executor);
-        executor.setRole(WorkRole.ИСПОЛНИТЕЛЬ);
-        manager.setRole(WorkRole.ПОСТАНОВЩИК);
-        employeeSet.add(executor);
-        employeeSet.add(manager);
-        currentTask.setMembers(employeeSet);
+//        LocalDate newFinishDate = task.getFinishDate() == null ? "null" : task.getFinishDate();
+        if(task.getFinishDate() != null) {
+            currentTask.setFinishDate(task.getFinishDate());
+        }
+        if(employeeSet.size() != 0) {
+            Employee[] array = employeeSet.toArray(new Employee[employeeSet.size()]);
+            Employee executor = array[0];
+            log.info("executor is " + executor);
+            if(executor != null) {
+                executor.setRole(WorkRole.ИСПОЛНИТЕЛЬ);
+                manager.setRole(WorkRole.ПОСТАНОВЩИК);
+                employeeSet.add(executor);
+                employeeSet.add(manager);
+                currentTask.setMembers(employeeSet);
+            }
+        }
         taskRepository.save(currentTask);
         log.info("Задача успешно обновлена: " + currentTask.toString());
         return taskMapper.mapToTaskDto(task);
