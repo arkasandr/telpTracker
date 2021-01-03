@@ -470,10 +470,6 @@
                 return user
             },
 
-            // getCurrentFinishDate() {
-            //     return this.currentDeadLine = this.currentTask.finishDate;
-            //
-            // },
 
             getCurrentManager() {
                 let user = [];
@@ -483,10 +479,6 @@
                     }
                 });
                 return user
-            },
-
-            getSender() {
-                return this.singleTask
             },
 
             rows() {
@@ -578,10 +570,9 @@
             getTaskMembers() {
                 this.busy = true;
                 let id = this.$route.params.Pid;
-                console.log('taskId for members', id);
                 axios.post('/api/tasks/members/' + id,
                 ).then(response => {
-                    console.log('taskMembers', response.data);
+                    console.log('success', response.data);
                     this.executors = response.data;
                 }).catch(error => {
                     console.log(error)
@@ -607,7 +598,7 @@
 
 
             onRowSelected(items) {
-                this.selected = items
+                this.selected = items;
                 console.log(this.selected);
                 if (this.selected.length === 0) {
                     this.disableState = true
@@ -618,65 +609,66 @@
 
 
             taskStart() {
-                this.busy = true
+                this.busy = true;
                 let id = this.$route.params.Pid;
-                console.log('taskId=', id);
                 axios.post('/api/tasks/status/' + id + '/start',
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Статус задачи изменен"
-                    this.$bvToast.show('success-toast')
+                    console.log('success', response.data);
+                    this.message = "Статус задачи изменен";
+                    this.$bvToast.show('success-toast');
                     this.getTaskById()
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось изменить статус!"
+                    console.log(error);
+                    this.message = "Не удалось изменить статус!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
+                    this.getAllMessages();
                     this.busy = false
                 })
             },
 
             taskPause() {
-                this.busy = true
+                this.busy = true;
                 let id = this.$route.params.Pid;
-                console.log('taskId=', id);
                 axios.post('/api/tasks/status/' + id + '/pause',
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Статус задачи изменен"
-                    this.$bvToast.show('success-toast')
+                    console.log('success', response.data);
+                    this.message = "Статус задачи изменен";
+                    this.$bvToast.show('success-toast');
                     this.getTaskById()
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось изменить статус!"
+                    console.log(error);
+                    this.message = "Не удалось изменить статус!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
+                    this.getAllMessages();
                     this.busy = false
                 })
             },
 
             taskEnd() {
-                this.busy = true
+                this.busy = true;
                 let id = this.$route.params.Pid;
                 console.log('taskId=', id);
                 axios.post('/api/tasks/status/' + id + '/end',
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Статус задачи изменен"
-                    this.$bvToast.show('success-toast')
+                    console.log('success', response.data);
+                    this.message = "Статус задачи изменен";
+                    this.$bvToast.show('success-toast');
                     this.getTaskById()
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось изменить статус!"
+                    console.log(error);
+                    this.message = "Не удалось изменить статус!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
+                    this.getAllMessages();
                     this.busy = false
                 })
             },
 
             addNewMessage() {
-                this.busy = true
-                console.log('timeSpendValue', moment.tz(this.timeSpendValue, "America/New_York"))
+                this.busy = true;
+                console.log('timeSpendValue', moment.tz(this.timeSpendValue, "America/New_York"));
                 axios.post('/api/tasks/message/add',
                     {
                         text: this.messageBody,
@@ -685,81 +677,58 @@
                         taskNumber: this.currentTask.taskId
                     },
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.message = "Новый комментарий добавлен!"
+                    console.log('success', response.data);
+                    this.message = "Новый комментарий добавлен!";
                     this.$bvToast.show('success-toast')
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось добавить комментарий!"
+                    console.log(error);
+                    this.message = "Не удалось добавить комментарий!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
-                    this.messageBody = ''
-                    this.spendDate = ''
-                    this.timeSpendValue = ''
-                    this.$refs.sendTooltip.$emit('close')
-                    this.getAllMessages()
+                    this.messageBody = '';
+                    this.spendDate = '';
+                    this.timeSpendValue = '';
+                    this.$refs.sendTooltip.$emit('close');
+                    this.getAllMessages();
                     this.busy = false
                 })
             },
 
             getAllMessages() {
-                this.busy = true
+                this.busy = true;
                 let id = this.$route.params.Pid;
                 axios.post('/api/tasks/message/' + id + '/getall'
                 ).then(response => {
-                    console.log('success', response.data)
-                    this.messageTask = "Все комментарии загружены"
-                    this.singleTask = response.data
-                    console.log('allMessages', this.singleTask)
+                    console.log('success', response.data);
+                    this.messageTask = "Все комментарии загружены";
+                    this.singleTask = response.data;
+                    console.log('allMessages', this.singleTask);
                     this.singleTask.forEach(element =>
-                            // console.log('with sender', Object.assign(element, this.getSenderByTaskMessageId(element.messageId)))
                             Object.assign(element, this.getSenderByTaskMessageId(element.messageId)),
-                        console.log('allModifyMessages', this.singleTask)
-                    )
+                    );
                     this.$bvToast.show('success-toast')
                 }).catch(error => {
-                    console.log(error)
-                    this.message = "Не удалось загрузить комментарии!"
+                    console.log(error);
+                    this.message = "Не удалось загрузить комментарии!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
                 })
             },
 
-            // modifySingleTask() {
-            //     this.singleTask.forEach(element =>
-            //         Object.assign(element, this.getSenderByTaskMessageId(element.messageId)),
-            //     console.log('allMessages with senders one', this.singleTask)
-            //     )
-            //     console.log('allMessages with senders', this.singleTask)
-            //     // let messageId = this.singleTask.messageId
-            //     // let sender
-            //     // console.log('this.singleTask.messageId', messageId)
-            //     // this.busy = true
-            //     // axios.post('/api/tasks/message/'+ messageId + '/getsender'
-            //     // ).then(response => {
-            //     //     console.log('sender after response', {sender:  response.data.surname})
-            //     //     sender = {sender:  response.data.surname}
-            //     // }).catch(error => {
-            //     //     console.log(error)
-            //     // }).finally(() => {
-            //     // })
-            //     // return sender
-            // },
 
             getSenderByTaskMessageId(id) {
-                // let messageId = this.singleTask.messageId
-                let sender
-                console.log('this.singleTask.messageId', id)
-                this.busy = true
+                let sender;
+                console.log('this.singleTask.messageId', id);
+                this.busy = true;
                 axios.post('/api/tasks/message/' + id + '/getsender'
                 ).then(response => {
-                    console.log('sender after response', {sender: response.data.surname})
-                    let fi = response.data.surname + ' ' + response.data.firstName
-                    sender = {sender: fi}
+                    console.log('sender after response', {sender: response.data.surname});
+                    let fi = response.data.surname + ' ' + response.data.firstName;
+                    sender = {sender: fi};
                     for (let i of this.singleTask) {
                         if (i.messageId === id) {
-                            Object.assign(i, sender),
+                            Object.assign(i, sender);
                                 console.log('allModifyMessages', this.singleTask)
                         }
                     }
@@ -767,16 +736,16 @@
                     console.log(error)
                 }).finally(() => {
                     this.$refs.messageTable.refresh();
-                })
+                });
                 return sender
             },
 
 
             getAllEmployees() {
-                this.busy = true
+                this.busy = true;
                 axios.get('/api/employee/getall'
                 ).then(response => {
-                    console.log('success', response.data)
+                    console.log('success', response.data);
                     this.taskExecutors = response.data
                 }).catch(error => {
                     console.log(error)
@@ -789,13 +758,6 @@
                 this.currentTaskId = this.currentTask.taskId;
                 this.currentFinishDate = this.currentTask.finishDate;
                 this.currentTaskExecutor = this.getCurrentExecutor[0] + ' ' + this.getCurrentExecutor[1] + ' ' + this.getCurrentExecutor[2];
-                // let exec = this.getCurrentExecutor;
-                // for (let e in this.executors) {
-                //     if (this.executors[e].includes(exec[0])) {
-                //         this.taskExecutor = this.executors[e];
-                //         this.currentTaskExecutor = this.executors[e]
-                //     }
-                // }
                 this.getAllEmployees()
                 this.$bvModal.show('bv-modal-task-change')
             },
@@ -833,7 +795,6 @@
                         console.log('success', response.data);
                         this.getCurrentExecutor[0] = this.employeeByFio.surname;
                         this.getCurrentExecutor[1] = this.employeeByFio.firstName;
-                        this.getCurrentFinishDate = this.newTaskFinishDate;
                         this.message = "Задача обновлена!";
                         this.$bvToast.show('success-toast');
                         this.$bvModal.hide('bv-modal-task-change')

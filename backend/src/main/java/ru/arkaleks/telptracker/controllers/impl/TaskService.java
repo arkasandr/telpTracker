@@ -84,7 +84,6 @@ public class TaskService {
         Task currentTask = taskRepository.findTaskByTaskId(taskId);
         Set<Employee> employeeSet = task.getMembers();
         log.info("Будет обновлена задача под номером #" + taskId + " : " + currentTask.toString());
-//        LocalDate newFinishDate = task.getFinishDate() == null ? "null" : task.getFinishDate();
         if(task.getFinishDate() != null) {
             currentTask.setFinishDate(task.getFinishDate());
             String text = "Обновлено поле \"Дедлайн\". Новое значение: " + task.getFinishDate() + ". " ;
@@ -107,9 +106,6 @@ public class TaskService {
         }
         taskRepository.save(currentTask);
         String messText = String.join(", ", textList);
-
-
-
         TaskMessage message = new TaskMessage(messText, LocalDate.now(), taskId, LocalTime.now());
         taskMessageService.addNewMessageToTask(message);
         log.info("Задача успешно обновлена: " + currentTask.toString());
@@ -119,18 +115,6 @@ public class TaskService {
     /**
      * Метод возвращает список всех задач
      */
-//    @Transactional
-//    public List<TaskDto> getAllEmployeeTasks() {
-//        String emplName = currentUserService.getCurrentEmployee().getUsername();
-//        Optional<Employee> optionalEmployee = employeeRepository.findByUsername(emplName);
-//        Employee employee = optionalEmployee.orElseGet(Employee::new);
-//        Set<Task> employeeTasks = employee.getTasks();
-//        List<Task> result = employeeTasks
-//                .stream()
-//                .sorted(Comparator.comparing(Task::getTaskId))
-//                .collect(Collectors.toList());
-//        return taskMapper.mapToTaskDtoList(result);
-//    }
     @Transactional
     public List<TaskListDto> getAllEmployeeTasks() {
         List<TaskListDto> result = new ArrayList<>();
@@ -164,28 +148,6 @@ public class TaskService {
     /**
      * Метод удаляет задачу
      */
-//    @Transactional
-//    public void deleteTask(long taskId) {
-////        String emplName = currentUserService.getCurrentEmployee().getUsername();
-////        Optional<Employee> optionalEmployee = employeeRepository.findByUsername(emplName);
-////        Employee employee = optionalEmployee.orElseGet(Employee::new);
-//        Employee employee = currentUserService.getLogInEmployee();
-//        Set<Task> employeeTasks = employee.getTasks();
-//        Set<Task> newTasks = new HashSet<>();
-//        for(Task task : employeeTasks) {
-//            if(task.getTaskId() != taskId) {
-//                newTasks.add(task);
-//            }
-//        }
-//        employee.setTasks(newTasks);
-//        employeeRepository.save(employee);
-//        taskRepository.deleteTaskByTaskId(taskId);
-//        log.info("Задача под номером taskId = " + taskId + " успешно удалена");
-//    }
-
-    /**
-     * Метод удаляет задачу
-     */
     @Transactional
     public void deleteTask(long taskId) {
         taskRepository.deleteTaskByTaskId(taskId);
@@ -200,6 +162,9 @@ public class TaskService {
         Task task = taskRepository.findTaskByTaskId(taskId);
         task.setStatus(Status.НАЧАТА);
         task.setStatusUpdateDate(LocalDate.now());
+        String messText = "Обновлен статус задачи: \"НАЧАТА\".";
+        TaskMessage message = new TaskMessage(messText, LocalDate.now(), taskId, LocalTime.now());
+        taskMessageService.addNewMessageToTask(message);
         taskRepository.save(task);
         log.info("Задача taskId = " + taskId + " начата");
     }
@@ -212,6 +177,9 @@ public class TaskService {
         Task task = taskRepository.findTaskByTaskId(taskId);
         task.setStatus(Status.ПРИОСТАНОВЛЕНА);
         task.setStatusUpdateDate(LocalDate.now());
+        String messText = "Обновлен статус задачи: \"ПРИОСТАНОВЛЕНА\".";
+        TaskMessage message = new TaskMessage(messText, LocalDate.now(), taskId, LocalTime.now());
+        taskMessageService.addNewMessageToTask(message);
         taskRepository.save(task);
         log.info("Задача taskId = " + taskId + " приостановлена");
     }
@@ -224,6 +192,9 @@ public class TaskService {
         Task task = taskRepository.findTaskByTaskId(taskId);
         task.setStatus(Status.ЗАКОНЧЕНА);
         task.setStatusUpdateDate(LocalDate.now());
+        String messText = "Обновлен статус задачи: \"ЗАКОНЧЕНА\".";
+        TaskMessage message = new TaskMessage(messText, LocalDate.now(), taskId, LocalTime.now());
+        taskMessageService.addNewMessageToTask(message);
         taskRepository.save(task);
         log.info("Задача taskId = " + taskId + " закончена");
     }
