@@ -68,7 +68,7 @@
                         <b-col lg="2">
                             <b-row>
                                 <b-col class="task-bold-letter">
-                                    {{this.currentTask.finishDate}}
+                                    {{this.currentDeadLine}}
                                 </b-col>
                             </b-row>
                             <b-row>
@@ -105,7 +105,13 @@
 
                     <b-row>
                         <b-col lg="4">
-
+                            <b-button class="task_mid_btn"
+                                      @click="taskChange"
+                                      variant="success"
+                                      size="lg"
+                                      v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
+                            >Изменить
+                            </b-button>
                         </b-col>
                         <b-col lg="3">
 
@@ -260,7 +266,7 @@
                                 </b-row>
                                 <b-row>
                                     <b-col class="task-bold-letter">
-                                        {{ data.item.sender}}
+                                        {{ data.item.sender}},   {{ moment(data.item.createTime, "HH:mm:ss").format("HH ч:mm мин")}}
                                     </b-col>
                                 </b-row>
                                 <b-row>
@@ -286,6 +292,98 @@
                 </b-card>
             </div>
 
+
+
+            <div>
+                <b-modal id="bv-modal-task-change" size="lg" hide-footer :no-close-on-backdrop="true">
+                    <template v-slot:modal-title>
+                        Внесите изменения
+                    </template>
+                    <div class="mPageModal">
+                        <b-row>
+                            <b-col lg="2">
+
+                            </b-col>
+                            <b-col class="task-update-st-letter">
+                                Текущее значение
+                            </b-col>
+                            <b-col lg="4" class="task-update-st-letter">
+                                Новое значение
+                            </b-col>
+
+                        </b-row>
+                        <b-row>
+                            <b-col >
+                                <p></p>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col lg="2" class="task-update-st-letter">
+                                Исполнитель
+                            </b-col>
+                            <b-col class="task-update-sm-letter">
+                                {{this.currentTaskExecutor}}
+                            </b-col>
+                            <b-col lg="4">
+                                <b-form-input
+                                        v-model="newTaskExecutor"
+                                        placeholder="Выберите исполнителя"
+                                        list="taskExecutors-list"
+                                ></b-form-input>
+                                <b-form-datalist id="taskExecutors-list" :options="taskExecutors">
+                                </b-form-datalist>
+                            </b-col>
+
+                        </b-row>
+                        <b-row>
+                            <b-col >
+                                <p></p>
+                            </b-col>
+                        </b-row>
+                        <b-row>
+                            <b-col lg="2" class="task-update-st-letter">
+                                Дедлайн
+                            </b-col>
+                            <b-col class="task-update-sm-letter">
+                                {{this.currentFinishDate}}
+                            </b-col>
+                            <b-col lg="4">
+                                <template>
+                                    <div>
+                                        <b-form-datepicker id="task-end-datepicker" v-model="newTaskFinishDate"
+                                                           placeholder="Выберите дату" locale="ru"
+                                                           class="mb-2"></b-form-datepicker>
+                                    </div>
+                                </template>
+                            </b-col>
+
+                        </b-row>
+                    </div>
+                    <b-row>
+                        <b-col lg="3">
+                        </b-col>
+                        <b-col>
+                        </b-col>
+                        <b-col lg="5">
+                            <b-button class="task_sh_btn"
+                                      @click="updateCurrentTask"
+                                      variant="success"
+                                      size="sm"
+                                      :disabled="disableUpdateTaskDetails"
+                            >
+                                Сохранить
+                            </b-button>
+                            <b-button class="task_sh_btn"
+                                      @click="$bvModal.hide('bv-modal-task-change')"
+                                      variant="danger"
+                                      size="sm">
+                                Отмена
+                            </b-button>
+                        </b-col>
+
+                    </b-row>
+                </b-modal>
+            </div>
 
 
             <b-toast
@@ -346,6 +444,7 @@
     import moment from 'moment'
     import 'moment-timezone'
 
+
     export default {
         name: 'UserTasks',
         watch: {
@@ -365,11 +464,16 @@
                 let user = [];
                 this.executors.forEach(function (item) {
                     if (item.role === "ИСПОЛНИТЕЛЬ") {
-                        user = [item.surname, item.firstName]
+                        user = [item.surname, item.firstName, item.middleName]
                     }
                 });
                 return user
             },
+
+            // getCurrentFinishDate() {
+            //     return this.currentDeadLine = this.currentTask.finishDate;
+            //
+            // },
 
             getCurrentManager() {
                 let user = [];
@@ -391,6 +495,10 @@
 
             sendMessageText() {
                 return this.messageBody.length === 0 || this.spendDate.length === 0
+            },
+
+            disableUpdateTaskDetails() {
+                return this.newTaskExecutor.length === 0 && this.newTaskFinishDate.length === 0
             },
 
         },
@@ -454,6 +562,15 @@
                 messageView: false,
                 boxOne: '',
                 busy: false,
+
+                currentTaskId: '',
+                currentFinishDate: '',
+                currentTaskExecutor: '',
+                taskExecutor: '',
+                newTaskExecutor: '',
+                newTaskFinishDate: '',
+                employeeByFio:'',
+                currentDeadLine:'',
             }
         },
         methods: {
@@ -479,6 +596,7 @@
                 axios.post('/api/tasks/current/' + id,
                 ).then(response => {
                     this.currentTask = response.data;
+                    this.currentDeadLine = response.data.finishDate;
                     console.log("currentTask" + this.currentTask)
                 }).catch(error => {
                     console.log(error)
@@ -666,12 +784,107 @@
                     this.busy = false
                 })
             },
+
+            taskChange() {
+                this.currentTaskId = this.currentTask.taskId;
+                this.currentFinishDate = this.currentTask.finishDate;
+                this.currentTaskExecutor = this.getCurrentExecutor[0] + ' ' + this.getCurrentExecutor[1] + ' ' + this.getCurrentExecutor[2];
+                // let exec = this.getCurrentExecutor;
+                // for (let e in this.executors) {
+                //     if (this.executors[e].includes(exec[0])) {
+                //         this.taskExecutor = this.executors[e];
+                //         this.currentTaskExecutor = this.executors[e]
+                //     }
+                // }
+                this.getAllEmployees()
+                this.$bvModal.show('bv-modal-task-change')
+            },
+
+            updateCurrentTask() {
+                if(this.newTaskExecutor.length !== 0) {
+                    let arr = this.newTaskExecutor.split(' ');
+                    axios.post('/api/employee/getbyfio',
+                        arr,
+                    ).then(response => {
+                        this.employeeByFio = response.data;
+                        console.log('success employeeByFio', response.data);
+                        this.updateTask()
+                    }).catch(error => {
+                        console.log(error)
+                    }).finally(() => {
+                    })
+                } else {
+                    this.updateTask()
+                }
+            },
+
+            updateTask() {
+                if(this.employeeByFio.length !== 0) {
+                    this.busy = true;
+                    let id = this.currentTaskId;
+                    let date = this.newTaskFinishDate;
+                    let arr = [this.employeeByFio];
+                    axios.post('/api/tasks/admin/' + id + '/update',
+                        {
+                            finishDate: date,
+                            members: arr
+                        }, id
+                    ).then(response => {
+                        console.log('success', response.data);
+                        this.getCurrentExecutor[0] = this.employeeByFio.surname;
+                        this.getCurrentExecutor[1] = this.employeeByFio.firstName;
+                        this.getCurrentFinishDate = this.newTaskFinishDate;
+                        this.message = "Задача обновлена!";
+                        this.$bvToast.show('success-toast');
+                        this.$bvModal.hide('bv-modal-task-change')
+                    }).catch(error => {
+                        console.log(error);
+                        this.message = "Не удалось обновить задачу!";
+                        this.$bvToast.show('danger-toast')
+                    }).finally(() => {
+                        this.refreshUpdateTaskInputs();
+                        this.getAllMessages();
+                        this.busy = false
+                    })
+                } else {
+                    this.busy = true;
+                    let id = this.currentTaskId;
+                    let date = this.newTaskFinishDate;
+                    let arr = [null];
+                    axios.post('/api/tasks/admin/' + id + '/update',
+                        {
+                            finishDate: date,
+                            members: arr
+                        }, id
+                    ).then(response => {
+                        console.log('success', response.data);
+                        this.currentDeadLine = this.newTaskFinishDate;
+                        this.message = "Задача обновлена!";
+                        this.$bvToast.show('success-toast');
+                        this.$bvModal.hide('bv-modal-task-change')
+                    }).catch(error => {
+                        console.log(error);
+                        this.message = "Не удалось обновить задачу!";
+                        this.$bvToast.show('danger-toast')
+                    }).finally(() => {
+                        this.refreshUpdateTaskInputs();
+                        this.getAllMessages();
+                        this.busy = false
+                    })
+                }
+            },
+
+            refreshUpdateTaskInputs() {
+                this.newTaskExecutor = '';
+                this.newTaskFinishDate = '';
+                this.employeeByFio = ''
+            },
         },
 
 
         beforeMount() {
-            this.getTaskMembers()
-            this.getTaskById()
+            this.getTaskMembers();
+            this.getTaskById();
             this.getAllMessages()
 
         },

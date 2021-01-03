@@ -16,6 +16,7 @@ import ru.arkaleks.telptracker.repository.EmployeeRepository;
 import ru.arkaleks.telptracker.repository.TaskMessageRepository;
 import ru.arkaleks.telptracker.repository.TaskRepository;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -50,6 +51,7 @@ public class TaskMessageService {
         long taskId = message.getTaskNumber();
         Task task = taskRepository.findTaskByTaskId(taskId);
         message.setTask(task);
+        message.setCreateTime(LocalTime.now());
         taskMessageRepository.save(message);
         log.info("New message is: " + message);
         return messageMapper.mapToTaskMessageDto(message);
@@ -60,7 +62,7 @@ public class TaskMessageService {
         List<TaskMessage> result = new ArrayList<>();
         Task task = taskRepository.findTaskByTaskId(taskId);
         result.addAll(task.getMessages());
-        result.sort(new MessageComparator());
+        result.sort(new MessageDateComparator().thenComparing(new MessageTimeComparator()));
         log.info("Task with taskId = " + taskId + " has " + result.size() + " messages");
         return messageMapper.mapToTaskMessageDtoList(result);
     }
@@ -80,11 +82,17 @@ public class TaskMessageService {
     }
 
 
-    static class MessageComparator implements Comparator<TaskMessage> {
+    static class MessageDateComparator implements Comparator<TaskMessage> {
         @Override
         public int compare(TaskMessage o1, TaskMessage o2) {
             return o2.getSpendDate().compareTo(o1.getSpendDate());
         }
     }
 
+    static class MessageTimeComparator implements Comparator<TaskMessage> {
+        @Override
+        public int compare(TaskMessage o1, TaskMessage o2) {
+            return o2.getCreateTime().compareTo(o1.getCreateTime());
+        }
+    }
 }

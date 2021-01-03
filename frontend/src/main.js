@@ -21,6 +21,10 @@ moment.tz.setDefault('Asia/Jakarta')
 Vue.prototype.moment = moment;
 moment.locale('ru');
 
+
+export const eventBus = new Vue();
+
+
 library.add(faHome, faUser, faUserPlus, faSignInAlt, faSignOutAlt);
 
 Vue.use(VeeValidate);

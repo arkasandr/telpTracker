@@ -12,6 +12,14 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class TaskMessageDto {
 
+    public TaskMessageDto(String text, LocalTime spendTime, LocalDate spendDate, long taskNumber, LocalTime createTime) {
+        this.text = text;
+        this.spendTime = spendTime;
+        this.spendDate = spendDate;
+        this.taskNumber = taskNumber;
+        this.createTime = createTime;
+    }
+
     public TaskMessageDto(String text, LocalTime spendTime, LocalDate spendDate, long taskNumber) {
         this.text = text;
         this.spendTime = spendTime;
@@ -28,5 +36,7 @@ public class TaskMessageDto {
     private LocalDate spendDate;
 
     private long taskNumber;
+
+    private LocalTime createTime;
 
 }

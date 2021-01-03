@@ -23,11 +23,19 @@ import java.util.List;
 @Table(name = "TASK_MESSAGES")
 public class TaskMessage {
 
-    public TaskMessage(String text, LocalTime spendTime, LocalDate spendDate, long taskNumber) {
+    public TaskMessage(String text, LocalTime spendTime, LocalDate spendDate, long taskNumber, LocalTime createTime) {
         this.text = text;
         this.spendTime = spendTime;
         this.spendDate = spendDate;
         this.taskNumber = taskNumber;
+        this.createTime = createTime;
+    }
+
+    public TaskMessage(String text, LocalDate spendDate, long taskNumber, LocalTime createTime) {
+        this.text = text;
+        this.spendDate = spendDate;
+        this.taskNumber = taskNumber;
+        this.createTime = createTime;
     }
 
     @Id
@@ -39,6 +47,8 @@ public class TaskMessage {
     private String text;
 
     private LocalTime spendTime;
+
+    private LocalTime createTime;
 
     private LocalDate spendDate;
 

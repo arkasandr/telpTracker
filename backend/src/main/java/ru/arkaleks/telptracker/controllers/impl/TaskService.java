@@ -8,16 +8,14 @@ import ru.arkaleks.telptracker.controllers.dto.EmployeeDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskListDto;
 import ru.arkaleks.telptracker.controllers.mapper.TaskMapper;
-import ru.arkaleks.telptracker.model.Employee;
-import ru.arkaleks.telptracker.model.Status;
-import ru.arkaleks.telptracker.model.Task;
-import ru.arkaleks.telptracker.model.WorkRole;
+import ru.arkaleks.telptracker.model.*;
 import ru.arkaleks.telptracker.repository.EmployeeRepository;
 import ru.arkaleks.telptracker.repository.TaskRepository;
 
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,6 +38,8 @@ public class TaskService {
     private CurrentUserService currentUserService;
 
     private final TaskMapper taskMapper;
+
+    private final TaskMessageService taskMessageService;
 
 
     /**
@@ -79,6 +79,7 @@ public class TaskService {
      */
     @Transactional
     public TaskDto updateCurrentTask(Task task, long taskId) {
+        List<String> textList = new ArrayList<>();
         Employee manager = getLoginEmployee();
         Task currentTask = taskRepository.findTaskByTaskId(taskId);
         Set<Employee> employeeSet = task.getMembers();
@@ -86,6 +87,8 @@ public class TaskService {
 //        LocalDate newFinishDate = task.getFinishDate() == null ? "null" : task.getFinishDate();
         if(task.getFinishDate() != null) {
             currentTask.setFinishDate(task.getFinishDate());
+            String text = "Обновлено поле \"Дедлайн\". Новое значение: " + task.getFinishDate() + ". " ;
+            textList.add(text);
         }
         if(employeeSet.size() != 0) {
             Employee[] array = employeeSet.toArray(new Employee[employeeSet.size()]);
@@ -97,9 +100,18 @@ public class TaskService {
                 employeeSet.add(executor);
                 employeeSet.add(manager);
                 currentTask.setMembers(employeeSet);
+                String text = "Обновлено поле \"Исполнитель\". Новое значение: " + executor.getSurname() + " "
+                        + executor.getFirstName() + " " + executor.getMiddleName() + ". " ;
+                textList.add(text);
             }
         }
         taskRepository.save(currentTask);
+        String messText = String.join(", ", textList);
+
+
+
+        TaskMessage message = new TaskMessage(messText, LocalDate.now(), taskId, LocalTime.now());
+        taskMessageService.addNewMessageToTask(message);
         log.info("Задача успешно обновлена: " + currentTask.toString());
         return taskMapper.mapToTaskDto(task);
     }

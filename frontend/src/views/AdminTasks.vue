@@ -469,7 +469,6 @@
             }
         },
 
-
         data() {
             return {
                 postsTask: [],
