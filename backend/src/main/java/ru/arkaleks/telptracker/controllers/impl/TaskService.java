@@ -42,9 +42,6 @@ public class TaskService {
     private final TaskMessageService taskMessageService;
 
 
-    /**
-     * Метод добавляет новую задачу
-     */
     @Transactional
     public TaskDto addNewTaskToEmployee(Task task) {
         log.info("Будет создана задача: " + task.toString());
@@ -74,9 +71,7 @@ public class TaskService {
         return taskMapper.mapToTaskDto(task);
     }
 
-    /**
-     * Метод обновляет текущую задачу
-     */
+
     @Transactional
     public TaskDto updateCurrentTask(Task task, long taskId) {
         List<String> textList = new ArrayList<>();
@@ -84,23 +79,23 @@ public class TaskService {
         Task currentTask = taskRepository.findTaskByTaskId(taskId);
         Set<Employee> employeeSet = task.getMembers();
         log.info("Будет обновлена задача под номером #" + taskId + " : " + currentTask.toString());
-        if(task.getFinishDate() != null) {
+        if (task.getFinishDate() != null) {
             currentTask.setFinishDate(task.getFinishDate());
-            String text = "Обновлено поле \"Дедлайн\". Новое значение: " + task.getFinishDate() + ". " ;
+            String text = "Обновлено поле \"Дедлайн\". Новое значение: " + task.getFinishDate() + ". ";
             textList.add(text);
         }
-        if(employeeSet.size() != 0) {
+        if (employeeSet.size() != 0) {
             Employee[] array = employeeSet.toArray(new Employee[employeeSet.size()]);
             Employee executor = array[0];
             log.info("executor is " + executor);
-            if(executor != null) {
+            if (executor != null) {
                 executor.setRole(WorkRole.ИСПОЛНИТЕЛЬ);
                 manager.setRole(WorkRole.ПОСТАНОВЩИК);
                 employeeSet.add(executor);
                 employeeSet.add(manager);
                 currentTask.setMembers(employeeSet);
                 String text = "Обновлено поле \"Исполнитель\". Новое значение: " + executor.getSurname() + " "
-                        + executor.getFirstName() + " " + executor.getMiddleName() + ". " ;
+                        + executor.getFirstName() + " " + executor.getMiddleName() + ". ";
                 textList.add(text);
             }
         }
@@ -112,9 +107,7 @@ public class TaskService {
         return taskMapper.mapToTaskDto(task);
     }
 
-    /**
-     * Метод возвращает список всех задач
-     */
+
     @Transactional
     public List<TaskListDto> getAllEmployeeTasks() {
         List<TaskListDto> result = new ArrayList<>();
@@ -145,33 +138,27 @@ public class TaskService {
         return result;
     }
 
-    /**
-     * Метод удаляет задачу
-     */
+
     @Transactional
     public void deleteTask(long taskId) {
         taskRepository.deleteTaskByTaskId(taskId);
         log.info("Задача под номером taskId = " + taskId + " удалена");
     }
 
-    /**
-     * Метод меняет статус задачи на "Начата"
-     */
+
     @Transactional
     public void setTaskStatusToStart(long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId);
-        task.setStatus(Status.НАЧАТА);
+        task.setStatus(Status.В_РАБОТЕ);
         task.setStatusUpdateDate(LocalDate.now());
-        String messText = "Обновлен статус задачи: \"НАЧАТА\".";
+        String messText = "Обновлен статус задачи: \"В РАБОТЕ\".";
         TaskMessage message = new TaskMessage(messText, LocalDate.now(), taskId, LocalTime.now());
         taskMessageService.addNewMessageToTask(message);
         taskRepository.save(task);
-        log.info("Задача taskId = " + taskId + " начата");
+        log.info("Задача taskId = " + taskId + " принята в работу");
     }
 
-    /**
-     * Метод меняет статус задачи на "Приостановлена"
-     */
+
     @Transactional
     public void setTaskStatusToPause(long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId);
@@ -184,9 +171,7 @@ public class TaskService {
         log.info("Задача taskId = " + taskId + " приостановлена");
     }
 
-    /**
-     * Метод меняет статус задачи на "Закончена"
-     */
+
     @Transactional
     public void setTaskStatusToEnd(long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId);
@@ -206,9 +191,6 @@ public class TaskService {
     }
 
 
-    /**
-     * Метод меняет статус задачи на "Закончена"
-     */
     @Transactional
     public Set<EmployeeDto> getAllEmployeeByTaskId(long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId);
@@ -218,11 +200,8 @@ public class TaskService {
     }
 
 
-    /**
-     * Метод меняет статус задачи на "Закончена"
-     */
     @Transactional
-    public TaskDto getTaskeByTaskId(long taskId) {
+    public TaskDto getTaskByTaskId(long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId);
         log.info("Задача taskId = " + taskId + " найдена успешно");
         return taskMapper.mapToTaskDto(task);

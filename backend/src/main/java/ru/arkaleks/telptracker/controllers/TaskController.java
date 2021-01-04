@@ -96,7 +96,7 @@ public class TaskController {
      */
     @PostMapping("api/tasks/current/{taskId}")
     TaskDto getTaskByTaskId(@PathVariable long taskId) {
-        return taskService.getTaskeByTaskId(taskId);
+        return taskService.getTaskByTaskId(taskId);
     }
 
 }

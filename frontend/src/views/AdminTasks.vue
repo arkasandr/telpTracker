@@ -43,16 +43,44 @@
                     </b-col>
                 </b-row>
 
+                <b-row >
+                    <b-col lg="5">
+                        <b-form-group
+                        >
+                            <b-input-group  size="sm">
+                                <b-form-input
+                                        id="filter-input"
+                                        v-model="filter"
+                                        type="search"
+                                        placeholder="Поиск..."
+                                ></b-form-input>
 
-                <b-pagination
-                        v-model="currentPage"
-                        :total-rows="rows"
-                        :per-page="perPage"
-                        aria-controls="task-table"
-                        size="sm"
-                        class="custom_pagination"
-                >
-                </b-pagination>
+                                <b-input-group-append>
+                                    <b-button
+                                            :disabled="!filter"
+                                            @click="filter = ''"
+                                            variant="success"
+                                    >Очистить</b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </b-form-group>
+                    </b-col>
+                    <b-col lg="4">
+                    </b-col>
+                    <!--<b-col lg="3 justify-content-end d-flex">-->
+                        <!--<b-pagination-->
+                                <!--v-model="currentPage"-->
+                                <!--:total-rows="rows"-->
+                                <!--:per-page="perPage"-->
+                                <!--aria-controls="task-table"-->
+                                <!--size="sm"-->
+                                <!--class="custom_pagination"-->
+                        <!--&gt;-->
+                        <!--</b-pagination>-->
+                    <!--</b-col>-->
+                </b-row>
+
+
 
 
                 <b-table
@@ -101,6 +129,23 @@
                     </template>
 
                 </b-table>
+
+                <b-row>
+                    <b-col lg="9">
+
+                    </b-col>
+                <b-col lg="3 justify-content-end d-flex">
+                    <b-pagination
+                            v-model="currentPage"
+                            :total-rows="rows"
+                            :per-page="perPage"
+                            aria-controls="task-table"
+                            size="sm"
+                            class="custom_pagination"
+                    >
+                    </b-pagination>
+                </b-col>
+                </b-row>
 
                 <b-row>
                     <b-col lg="4">
@@ -824,6 +869,10 @@
 
     .mPageModalRow {
         margin: 0 0 10px 0;
+    }
+
+    .custom_pagination {
+        margin: 0 0 15px 0;
     }
 
     .task-update-sm-letter {
