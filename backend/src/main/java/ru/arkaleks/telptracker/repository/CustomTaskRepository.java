@@ -8,6 +8,7 @@ import ru.arkaleks.telptracker.model.Task;
 
 import javax.persistence.criteria.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.jpa.domain.Specification.where;
 
@@ -46,10 +47,13 @@ public class CustomTaskRepository {
     }
 
     public List<Task> getSearchingTask(String text) {
-        return taskRepository.findAll(
+        List<Task> searchingList = taskRepository.findAll(
                 where(titleLike(text))
-                        .or(employeeSurnameLike(text))
                         .or(textLike(text))
-                        .or(taskIdLike(text)));
+                        .or(taskIdLike(text))
+                        .or(employeeSurnameLike(text)));
+        return searchingList.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 }

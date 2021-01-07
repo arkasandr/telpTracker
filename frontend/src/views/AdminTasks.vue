@@ -43,82 +43,177 @@
                     </b-col>
                 </b-row>
 
-                <b-row>
-                    <b-col lg="4">
-                        <b-form-group
+                <!--<b-row>-->
+                <!--<b-col lg="4">-->
+                <!--<b-form-group-->
+                <!--&gt;-->
+
+
+                <!--<b-input-group size="sm">-->
+                <!--<b-input-group-append>-->
+                <!--<b-button-->
+
+                <!--@click="searchTaskByCriteria"-->
+                <!--variant="success"-->
+                <!--:disabled="!filter"-->
+                <!--&gt;Найти-->
+                <!--</b-button>-->
+                <!--</b-input-group-append>-->
+                <!--<b-form-input-->
+                <!--id="filter-input"-->
+                <!--v-model="filter"-->
+                <!--placeholder="Поиск..."-->
+                <!--@keydown.native="enterSubmitSearch"-->
+                <!--&gt;</b-form-input>-->
+
+                <!--<b-input-group-append>-->
+                <!--<b-button-->
+                <!--@click="clearSearchInput"-->
+                <!--variant="danger"-->
+                <!--:disabled="!filter"-->
+                <!--&gt;-->
+                <!--<b-icon-backspace variant="light"></b-icon-backspace>-->
+                <!--</b-button>-->
+                <!--</b-input-group-append>-->
+                <!--</b-input-group>-->
+                <!--</b-form-group>-->
+                <!--</b-col>-->
+                <!--<b-col lg="1">-->
+                <!--</b-col>-->
+                <!--<b-col lg="4">-->
+                <!--<b-input-group size="sm">-->
+                <!--<b-input-group-append>-->
+                <!--<b-button-->
+
+                <!--@click="searchTaskByCriteria"-->
+                <!--variant="success"-->
+                <!--:disabled="!filter"-->
+                <!--size="sm"-->
+                <!--&gt;Найти за период-->
+                <!--</b-button>-->
+                <!--</b-input-group-append>-->
+                <!--<b-button-group-append>-->
+                <!--<b-form-datepicker id="task-search-start-datepicker" v-model="taskSearchStartDate"-->
+                <!--placeholder="Дата" locale="ru"-->
+                <!--size="sm"-->
+                <!--:date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">-->
+                <!--</b-form-datepicker>-->
+                <!--</b-button-group-append>-->
+                <!--<b-button-group-append>-->
+                <!--<b-form-datepicker id="task-search-end-datepicker" v-model="taskSearchEndDate"-->
+                <!--placeholder="Дата" locale="ru"-->
+                <!--size="sm"-->
+                <!--:date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">-->
+
+                <!--</b-form-datepicker>-->
+                <!--</b-button-group-append>-->
+                <!--<b-button-group-append>-->
+                <!--<b-button-->
+                <!--@click="clearSearchInput"-->
+                <!--variant="danger"-->
+                <!--:disabled="!filter"-->
+                <!--size="sm"-->
+                <!--&gt;-->
+                <!--<b-icon-backspace variant="light"></b-icon-backspace>-->
+                <!--</b-button>-->
+                <!--</b-button-group-append>-->
+                <!--</b-input-group>-->
+                <!--</b-col>-->
+                <!--</b-row>-->
+                <b-row class="ml-auto">
+                    <div>
+                        <b-tabs content-class="mt-3"
+                                active-nav-item-class="font-weight-bold text-success"
+
                         >
+                            <b-tab title="Поиск по ключевым словам" active>
 
+                                <b-row>
+                                    <b-col lg="12">
+                                        <b-form-group
+                                        >
+                                            <b-input-group size="sm">
+                                                <b-input-group-append>
+                                                    <b-button
 
-                            <b-input-group size="sm">
-                                <b-input-group-append>
-                                    <b-button
+                                                            @click="searchTaskByCriteria"
+                                                            variant="success"
+                                                            :disabled="!filter"
+                                                    >Найти
+                                                    </b-button>
+                                                </b-input-group-append>
+                                                <b-form-input
+                                                        id="filter-input"
+                                                        v-model="filter"
+                                                        placeholder="Поиск..."
+                                                        @keydown.native="enterSubmitSearch"
+                                                ></b-form-input>
 
-                                            @click="searchTaskByCriteria"
-                                            variant="success"
-                                            :disabled="!filter"
-                                    >Найти
-                                    </b-button>
-                                </b-input-group-append>
-                                <b-form-input
-                                        id="filter-input"
-                                        v-model="filter"
-                                        placeholder="Поиск..."
-                                        @keydown.native="enterSubmitSearch"
-                                ></b-form-input>
+                                                <b-input-group-append>
+                                                    <b-button
+                                                            @click="clearSearchInput"
+                                                            variant="danger"
+                                                            :disabled="!filter"
+                                                    >
+                                                        <b-icon-backspace variant="light"></b-icon-backspace>
+                                                    </b-button>
+                                                </b-input-group-append>
+                                            </b-input-group>
+                                        </b-form-group>
+                                    </b-col>
 
-                                <b-input-group-append>
-                                    <b-button
-                                            @click="clearSearchInput"
-                                            variant="danger"
-                                            :disabled="!filter"
-                                    >
-                                        <b-icon-backspace variant="light"></b-icon-backspace>
-                                    </b-button>
-                                </b-input-group-append>
-                            </b-input-group>
-                        </b-form-group>
-                    </b-col>
-                    <b-col lg="1">
-                    </b-col>
-                    <b-col lg="4">
-                        <b-button-group size="sm">
-                            <b-button-group-append>
-                                <b-button
+                                </b-row>
+                            </b-tab>
 
-                                        @click="searchTaskByCriteria"
-                                        variant="success"
-                                        :disabled="!filter"
-                                        size="sm"
-                                >Найти за период
-                                </b-button>
-                            </b-button-group-append>
-                            <b-button-group-append>
-                                <b-form-datepicker id="task-search-start-datepicker" v-model="taskSearchStartDate"
-                                                   placeholder="Дата" locale="ru"
-                                                   size="sm"
-                                                   :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
-                                </b-form-datepicker>
-                            </b-button-group-append>
-                            <b-button-group-append>
-                                <b-form-datepicker id="task-search-end-datepicker" v-model="taskSearchEndDate"
-                                                   placeholder="Дата" locale="ru"
-                                                   size="sm"
-                                                   :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+                            <b-tab title="Поиск по датам">
 
-                                </b-form-datepicker>
-                            </b-button-group-append>
-                            <b-button-group-append>
-                                <b-button
-                                        @click="clearSearchInput"
-                                        variant="danger"
-                                        :disabled="!filter"
-                                        size="sm"
-                                >
-                                    <b-icon-backspace variant="light"></b-icon-backspace>
-                                </b-button>
-                            </b-button-group-append>
-                        </b-button-group>
-                    </b-col>
+                                        <b-form-group
+                                        >
+                                            <b-button-group size="sm">
+                                                <b-button-group-append>
+                                                    <b-button
+
+                                                            @click="searchTaskByDate"
+                                                            variant="success"
+                                                            :disabled="!filter"
+                                                            size="sm"
+                                                    >Найти
+                                                    </b-button>
+                                                </b-button-group-append>
+                                                <b-button-group-append>
+                                                    <b-form-datepicker id="task-search-start-datepicker"
+                                                                       v-model="taskSearchStartDate"
+                                                                       placeholder="Начало периода" locale="ru"
+                                                                       size="sm"
+                                                                       :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+                                                    </b-form-datepicker>
+                                                </b-button-group-append>
+                                                <b-button-group-append>
+                                                    <b-form-datepicker id="task-search-end-datepicker"
+                                                                       v-model="taskSearchEndDate"
+                                                                       placeholder="Окончание периода" locale="ru"
+                                                                       size="sm"
+                                                                       :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+
+                                                    </b-form-datepicker>
+                                                </b-button-group-append>
+                                                <b-button-group-append>
+                                                    <b-button
+                                                            @click="clearSearchInput"
+                                                            variant="danger"
+                                                            :disabled="!filter"
+                                                            size="sm"
+                                                    >
+                                                        <b-icon-backspace variant="light"></b-icon-backspace>
+                                                    </b-button>
+                                                </b-button-group-append>
+                                            </b-button-group>
+                                        </b-form-group
+                                        >
+                            </b-tab>
+                        </b-tabs>
+                    </div>
+
                 </b-row>
 
 
@@ -1043,6 +1138,10 @@
         color: black !important;
         background-color: #fff;
         border: 1px solid #dee2e6;
+    }
+
+    .nav-link {
+        color: black;
     }
 
 </style>
