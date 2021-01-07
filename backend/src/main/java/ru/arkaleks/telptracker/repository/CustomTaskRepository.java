@@ -17,18 +17,18 @@ public class CustomTaskRepository {
     private final TaskRepository taskRepository;
 
 
-    private Specification<Task> titleLike(String title){
+    private Specification<Task> titleLike(String title) {
         return (root, query, criteriaBuilder)
-                -> criteriaBuilder.like(root.get("title"), "%"+title+"%");
+                -> criteriaBuilder.like(root.get("title"), "%" + title + "%");
     }
 
-    private Specification<Task> textLike(String text){
+    private Specification<Task> textLike(String text) {
         return (root, query, criteriaBuilder)
-                -> criteriaBuilder.like(root.get("description"), ("%"+text+"%"));
+                -> criteriaBuilder.like(root.get("description"), ("%" + text + "%"));
     }
 
-    private Specification<Task> taskIdLike(String id){
-        if(id.matches(".*\\d.*")) {
+    private Specification<Task> taskIdLike(String id) {
+        if (id.matches(".*\\d.*")) {
             return (root, query, criteriaBuilder)
                     -> criteriaBuilder.equal(root.get("taskId"), Long.valueOf(id));
         } else {

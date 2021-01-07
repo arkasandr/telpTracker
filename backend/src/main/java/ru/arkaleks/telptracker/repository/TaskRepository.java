@@ -7,13 +7,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import ru.arkaleks.telptracker.model.Task;
 
-
-/**
- * @author Alex Arkashev (arkasandr@gmail.com)
- * @version $Id$
- * @since 0.1
- */
-
 @Repository
 @Transactional
 public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {

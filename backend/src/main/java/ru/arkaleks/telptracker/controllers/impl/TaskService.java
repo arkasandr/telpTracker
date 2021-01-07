@@ -111,7 +111,7 @@ public class TaskService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<TaskListDto> getAllEmployeeTasks() {
         Employee employee = getLoginEmployee();
         Set<Task> employeeTasks = employee.getTasks();
@@ -122,10 +122,13 @@ public class TaskService {
         return convertToTaskListDto(resultTasks);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<TaskListDto> getSearchingTasks(String text) {
         List<Task> taskList= customTaskRepository.getSearchingTask(text);
-        return convertToTaskListDto(taskList);
+        log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
+        List<Task> result = chooseCurrentEmployeeTasks(taskList);
+        log.info("К текущему пользователю относится " + result.size() + " задач");
+        return convertToTaskListDto(result);
     }
 
 
@@ -218,6 +221,20 @@ public class TaskService {
             String[] array = surnames.stream().toArray(String[]::new);
             task.setMembers(array);
             result.add(task);
+        }
+        return result;
+    }
+
+    private List<Task> chooseCurrentEmployeeTasks(List<Task> inputList) {
+        List<Task> result = new ArrayList<>();
+        Employee currentEmployee = getLoginEmployee();
+        for(Task task : inputList) {
+            if(task != null) {
+                if(task.getMembers().contains(currentEmployee)) {
+                    result.add(task);
+                }
+            }
+            else throw new IllegalArgumentException("Task is empty!");
         }
         return result;
     }
