@@ -9,6 +9,7 @@ import ru.arkaleks.telptracker.controllers.dto.TaskDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskListDto;
 import ru.arkaleks.telptracker.controllers.mapper.TaskMapper;
 import ru.arkaleks.telptracker.model.*;
+import ru.arkaleks.telptracker.repository.CustomTaskRepository;
 import ru.arkaleks.telptracker.repository.EmployeeRepository;
 import ru.arkaleks.telptracker.repository.TaskRepository;
 
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+
+    private final CustomTaskRepository customTaskRepository;
 
     private final EmployeeRepository employeeRepository;
 
@@ -110,33 +113,21 @@ public class TaskService {
 
     @Transactional
     public List<TaskListDto> getAllEmployeeTasks() {
-        List<TaskListDto> result = new ArrayList<>();
         Employee employee = getLoginEmployee();
         Set<Task> employeeTasks = employee.getTasks();
         List<Task> resultTasks = employeeTasks
                 .stream()
                 .sorted(Comparator.comparing(Task::getTaskId))
                 .collect(Collectors.toList());
-        for (Task oldTask : resultTasks) {
-            TaskListDto task = new TaskListDto();
-            task.setTaskId(oldTask.getTaskId());
-            task.setTitle(oldTask.getTitle());
-            task.setDescription(oldTask.getDescription());
-            task.setStartDate(oldTask.getStartDate());
-            task.setFinishDate(oldTask.getFinishDate());
-            task.setStatus((oldTask.getStatus()));
-            task.setStatusUpdateDate((oldTask.getStatusUpdateDate()));
-            List<String> surnames = oldTask.getMembers()
-                    .stream()
-                    .filter(x -> x.getRole().equals(WorkRole.ИСПОЛНИТЕЛЬ))
-                    .map(x -> x.getSurname())
-                    .collect(Collectors.toList());
-            String[] array = surnames.stream().toArray(String[]::new);
-            task.setMembers(array);
-            result.add(task);
-        }
-        return result;
+        return convertToTaskListDto(resultTasks);
     }
+
+    @Transactional
+    public List<TaskListDto> getSearchingTasks(String text) {
+        List<Task> taskList= customTaskRepository.getSearchingTask(text);
+        return convertToTaskListDto(taskList);
+    }
+
 
 
     @Transactional
@@ -205,5 +196,29 @@ public class TaskService {
         Task task = taskRepository.findTaskByTaskId(taskId);
         log.info("Задача taskId = " + taskId + " найдена успешно");
         return taskMapper.mapToTaskDto(task);
+    }
+
+
+    private List<TaskListDto> convertToTaskListDto(List<Task> taskList) {
+        List<TaskListDto> result = new ArrayList<>();
+        for (Task oldTask : taskList) {
+            TaskListDto task = new TaskListDto();
+            task.setTaskId(oldTask.getTaskId());
+            task.setTitle(oldTask.getTitle());
+            task.setDescription(oldTask.getDescription());
+            task.setStartDate(oldTask.getStartDate());
+            task.setFinishDate(oldTask.getFinishDate());
+            task.setStatus((oldTask.getStatus()));
+            task.setStatusUpdateDate((oldTask.getStatusUpdateDate()));
+            List<String> surnames = oldTask.getMembers()
+                    .stream()
+                    .filter(x -> x.getRole().equals(WorkRole.ИСПОЛНИТЕЛЬ))
+                    .map(x -> x.getSurname())
+                    .collect(Collectors.toList());
+            String[] array = surnames.stream().toArray(String[]::new);
+            task.setMembers(array);
+            result.add(task);
+        }
+        return result;
     }
 }

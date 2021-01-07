@@ -43,24 +43,37 @@
                     </b-col>
                 </b-row>
 
-                <b-row >
-                    <b-col lg="5">
+                <b-row>
+                    <b-col lg="4">
                         <b-form-group
                         >
-                            <b-input-group  size="sm">
+
+
+                            <b-input-group size="sm">
+                                <b-input-group-append>
+                                    <b-button
+
+                                            @click="searchTaskByCriteria"
+                                            variant="success"
+                                            :disabled="!filter"
+                                    >Найти
+                                    </b-button>
+                                </b-input-group-append>
                                 <b-form-input
                                         id="filter-input"
                                         v-model="filter"
-                                        type="search"
-                                        placeholder="Поиск..."
+                                        placeholder="Поиск по названию и содержанию"
+                                        @keydown.native="enterSubmitSearch"
                                 ></b-form-input>
 
                                 <b-input-group-append>
                                     <b-button
+                                            @click="clearSearchInput"
+                                            variant="danger"
                                             :disabled="!filter"
-                                            @click="filter = ''"
-                                            variant="success"
-                                    >Очистить</b-button>
+                                    >
+                                        <b-icon-backspace variant="light"></b-icon-backspace>
+                                    </b-button>
                                 </b-input-group-append>
                             </b-input-group>
                         </b-form-group>
@@ -68,19 +81,17 @@
                     <b-col lg="4">
                     </b-col>
                     <!--<b-col lg="3 justify-content-end d-flex">-->
-                        <!--<b-pagination-->
-                                <!--v-model="currentPage"-->
-                                <!--:total-rows="rows"-->
-                                <!--:per-page="perPage"-->
-                                <!--aria-controls="task-table"-->
-                                <!--size="sm"-->
-                                <!--class="custom_pagination"-->
-                        <!--&gt;-->
-                        <!--</b-pagination>-->
+                    <!--<b-pagination-->
+                    <!--v-model="currentPage"-->
+                    <!--:total-rows="rows"-->
+                    <!--:per-page="perPage"-->
+                    <!--aria-controls="task-table"-->
+                    <!--size="sm"-->
+                    <!--class="custom_pagination"-->
+                    <!--&gt;-->
+                    <!--</b-pagination>-->
                     <!--</b-col>-->
                 </b-row>
-
-
 
 
                 <b-table
@@ -96,7 +107,8 @@
                         responsive="sm"
                         :per-page="perPage"
                         :current-page="currentPage"
-                        @row-dblclicked = "(item) => onRowDoubleClick(item)"
+                        @row-dblclicked="(item) => onRowDoubleClick(item)"
+                        @filtered="onFiltered"
                 >
 
                     <template
@@ -106,16 +118,17 @@
                     </template>
 
                     <!--<template v-slot:cell(taskId)>-->
-                        <!--<b-button size="sm" @click="onRowDoubleClick" class="mr-1">-->
-                            <!--Info modal-->
-                        <!--</b-button>-->
+                    <!--<b-button size="sm" @click="onRowDoubleClick" class="mr-1">-->
+                    <!--Info modal-->
+                    <!--</b-button>-->
                     <!--</template>-->
 
-                <template v-slot:cell(taskId)="data">
-                    <!--<router-link :to="{path:'/tasks/${data.value'}">{{ data.value }}</router-link>-->
-                    <!--<router-link :to="{ path:'/tasks/${data.value', params: { taskId: data.value.id} }">{{ data.value }}</router-link>-->
-                    <router-link :to="{name:'currentTask', params: {Pid:data.value} }">{{ data.value }}</router-link>
-                </template>
+                    <template v-slot:cell(taskId)="data">
+                        <!--<router-link :to="{path:'/tasks/${data.value'}">{{ data.value }}</router-link>-->
+                        <!--<router-link :to="{ path:'/tasks/${data.value', params: { taskId: data.value.id} }">{{ data.value }}</router-link>-->
+                        <router-link :to="{name:'currentTask', params: {Pid:data.value} }">{{ data.value }}
+                        </router-link>
+                    </template>
 
                     <template v-slot:cell(selected)="{ rowSelected }">
                         <template v-if="rowSelected">
@@ -134,17 +147,17 @@
                     <b-col lg="9">
 
                     </b-col>
-                <b-col lg="3 justify-content-end d-flex">
-                    <b-pagination
-                            v-model="currentPage"
-                            :total-rows="rows"
-                            :per-page="perPage"
-                            aria-controls="task-table"
-                            size="sm"
-                            class="custom_pagination"
-                    >
-                    </b-pagination>
-                </b-col>
+                    <b-col lg="3 justify-content-end d-flex">
+                        <b-pagination
+                                v-model="currentPage"
+                                :total-rows="rows"
+                                :per-page="perPage"
+                                aria-controls="task-table"
+                                size="sm"
+                                class="custom_pagination"
+                        >
+                        </b-pagination>
+                    </b-col>
                 </b-row>
 
                 <b-row>
@@ -345,7 +358,7 @@
 
                             </b-row>
                             <b-row>
-                                <b-col >
+                                <b-col>
                                     <p></p>
                                 </b-col>
                             </b-row>
@@ -368,7 +381,7 @@
 
                             </b-row>
                             <b-row>
-                                <b-col >
+                                <b-col>
                                     <p></p>
                                 </b-col>
                             </b-row>
@@ -556,10 +569,12 @@
                 ],
                 busy: false,
                 newTaskExecutor: '',
-                newTaskFinishDate:'',
-                currentFinishDate:'',
-                currentTaskExecutor:'',
-                currentTaskId:'',
+                newTaskFinishDate: '',
+                currentFinishDate: '',
+                currentTaskExecutor: '',
+                currentTaskId: '',
+                filter: null,
+                totalRows: 1,
             }
         },
         methods: {
@@ -569,12 +584,36 @@
                 axios.get('/api/tasks/getall'
                 ).then(response => {
                     console.log('success');
-                    this.messageTask = "Список задач загружен";
+                    this.message = "Список задач загружен";
                     this.postsTask = response.data;
                     this.$bvToast.show('success-toast')
                 }).catch(error => {
                     console.log(error);
                     this.message = "Не удалось загрузить задачи!";
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
+            searchTaskByCriteria() {
+                this.busy = true;
+                let text = this.filter;
+                axios.post('/api/tasks/searchall/' + text
+                ).then(response => {
+                    this.postsTask = response.data;
+                    if(this.postsTask.length !== 0) {
+                        console.log('success');
+                        this.message = "Поиск завершен";
+                        this.$bvToast.show('success-toast')
+                    } else {
+                        console.log('success');
+                        this.message = "Искомая комбинация не найдена!";
+                        this.$bvToast.show('success-toast')
+                    }
+                }).catch(error => {
+                    console.log(error)
+                    this.message = "Не удалось выполнить поиск!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
@@ -739,8 +778,8 @@
                 this.currentFinishDate = this.selected[0]["finishDate"];
                 this.currentTaskExecutor = this.selected[0]["members"][0];
                 let exec = this.selected[0]["members"][0];
-                for(let e in this.executors) {
-                    if(this.executors[e].includes(exec)) {
+                for (let e in this.executors) {
+                    if (this.executors[e].includes(exec)) {
                         this.taskExecutor = this.executors[e];
                         this.currentTaskExecutor = this.executors[e]
                     }
@@ -749,7 +788,7 @@
             },
 
             changeTaskDetails() {
-                if(this.newTaskExecutor.length !== 0) {
+                if (this.newTaskExecutor.length !== 0) {
                     let arr = this.newTaskExecutor.split(' ');
                     axios.post('/api/employee/getbyfio',
                         arr,
@@ -768,7 +807,7 @@
 
 
             updateTask() {
-                if(this.employeeByFio.length !== 0) {
+                if (this.employeeByFio.length !== 0) {
                     this.busy = true;
                     let id = this.currentTaskId;
                     let date = this.newTaskFinishDate;
@@ -834,7 +873,24 @@
             },
 
             onRowDoubleClick(item) {
-                this.$router.push({name:'currentTask',params:{Pid:item.taskId}})
+                this.$router.push({name: 'currentTask', params: {Pid: item.taskId}})
+            },
+
+            onFiltered(filteredItems) {
+                // Trigger pagination to update the number of buttons/pages due to filtering
+                this.totalRows = filteredItems.length;
+                this.currentPage = 1
+            },
+
+            clearSearchInput() {
+                this.filter = '';
+                this.getAllTasks()
+            },
+
+            enterSubmitSearch(event) {
+                if (event.which === 13) {
+                    this.searchTaskByCriteria()
+                }
             }
 
         },

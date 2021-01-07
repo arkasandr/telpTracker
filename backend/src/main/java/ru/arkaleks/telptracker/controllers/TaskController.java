@@ -25,75 +25,60 @@ public class TaskController {
 
     private final TaskService taskService;
 
-    /**
-     * Метод добавляет новую задачу
-     */
 
     @PostMapping("/api/tasks/admin/add")
     TaskDto addNewTaskToEmployee(@RequestBody Task task) {
         return taskService.addNewTaskToEmployee(task);
     }
 
-    /**
-     * Метод обновляет текущую задачу
-     */
 
     @PostMapping("/api/tasks/admin/{taskId}/update")
     TaskDto updateCurrentTask(@RequestBody Task task, @PathVariable long taskId) {
         return taskService.updateCurrentTask(task, taskId);
     }
 
-    /**
-     * Метод вовращает список всех задач
-     */
+
     @GetMapping("api/tasks/getall")
     List<TaskListDto> getAllTasks() {
         return taskService.getAllEmployeeTasks();
     }
 
-    /**
-     * Метод удаляет задачу
-     */
+    @PostMapping("api/tasks/searchall/{text}")
+    List<TaskListDto> getSearchingTasksByCriteria(@PathVariable String text) {
+        return taskService.getSearchingTasks(text);
+    }
+
+
     @DeleteMapping("api/tasks/{taskId}/delete")
     void deleteTask(@PathVariable long taskId) {
         taskService.deleteTask(taskId);
     }
 
-    /**
-     * Метод меняет статус задачи на "Начата"
-     */
+
     @PostMapping("/api/tasks/status/{taskId}/start")
     void setTaskStatusToStart (@PathVariable long taskId) {
         taskService.setTaskStatusToStart(taskId);
     }
 
-    /**
-     * Метод меняет статус задачи на "Приостановлена"
-     */
+
     @PostMapping("/api/tasks/status/{taskId}/pause")
     void setTaskStatusToPause (@PathVariable long taskId) {
         taskService.setTaskStatusToPause(taskId);
     }
 
-    /**
-     * Метод меняет статус задачи на "Закончена"
-     */
+
     @PostMapping("/api/tasks/status/{taskId}/end")
     void setTaskStatusToEnd (@PathVariable long taskId) {
         taskService.setTaskStatusToEnd(taskId);
     }
 
-    /**
-     * Метод вовращает список участников задачи
-     */
+
     @PostMapping("api/tasks/members/{taskId}")
     Set<EmployeeDto> getTaskMembers(@PathVariable long taskId) {
         return taskService.getAllEmployeeByTaskId(taskId);
     }
 
-    /**
-     * Метод вовращает задачу по taskId
-     */
+
     @PostMapping("api/tasks/current/{taskId}")
     TaskDto getTaskByTaskId(@PathVariable long taskId) {
         return taskService.getTaskByTaskId(taskId);

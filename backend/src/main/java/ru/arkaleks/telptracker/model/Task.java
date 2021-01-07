@@ -3,6 +3,7 @@ package ru.arkaleks.telptracker.model;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -57,6 +58,7 @@ public class Task {
     private Status status;
 
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     private String description;
 
     private LocalDate startDate;
