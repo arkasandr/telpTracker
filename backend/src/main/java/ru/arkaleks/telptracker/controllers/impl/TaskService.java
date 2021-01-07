@@ -124,7 +124,7 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     public List<TaskListDto> getSearchingTasks(String text) {
-        List<Task> taskList= customTaskRepository.getSearchingTask(text);
+        List<Task> taskList = customTaskRepository.getSearchingTask(text);
         log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
         List<Task> result = chooseCurrentEmployeeTasks(taskList);
         log.info("К текущему пользователю относится " + result.size() + " задач");

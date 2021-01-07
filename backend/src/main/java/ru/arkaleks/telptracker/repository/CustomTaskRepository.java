@@ -6,6 +6,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import ru.arkaleks.telptracker.model.Task;
 
+import javax.persistence.criteria.*;
 import java.util.List;
 
 import static org.springframework.data.jpa.domain.Specification.where;
@@ -37,9 +38,17 @@ public class CustomTaskRepository {
         }
     }
 
+    public static Specification<Task> employeeSurnameLike(String surname) {
+        return (Specification<Task>) (root, criteriaQuery, cb) -> {
+            Join join = root.join("members");
+            return cb.like(join.get("surname"), ("%" + surname + "%"));
+        };
+    }
+
     public List<Task> getSearchingTask(String text) {
         return taskRepository.findAll(
                 where(titleLike(text))
+                        .or(employeeSurnameLike(text))
                         .or(textLike(text))
                         .or(taskIdLike(text)));
     }

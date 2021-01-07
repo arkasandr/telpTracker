@@ -62,7 +62,7 @@
                                 <b-form-input
                                         id="filter-input"
                                         v-model="filter"
-                                        placeholder="Поиск по названию и содержанию"
+                                        placeholder="Поиск..."
                                         @keydown.native="enterSubmitSearch"
                                 ></b-form-input>
 
@@ -78,19 +78,47 @@
                             </b-input-group>
                         </b-form-group>
                     </b-col>
-                    <b-col lg="4">
+                    <b-col lg="1">
                     </b-col>
-                    <!--<b-col lg="3 justify-content-end d-flex">-->
-                    <!--<b-pagination-->
-                    <!--v-model="currentPage"-->
-                    <!--:total-rows="rows"-->
-                    <!--:per-page="perPage"-->
-                    <!--aria-controls="task-table"-->
-                    <!--size="sm"-->
-                    <!--class="custom_pagination"-->
-                    <!--&gt;-->
-                    <!--</b-pagination>-->
-                    <!--</b-col>-->
+                    <b-col lg="4">
+                        <b-button-group size="sm">
+                            <b-button-group-append>
+                                <b-button
+
+                                        @click="searchTaskByCriteria"
+                                        variant="success"
+                                        :disabled="!filter"
+                                        size="sm"
+                                >Найти за период
+                                </b-button>
+                            </b-button-group-append>
+                            <b-button-group-append>
+                                <b-form-datepicker id="task-search-start-datepicker" v-model="taskSearchStartDate"
+                                                   placeholder="Дата" locale="ru"
+                                                   size="sm"
+                                                   :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+                                </b-form-datepicker>
+                            </b-button-group-append>
+                            <b-button-group-append>
+                                <b-form-datepicker id="task-search-end-datepicker" v-model="taskSearchEndDate"
+                                                   placeholder="Дата" locale="ru"
+                                                   size="sm"
+                                                   :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
+
+                                </b-form-datepicker>
+                            </b-button-group-append>
+                            <b-button-group-append>
+                                <b-button
+                                        @click="clearSearchInput"
+                                        variant="danger"
+                                        :disabled="!filter"
+                                        size="sm"
+                                >
+                                    <b-icon-backspace variant="light"></b-icon-backspace>
+                                </b-button>
+                            </b-button-group-append>
+                        </b-button-group>
+                    </b-col>
                 </b-row>
 
 
@@ -602,7 +630,7 @@
                 axios.post('/api/tasks/searchall/' + text
                 ).then(response => {
                     this.postsTask = response.data;
-                    if(this.postsTask.length !== 0) {
+                    if (this.postsTask.length !== 0) {
                         console.log('success');
                         this.message = "Поиск завершен";
                         this.$bvToast.show('success-toast')
