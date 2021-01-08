@@ -123,14 +123,24 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
-    public List<TaskListDto> getSearchingTasks(String text) {
-        List<Task> taskList = customTaskRepository.getSearchingTask(text);
+    public List<TaskListDto> getSearchingTasksByCriteria(String text) {
+        List<Task> taskList = customTaskRepository.getSearchingTaskByCriteria(text);
         log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
         List<Task> result = chooseCurrentEmployeeTasks(taskList);
         log.info("К текущему пользователю относится " + result.size() + " задач");
         return convertToTaskListDto(result);
     }
 
+
+    @Transactional(readOnly = true)
+    public List<TaskListDto> getSearchingTasksByPeriod(LocalDate[] period) {
+        List<Task> taskList = customTaskRepository.getSearchingTaskByPeriod(period);
+        log.info("За период c " + period[0] + " по " + period[1]);
+        log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
+        List<Task> result = chooseCurrentEmployeeTasks(taskList);
+        log.info("К текущему пользователю относится " + result.size() + " задач");
+        return convertToTaskListDto(result);
+    }
 
 
     @Transactional

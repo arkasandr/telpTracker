@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import ru.arkaleks.telptracker.model.Task;
 
 import javax.persistence.criteria.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,12 +47,31 @@ public class CustomTaskRepository {
         };
     }
 
-    public List<Task> getSearchingTask(String text) {
+    public static Specification<Task> allStartDatesIn(LocalDate[] period) {
+        return (root, query, criteriaBuilder)
+                -> criteriaBuilder.between(root.get("startDate"), period[0], period[1]);
+    }
+
+    public static Specification<Task> allFinishDatesIn(LocalDate[] period) {
+        return (root, query, criteriaBuilder)
+                -> criteriaBuilder.between(root.get("finishDate"), period[0], period[1]);
+    }
+
+    public List<Task> getSearchingTaskByCriteria(String text) {
         List<Task> searchingList = taskRepository.findAll(
                 where(titleLike(text))
                         .or(textLike(text))
                         .or(taskIdLike(text))
                         .or(employeeSurnameLike(text)));
+        return searchingList.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<Task> getSearchingTaskByPeriod(LocalDate[] period) {
+        List<Task> searchingList = taskRepository.findAll(allStartDatesIn(period)
+        .and(allFinishDatesIn(period))
+        );
         return searchingList.stream()
                 .distinct()
                 .collect(Collectors.toList());

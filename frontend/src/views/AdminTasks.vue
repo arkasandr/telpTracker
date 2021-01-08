@@ -171,19 +171,17 @@
                                         >
                                             <b-button-group size="sm">
                                                 <b-button-group-append>
-                                                    <b-button
+                                                    <b-dropdown text="Поиск..." variant="success" size="sm" :disabled="disableSearchDate">
+                                                        <b-dropdown-item @click="searchTaskByStartDate">по началу</b-dropdown-item>
+                                                        <b-dropdown-item @click="searchTaskByEndDate">по окончанию</b-dropdown-item>
+                                                        <b-dropdown-item @click="searchTaskByPeriod">в диапазоне</b-dropdown-item>
+                                                    </b-dropdown>
 
-                                                            @click="searchTaskByDate"
-                                                            variant="success"
-                                                            :disabled="!filter"
-                                                            size="sm"
-                                                    >Найти
-                                                    </b-button>
                                                 </b-button-group-append>
                                                 <b-button-group-append>
                                                     <b-form-datepicker id="task-search-start-datepicker"
                                                                        v-model="taskSearchStartDate"
-                                                                       placeholder="Начало периода" locale="ru"
+                                                                       placeholder="Начало задачи" locale="ru"
                                                                        size="sm"
                                                                        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
                                                     </b-form-datepicker>
@@ -191,7 +189,7 @@
                                                 <b-button-group-append>
                                                     <b-form-datepicker id="task-search-end-datepicker"
                                                                        v-model="taskSearchEndDate"
-                                                                       placeholder="Окончание периода" locale="ru"
+                                                                       placeholder="Окончание задачи" locale="ru"
                                                                        size="sm"
                                                                        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
 
@@ -199,9 +197,9 @@
                                                 </b-button-group-append>
                                                 <b-button-group-append>
                                                     <b-button
-                                                            @click="clearSearchInput"
+                                                            @click="clearSearchDatepicker"
                                                             variant="danger"
-                                                            :disabled="!filter"
+                                                            :disabled="disableSearchDate"
                                                             size="sm"
                                                     >
                                                         <b-icon-backspace variant="light"></b-icon-backspace>
@@ -643,6 +641,11 @@
                 return this.newTaskExecutor.length === 0 && this.newTaskFinishDate.length === 0
             },
 
+            disableSearchDate() {
+                return this.taskSearchStartDate.length === 0 || this.taskSearchEndDate.length === 0
+                    || this.taskSearchStartDate > this.taskSearchEndDate
+            }
+
         },
         mounted() {
             if (!this.currentUser) {
@@ -698,6 +701,8 @@
                 currentTaskId: '',
                 filter: null,
                 totalRows: 1,
+                taskSearchStartDate: '',
+                taskSearchEndDate: ''
             }
         },
         methods: {
@@ -735,13 +740,86 @@
                         this.$bvToast.show('success-toast')
                     }
                 }).catch(error => {
-                    console.log(error)
+                    console.log(error);
                     this.message = "Не удалось выполнить поиск!";
                     this.$bvToast.show('danger-toast')
                 }).finally(() => {
                     this.busy = false
                 })
             },
+
+            searchTaskByPeriod() {
+                this.busy = true;
+                let period = [this.taskSearchStartDate, this.taskSearchEndDate];
+                axios.post('/api/tasks/searchbyperiod/', period
+                ).then(response => {
+                    this.postsTask = response.data;
+                    if (this.postsTask.length !== 0) {
+                        console.log('success');
+                        this.message = "Поиск завершен";
+                        this.$bvToast.show('success-toast')
+                    } else {
+                        console.log('success');
+                        this.message = "За указанный период задачи не найдены!";
+                        this.$bvToast.show('success-toast')
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    this.message = "Не удалось выполнить поиск!";
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
+            searchTaskByStartDate() {
+                this.busy = true;
+                let period = [this.taskSearchStartDate, this.taskSearchEndDate];
+                axios.post('/api/tasks/searchbystartdate/', period
+                ).then(response => {
+                    this.postsTask = response.data;
+                    if (this.postsTask.length !== 0) {
+                        console.log('success');
+                        this.message = "Поиск завершен";
+                        this.$bvToast.show('success-toast')
+                    } else {
+                        console.log('success');
+                        this.message = "За указанный период задачи не найдены!";
+                        this.$bvToast.show('success-toast')
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    this.message = "Не удалось выполнить поиск!";
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
+            searchTaskByEndDate() {
+                this.busy = true;
+                let period = [this.taskSearchStartDate, this.taskSearchEndDate];
+                axios.post('/api/tasks/searchbyenddate/', period
+                ).then(response => {
+                    this.postsTask = response.data;
+                    if (this.postsTask.length !== 0) {
+                        console.log('success');
+                        this.message = "Поиск завершен";
+                        this.$bvToast.show('success-toast')
+                    } else {
+                        console.log('success');
+                        this.message = "За указанный период задачи не найдены!";
+                        this.$bvToast.show('success-toast')
+                    }
+                }).catch(error => {
+                    console.log(error);
+                    this.message = "Не удалось выполнить поиск!";
+                    this.$bvToast.show('danger-toast')
+                }).finally(() => {
+                    this.busy = false
+                })
+            },
+
 
 
             addNewTask() {
@@ -984,6 +1062,11 @@
             refreshUpdateTaskInputs() {
                 this.newTaskExecutor = '';
                 this.newTaskFinishDate = ''
+            },
+
+            clearSearchDatepicker() {
+                this.taskSearchStartDate = '';
+                this.taskSearchEndDate = ''
             },
 
             onRowSelected(items) {

@@ -10,6 +10,7 @@ import ru.arkaleks.telptracker.controllers.dto.TaskListDto;
 import ru.arkaleks.telptracker.controllers.impl.TaskService;
 import ru.arkaleks.telptracker.model.Task;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -45,9 +46,13 @@ public class TaskController {
 
     @PostMapping("api/tasks/searchall/{text}")
     List<TaskListDto> getSearchingTasksByCriteria(@PathVariable String text) {
-        return taskService.getSearchingTasks(text);
+        return taskService.getSearchingTasksByCriteria(text);
     }
 
+    @PostMapping("api/tasks/searchbyperiod")
+    List<TaskListDto> getSearchingTasksByPeriod(@RequestBody LocalDate[] period) {
+        return taskService.getSearchingTasksByPeriod(period);
+    }
 
     @DeleteMapping("api/tasks/{taskId}/delete")
     void deleteTask(@PathVariable long taskId) {
