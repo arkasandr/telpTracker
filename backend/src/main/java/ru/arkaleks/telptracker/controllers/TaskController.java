@@ -54,6 +54,16 @@ public class TaskController {
         return taskService.getSearchingTasksByPeriod(period);
     }
 
+    @PostMapping("api/tasks/searchbystartdate")
+    List<TaskListDto> getSearchingTasksByStartDate(@RequestBody LocalDate[] period) {
+        return taskService.getSearchingTasksByStartDate(period);
+    }
+
+    @PostMapping("api/tasks/searchbyenddate")
+    List<TaskListDto> getSearchingTasksByEndDate(@RequestBody LocalDate[] period) {
+        return taskService.getSearchingTasksByEndDate(period);
+    }
+
     @DeleteMapping("api/tasks/{taskId}/delete")
     void deleteTask(@PathVariable long taskId) {
         taskService.deleteTask(taskId);

@@ -181,7 +181,7 @@
                                                 <b-button-group-append>
                                                     <b-form-datepicker id="task-search-start-datepicker"
                                                                        v-model="taskSearchStartDate"
-                                                                       placeholder="Начало задачи" locale="ru"
+                                                                       placeholder="Начало периода" locale="ru"
                                                                        size="sm"
                                                                        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
                                                     </b-form-datepicker>
@@ -189,7 +189,7 @@
                                                 <b-button-group-append>
                                                     <b-form-datepicker id="task-search-end-datepicker"
                                                                        v-model="taskSearchEndDate"
-                                                                       placeholder="Окончание задачи" locale="ru"
+                                                                       placeholder="Окончание периода" locale="ru"
                                                                        size="sm"
                                                                        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">
 
@@ -1066,7 +1066,8 @@
 
             clearSearchDatepicker() {
                 this.taskSearchStartDate = '';
-                this.taskSearchEndDate = ''
+                this.taskSearchEndDate = '';
+                this.getAllTasks()
             },
 
             onRowSelected(items) {

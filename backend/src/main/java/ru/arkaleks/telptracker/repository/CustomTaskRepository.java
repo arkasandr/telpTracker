@@ -76,4 +76,22 @@ public class CustomTaskRepository {
                 .distinct()
                 .collect(Collectors.toList());
     }
+
+    public List<Task> getSearchingTaskByStartDate(LocalDate[] period) {
+        List<Task> searchingList = taskRepository.findAll(
+                allStartDatesIn(period)
+        );
+        return searchingList.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public List<Task> getSearchingTaskByEndDate(LocalDate[] period) {
+        List<Task> searchingList = taskRepository.findAll(
+                allFinishDatesIn(period)
+        );
+        return searchingList.stream()
+                .distinct()
+                .collect(Collectors.toList());
+    }
 }

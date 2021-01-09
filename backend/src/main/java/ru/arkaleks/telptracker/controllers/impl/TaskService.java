@@ -143,6 +143,26 @@ public class TaskService {
     }
 
 
+    @Transactional(readOnly = true)
+    public List<TaskListDto> getSearchingTasksByStartDate(LocalDate[] period) {
+        List<Task> taskList = customTaskRepository.getSearchingTaskByStartDate(period);
+        log.info("За период c " + period[0] + " по " + period[1]);
+        log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
+        List<Task> result = chooseCurrentEmployeeTasks(taskList);
+        log.info("К текущему пользователю относится " + result.size() + " задач");
+        return convertToTaskListDto(result);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaskListDto> getSearchingTasksByEndDate(LocalDate[] period) {
+        List<Task> taskList = customTaskRepository.getSearchingTaskByEndDate(period);
+        log.info("За период c " + period[0] + " по " + period[1]);
+        log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
+        List<Task> result = chooseCurrentEmployeeTasks(taskList);
+        log.info("К текущему пользователю относится " + result.size() + " задач");
+        return convertToTaskListDto(result);
+    }
+
     @Transactional
     public void deleteTask(long taskId) {
         taskRepository.deleteTaskByTaskId(taskId);
