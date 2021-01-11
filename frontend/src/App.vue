@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="app">
     <b-navbar toggleable="lg" type="dark" variant="success">
       <b-navbar-brand href="#">TELPTracker</b-navbar-brand>
 
@@ -65,6 +65,19 @@
     <div class="container">
     <router-view />
     </div>
+    <footer class="footer">
+      <b-row>
+        <b-col lg="3">
+
+      </b-col>
+        <b-col lg="6">
+          <b-icon-chat-dots variant="dark" font-scale="1.5" shift-v="-3"  @click.prevent="logOut"></b-icon-chat-dots>
+        </b-col>
+        <b-col lg="3">
+
+        </b-col>
+      </b-row>
+    </footer>
   </div>
 
   <!--<div id="app">-->
@@ -163,6 +176,17 @@
 </script>
 
 <style>
+  html, body {
+    height: 100%;
+  }
+  #app {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+  .container {
+    flex: 1 0 auto;
+  }
   .mPage_app {
     margin: 10px 5px 5px 5px;
     color: red;
@@ -224,6 +248,17 @@
     display: inline-block;
     overflow: visible;
     vertical-align: 0;
+  }
+
+  .footer {
+    flex-shrink: 0;
+    /* Prevent Chrome, Opera, and Safari from letting these items shrink to smaller than their content's default minimum size. */
+    padding: 15px;
+  }
+
+  footer {
+    background: #e9ecef;
+    color: black;
   }
 
 </style>

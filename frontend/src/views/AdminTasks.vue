@@ -24,102 +24,29 @@
 
 
                 <b-row class="ml-auto">
-                    <b-col lg="5">
+                    <b-col lg="4">
                     </b-col>
                     <b-col lg="4">
                     </b-col>
-                    <b-col lg="3 justify-content-end d-flex">
+                    <b-col lg="4 justify-content-end d-flex">
                         <b-button v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
                                   class="task_lt_btn"
                                   @click="addNewTask" variant="success" size="lg"
-                        >Добавить
+                        >
+                            Добавить
+                            <b-icon-clipboard-plus variant="light" font-scale="1.4" shift-v="-1"></b-icon-clipboard-plus>
                         </b-button>
                         <b-button v-if="currentUser && currentUser.employeeRole[0].rolename === 'ROLE_ADMIN'"
                                   class="task_lt_btn"
                                   @click="deleteCurrentTask" :disabled="this.disableState"
-                                  variant="danger" size="lg">Удалить
+                                  variant="danger" size="lg">
+                            Удалить
+                            <b-icon-trash variant="light" font-scale="1.4" shift-v="-1"></b-icon-trash>
                         </b-button>
 
                     </b-col>
                 </b-row>
 
-                <!--<b-row>-->
-                <!--<b-col lg="4">-->
-                <!--<b-form-group-->
-                <!--&gt;-->
-
-
-                <!--<b-input-group size="sm">-->
-                <!--<b-input-group-append>-->
-                <!--<b-button-->
-
-                <!--@click="searchTaskByCriteria"-->
-                <!--variant="success"-->
-                <!--:disabled="!filter"-->
-                <!--&gt;Найти-->
-                <!--</b-button>-->
-                <!--</b-input-group-append>-->
-                <!--<b-form-input-->
-                <!--id="filter-input"-->
-                <!--v-model="filter"-->
-                <!--placeholder="Поиск..."-->
-                <!--@keydown.native="enterSubmitSearch"-->
-                <!--&gt;</b-form-input>-->
-
-                <!--<b-input-group-append>-->
-                <!--<b-button-->
-                <!--@click="clearSearchInput"-->
-                <!--variant="danger"-->
-                <!--:disabled="!filter"-->
-                <!--&gt;-->
-                <!--<b-icon-backspace variant="light"></b-icon-backspace>-->
-                <!--</b-button>-->
-                <!--</b-input-group-append>-->
-                <!--</b-input-group>-->
-                <!--</b-form-group>-->
-                <!--</b-col>-->
-                <!--<b-col lg="1">-->
-                <!--</b-col>-->
-                <!--<b-col lg="4">-->
-                <!--<b-input-group size="sm">-->
-                <!--<b-input-group-append>-->
-                <!--<b-button-->
-
-                <!--@click="searchTaskByCriteria"-->
-                <!--variant="success"-->
-                <!--:disabled="!filter"-->
-                <!--size="sm"-->
-                <!--&gt;Найти за период-->
-                <!--</b-button>-->
-                <!--</b-input-group-append>-->
-                <!--<b-button-group-append>-->
-                <!--<b-form-datepicker id="task-search-start-datepicker" v-model="taskSearchStartDate"-->
-                <!--placeholder="Дата" locale="ru"-->
-                <!--size="sm"-->
-                <!--:date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">-->
-                <!--</b-form-datepicker>-->
-                <!--</b-button-group-append>-->
-                <!--<b-button-group-append>-->
-                <!--<b-form-datepicker id="task-search-end-datepicker" v-model="taskSearchEndDate"-->
-                <!--placeholder="Дата" locale="ru"-->
-                <!--size="sm"-->
-                <!--:date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }">-->
-
-                <!--</b-form-datepicker>-->
-                <!--</b-button-group-append>-->
-                <!--<b-button-group-append>-->
-                <!--<b-button-->
-                <!--@click="clearSearchInput"-->
-                <!--variant="danger"-->
-                <!--:disabled="!filter"-->
-                <!--size="sm"-->
-                <!--&gt;-->
-                <!--<b-icon-backspace variant="light"></b-icon-backspace>-->
-                <!--</b-button>-->
-                <!--</b-button-group-append>-->
-                <!--</b-input-group>-->
-                <!--</b-col>-->
-                <!--</b-row>-->
                 <b-row class="ml-auto">
                     <div>
                         <b-tabs content-class="mt-3"
@@ -1165,7 +1092,7 @@
     .task_lt_btn {
         margin: 0 0 0 5px;
         text-align: center;
-        width: 90px;
+        width: 120px;
         font-family: Arial;
         font-size: 14px;
     }
