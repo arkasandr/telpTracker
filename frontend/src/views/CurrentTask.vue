@@ -38,7 +38,7 @@
                             </b-row>
                         </b-col>
 
-                        <b-col lg="2">
+                        <b-col lg="3">
                             <b-row>
                                 <b-col class="task-bold-letter">
                                     {{this.getCurrentExecutor[0] + " " + this.getCurrentExecutor[1]}}
@@ -61,7 +61,7 @@
                             </b-row>
                             <b-row>
                                 <b-col class="task-sm-letter">
-                                    Старт
+                                    Начало
                                 </b-col>
                             </b-row>
                         </b-col>
@@ -73,12 +73,11 @@
                             </b-row>
                             <b-row>
                                 <b-col class="task-sm-letter">
-                                    Дедлайн
+                                    Окончание
                                 </b-col>
                             </b-row>
                         </b-col>
-                        <b-col lg="1">
-                        </b-col>
+
                         <b-col lg="3">
                             <b-row>
                                 <b-col class="task-bold-letter">

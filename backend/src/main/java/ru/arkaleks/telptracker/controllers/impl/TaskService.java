@@ -9,6 +9,7 @@ import ru.arkaleks.telptracker.controllers.dto.TaskDto;
 import ru.arkaleks.telptracker.controllers.dto.TaskListDto;
 import ru.arkaleks.telptracker.controllers.mapper.TaskMapper;
 import ru.arkaleks.telptracker.model.*;
+import ru.arkaleks.telptracker.repository.CustomTaskRepository;
 import ru.arkaleks.telptracker.repository.EmployeeRepository;
 import ru.arkaleks.telptracker.repository.TaskRepository;
 
@@ -32,6 +33,8 @@ import java.util.stream.Collectors;
 public class TaskService {
 
     private final TaskRepository taskRepository;
+
+    private final CustomTaskRepository customTaskRepository;
 
     private final EmployeeRepository employeeRepository;
 
@@ -108,36 +111,57 @@ public class TaskService {
     }
 
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<TaskListDto> getAllEmployeeTasks() {
-        List<TaskListDto> result = new ArrayList<>();
         Employee employee = getLoginEmployee();
         Set<Task> employeeTasks = employee.getTasks();
         List<Task> resultTasks = employeeTasks
                 .stream()
                 .sorted(Comparator.comparing(Task::getTaskId))
                 .collect(Collectors.toList());
-        for (Task oldTask : resultTasks) {
-            TaskListDto task = new TaskListDto();
-            task.setTaskId(oldTask.getTaskId());
-            task.setTitle(oldTask.getTitle());
-            task.setDescription(oldTask.getDescription());
-            task.setStartDate(oldTask.getStartDate());
-            task.setFinishDate(oldTask.getFinishDate());
-            task.setStatus((oldTask.getStatus()));
-            task.setStatusUpdateDate((oldTask.getStatusUpdateDate()));
-            List<String> surnames = oldTask.getMembers()
-                    .stream()
-                    .filter(x -> x.getRole().equals(WorkRole.ИСПОЛНИТЕЛЬ))
-                    .map(x -> x.getSurname())
-                    .collect(Collectors.toList());
-            String[] array = surnames.stream().toArray(String[]::new);
-            task.setMembers(array);
-            result.add(task);
-        }
-        return result;
+        return convertToTaskListDto(resultTasks);
     }
 
+    @Transactional(readOnly = true)
+    public List<TaskListDto> getSearchingTasksByCriteria(String text) {
+        List<Task> taskList = customTaskRepository.getSearchingTaskByCriteria(text);
+        log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
+        List<Task> result = chooseCurrentEmployeeTasks(taskList);
+        log.info("К текущему пользователю относится " + result.size() + " задач");
+        return convertToTaskListDto(result);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<TaskListDto> getSearchingTasksByPeriod(LocalDate[] period) {
+        List<Task> taskList = customTaskRepository.getSearchingTaskByPeriod(period);
+        log.info("За период c " + period[0] + " по " + period[1]);
+        log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
+        List<Task> result = chooseCurrentEmployeeTasks(taskList);
+        log.info("К текущему пользователю относится " + result.size() + " задач");
+        return convertToTaskListDto(result);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<TaskListDto> getSearchingTasksByStartDate(LocalDate[] period) {
+        List<Task> taskList = customTaskRepository.getSearchingTaskByStartDate(period);
+        log.info("За период c " + period[0] + " по " + period[1]);
+        log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
+        List<Task> result = chooseCurrentEmployeeTasks(taskList);
+        log.info("К текущему пользователю относится " + result.size() + " задач");
+        return convertToTaskListDto(result);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TaskListDto> getSearchingTasksByEndDate(LocalDate[] period) {
+        List<Task> taskList = customTaskRepository.getSearchingTaskByEndDate(period);
+        log.info("За период c " + period[0] + " по " + period[1]);
+        log.info("Поиск задач по критерию выполнен успешно. Найдено " + taskList.size() + " задач");
+        List<Task> result = chooseCurrentEmployeeTasks(taskList);
+        log.info("К текущему пользователю относится " + result.size() + " задач");
+        return convertToTaskListDto(result);
+    }
 
     @Transactional
     public void deleteTask(long taskId) {
@@ -205,5 +229,43 @@ public class TaskService {
         Task task = taskRepository.findTaskByTaskId(taskId);
         log.info("Задача taskId = " + taskId + " найдена успешно");
         return taskMapper.mapToTaskDto(task);
+    }
+
+
+    private List<TaskListDto> convertToTaskListDto(List<Task> taskList) {
+        List<TaskListDto> result = new ArrayList<>();
+        for (Task oldTask : taskList) {
+            TaskListDto task = new TaskListDto();
+            task.setTaskId(oldTask.getTaskId());
+            task.setTitle(oldTask.getTitle());
+            task.setDescription(oldTask.getDescription());
+            task.setStartDate(oldTask.getStartDate());
+            task.setFinishDate(oldTask.getFinishDate());
+            task.setStatus((oldTask.getStatus()));
+            task.setStatusUpdateDate((oldTask.getStatusUpdateDate()));
+            List<String> surnames = oldTask.getMembers()
+                    .stream()
+                    .filter(x -> x.getRole().equals(WorkRole.ИСПОЛНИТЕЛЬ))
+                    .map(x -> x.getSurname())
+                    .collect(Collectors.toList());
+            String[] array = surnames.stream().toArray(String[]::new);
+            task.setMembers(array);
+            result.add(task);
+        }
+        return result;
+    }
+
+    private List<Task> chooseCurrentEmployeeTasks(List<Task> inputList) {
+        List<Task> result = new ArrayList<>();
+        Employee currentEmployee = getLoginEmployee();
+        for(Task task : inputList) {
+            if(task != null) {
+                if(task.getMembers().contains(currentEmployee)) {
+                    result.add(task);
+                }
+            }
+            else throw new IllegalArgumentException("Task is empty!");
+        }
+        return result;
     }
 }
