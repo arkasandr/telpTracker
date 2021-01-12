@@ -71,7 +71,8 @@
 
       </b-col>
         <b-col lg="6">
-          <b-icon-chat-dots variant="dark" font-scale="1.5" shift-v="-3"  @click.prevent="logOut"></b-icon-chat-dots>
+          <b-icon-chat-dots v-if="currentUser" variant="dark" font-scale="1.5" shift-v="-3"  @click.prevent="logOut"></b-icon-chat-dots>
+           <span class="note-item active" v-if="unreadNotes">2</span>
         </b-col>
         <b-col lg="3">
 
@@ -164,6 +165,9 @@
                 }
 
                 return false;
+            },
+            unreadNotes() {
+                return false
             }
         },
         methods: {
@@ -259,6 +263,22 @@
   footer {
     background: #e9ecef;
     color: black;
+  }
+
+  .note-item {
+    cursor: pointer;
+    border-radius: 50%;
+    font-size: 1rem;
+    padding: .2rem 0.55rem;
+    background: #cccccc;
+    margin: 60px 0 1px 1px;
+    vertical-align: 10px
+  }
+
+  .note-item.active {
+    background: #dc3545;
+    font-weight: bold;
+    color: #ffffff;
   }
 
 </style>

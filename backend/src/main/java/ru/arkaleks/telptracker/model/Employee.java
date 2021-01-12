@@ -1,31 +1,19 @@
 package ru.arkaleks.telptracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
-import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author Alex Arkashev (arkasandr@gmail.com)
- * @version $Id$
- * @since 0.1
- */
+
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "EMPLOYEES")
-//@JsonIdentityInfo(
-//        generator = ObjectIdGenerators.PropertyGenerator.class,
-//        property = "employeeId")
 public class Employee {
 
     public Employee(String surname, String firstName, String middleName, String department, int groupNumber, String position, String email, WorkRole role, List<EmployeeRole> employeeRole) {
@@ -100,10 +88,6 @@ public class Employee {
     private WorkRole role;
 
 
-//    @ManyToMany(cascade = {
-//            CascadeType.PERSIST,
-//            CascadeType.MERGE
-//    })
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "employee_task",
             joinColumns = { @JoinColumn(name = "employee_id") },
@@ -116,6 +100,9 @@ public class Employee {
 
     @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL)
     private List<TaskMessage> taskMessage;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<TaskNotification> notifications;
 
 
 

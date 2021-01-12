@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - preConditions:
+      - runningAs:
+          username: postgres
+
+  - changeSet:
+      id: 11
+      author: Alex Arkashev
+      changes:
+        - createTable:
+            tableName: notifications
+            columns:
+              - column:
+                  name: notification_id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: true
+                    primaryKey: true
+              - column:
+                  name: text
+                  type: varchar(255)
+              - column:
+                  name: create_date
+                  type: datetime
+              - column:
+                  name: is_read
+                  type: boolean
+              - column:
+                  name: employee_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    references: employees(employee_id)
+                    foreignKeyName: fk_employees_to_notifications
+              - column:
+                  name: task_id
+                  type: bigint
+                  constraints:
+                    nullable: true
+                    references: tasks(task_id)
+                    foreignKeyName: fk_tasks_to_notifications
+
+
+

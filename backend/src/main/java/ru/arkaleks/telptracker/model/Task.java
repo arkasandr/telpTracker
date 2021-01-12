@@ -1,21 +1,14 @@
 package ru.arkaleks.telptracker.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.*;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * @author Alex Arkashev (arkasandr@gmail.com)
- * @version $Id$
- * @since 0.1
- */
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -67,7 +60,6 @@ public class Task {
 
     private LocalDate statusUpdateDate;
 
-//    @ManyToMany
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "employee_task",
             joinColumns = { @JoinColumn(name = "task_id") },
@@ -77,6 +69,10 @@ public class Task {
 
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
     private List<TaskMessage> messages;
+
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private List<TaskNotification> notificationList;
 
     @Override
     public String toString() {
